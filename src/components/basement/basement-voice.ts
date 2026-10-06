@@ -114,7 +114,7 @@ export class BasementVoice {
     this.boxClicks = 0;
     this.darkLineUsed = catAlreadyUp;
     const mem = recall();
-    mem.last = pickIndex(SCENARIOS.length, mem.last);
+    mem.last = mem.last < 0 ? 0 : pickIndex(SCENARIOS.length, mem.last);
     this.script = SCENARIOS[mem.last];
     if (knocked) mem.knocks++;
     remember();

@@ -10,10 +10,28 @@ export const BACKTRACK = ['…never mind.', 'no. forget it.', 'it wasn’t impor
 /**
  * What he says when he is left alone. One scenario plays per page load, never
  * the same one twice in a row. Each is a short story, so it reads in order.
+ * A first-time visitor always gets the first one; after that it is random.
  * Drafts: v1 just an h1, v2 dark mode, v3 parallax, v4 gradients, v5 Comic Sans,
  * v6 half mobile, v7 lost in a merge, v8 too many toasts, v9 so close.
  */
 export const SCENARIOS: Line[][] = [
+  // The infomercial: he sells the projects upstairs. Kept first: it is what a new visitor hears.
+  [
+    ['are you tired of portfolios with no basement?', 'of course you are.'],
+    ['hi. I’m Alireza.', 'and I’m here to tell you about a limited-time offer.'],
+    ['introducing: my projects. they’re upstairs.', 'batteries not included.'],
+    ['first up: Notewise.', 'a library for your books, notes, highlights and scanned pages.'],
+    ['I built it so I’d stop losing notes.', 'then I lost the notes about building it.'],
+    ['but wait. there’s more.', 'eighteen apps. one codebase. four years.'],
+    ['that one is a true story.', 'I kept it from falling over. now I live in a basement. unrelated.'],
+    HESITATE,
+    ['order now and I’ll throw in a cat.', '…the cat is not mine to throw in.'],
+    ['side effects may include:', 'opening a second tab. reading the whole thing. emailing me.'],
+    ['operators are standing by.', 'it’s me. I’m the operator. I’m also the product.'],
+    ['this offer never expires.', 'that’s the problem, honestly.'],
+    ['go upstairs. look at them.', 'then tell me what you thought. by email. I can’t hear you from here.'],
+  ],
+
   // The confession.
   [
     'how did you even get in here?',
@@ -151,23 +169,6 @@ export const SCENARIOS: Line[][] = [
     ['I’m a team player.', 'my team is a cat and a voice. I’m the voice.'],
     ['any questions?', 'yes? the email is upstairs. no? same answer.'],
     ['thank you for your time.', 'the basement has no signal, so I’ll wait by the ladder.'],
-  ],
-
-  // The infomercial: he sells the projects upstairs.
-  [
-    ['hi. I’m Alireza.', 'and I’m here to tell you about a limited-time offer.'],
-    ['are you tired of portfolios with no basement?', 'of course you are.'],
-    ['introducing: my projects. they’re upstairs.', 'batteries not included.'],
-    ['first up: Notewise.', 'a library for your books, notes, highlights and scanned pages.'],
-    ['I built it so I’d stop losing notes.', 'then I lost the notes about building it.'],
-    ['but wait. there’s more.', 'eighteen apps. one codebase. four years.'],
-    ['that one is a true story.', 'I kept it from falling over. now I live in a basement. unrelated.'],
-    HESITATE,
-    ['order now and I’ll throw in a cat.', '…the cat is not mine to throw in.'],
-    ['side effects may include:', 'opening a second tab. reading the whole thing. emailing me.'],
-    ['operators are standing by.', 'it’s me. I’m the operator. I’m also the product.'],
-    ['this offer never expires.', 'that’s the problem, honestly.'],
-    ['go upstairs. look at them.', 'then tell me what you thought. by email. I can’t hear you from here.'],
   ],
 
   // Persuasion techniques, tried on you out loud.
