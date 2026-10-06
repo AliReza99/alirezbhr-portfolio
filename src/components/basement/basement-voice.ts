@@ -23,6 +23,9 @@ const recall = (): Memory => {
   return memory;
 };
 
+/** How many times the last two drafts had been tossed before this page load. */
+export const timesThrown = (): number => recall().throws;
+
 const remember = () => {
   try {
     localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));

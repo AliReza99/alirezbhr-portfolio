@@ -118,16 +118,17 @@ export const Basement = () => {
     const [before, after] = voice.throwLines();
     voice.later(() => voice.say(before), 5000);
     voice.later(() => voice.say(after), 8000);
-    THROWN_DRAFTS.forEach((v, i) => {
+    // Not always the same box first, and never quite the same rhythm.
+    const order = Math.random() < 0.35 ? [...THROWN_DRAFTS].reverse() : THROWN_DRAFTS;
+    let at = 5800;
+    order.forEach((v) => {
       timers.current.push(
-        window.setTimeout(
-          () => {
-            const box = sectionRef.current?.querySelector<HTMLElement>(`[data-bv="${v}"]`);
-            if (box) throwBox(box);
-          },
-          5800 + i * 700,
-        ),
+        window.setTimeout(() => {
+          const box = sectionRef.current?.querySelector<HTMLElement>(`[data-bv="${v}"]`);
+          if (box) throwBox(box);
+        }, at),
       );
+      at += 500 + Math.random() * 400;
     });
   };
 

@@ -1,9 +1,14 @@
 import { useRef } from 'react';
 import { useSketch } from '../../hooks/use-sketch';
+import { timesThrown } from './basement-voice';
 
 export type Draft = {
   v: number;
   note: string;
+  /** How crooked it sits, in degrees. */
+  tilt: number;
+  /** Sideways slip off its spot, in px. */
+  shift: number;
 };
 
 const DRAFT_NOTES: Record<number, string> = {
@@ -18,18 +23,30 @@ const DRAFT_NOTES: Record<number, string> = {
   9: 'so close',
 };
 
-/** Pile of abandoned portfolio drafts, v1 at the bottom left to v9 on top. */
+/** The two boxes that get tossed in a few seconds after the visitor arrives. */
+export const THROWN_DRAFTS = [9, 8] as const;
+
+/** How sloppy the stack is, 0 to 1. He restacks the top two every visit and cares a little less each time. */
+const MESS = Math.min(timesThrown(), 5) / 5;
+
+const spread = (range: number) => (Math.random() * 2 - 1) * range;
+
+/**
+ * Pile of abandoned portfolio drafts, v1 at the bottom left to v9 on top.
+ * Stacked a little differently on every page load; the tossed ones land worst.
+ */
 export const DRAFT_ROWS: Draft[][] = (() => {
   let vi = 9;
   return [2, 3, 4].map((n) => {
     vi -= n;
     const start = vi;
-    return Array.from({ length: n }, (_, k) => ({ v: start + k + 1, note: DRAFT_NOTES[start + k + 1] ?? '' }));
+    return Array.from({ length: n }, (_, k) => {
+      const v = start + k + 1;
+      const thrown = (THROWN_DRAFTS as readonly number[]).includes(v);
+      return { v, note: DRAFT_NOTES[v] ?? '', tilt: spread((thrown ? 4 : 2) + MESS * 4), shift: spread(2 + MESS * 5) };
+    });
   });
 })();
-
-/** The two boxes that get tossed in a few seconds after the visitor arrives. */
-export const THROWN_DRAFTS = [9, 8] as const;
 
 type DraftBoxProps = {
   draft: Draft;
@@ -41,7 +58,7 @@ export const DraftBox = ({ draft, onOpen }: DraftBoxProps) => {
   const paperRef = useRef<HTMLSpanElement>(null);
   useSketch(boxRef, 'box', { boil: true });
   useSketch(paperRef, 'paper', { boil: true });
-  const { v, note } = draft;
+  const { v, note, tilt, shift } = draft;
 
   return (
     <button
@@ -51,7 +68,7 @@ export const DraftBox = ({ draft, onOpen }: DraftBoxProps) => {
       aria-label={`Draft v${v}`}
       title={note}
       className="draft"
-      style={{ rotate: `${(((v * 37) % 11) - 5) * 0.7}deg`, translate: `${((v * 53) % 7) - 3}px 0` }}
+      style={{ rotate: `${tilt.toFixed(2)}deg`, translate: `${shift.toFixed(1)}px 0` }}
     >
       <span ref={boxRef} className="draft__box">
         <span ref={paperRef} className="draft__label">
