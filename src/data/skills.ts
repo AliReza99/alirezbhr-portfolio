@@ -4,6 +4,7 @@ export type SkillCategory = {
 };
 
 export const SKILLS: SkillCategory[] = [
+  { name: 'Core', skills: ['React', 'Next.js', 'TypeScript'] },
   { name: 'State & Data', skills: ['TanStack Query', 'Zustand'] },
   { name: 'UI & Styling', skills: ['TailwindCSS', 'MUI', 'Shadcn'] },
   { name: 'Tooling', skills: ['Turborepo', 'Custom Webpack Loader', 'JSCodeShift', 'NPM Packages', 'Claude Code'] },
