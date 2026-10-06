@@ -48,10 +48,10 @@ export const ProjectCard = ({ project }: { project: Project }) => {
         </div>
         <div className="project__body">
           <h3 className="project__title">
-            <HandText handStyle={{ fontSize: 25, lineHeight: 1.1, letterSpacing: 0 }}>{project.title}</HandText>
+            <HandText handStyle={{ fontSize: 21, lineHeight: 1.1, letterSpacing: 0 }}>{project.title}</HandText>
           </h3>
           <p className="project__desc">
-            <HandText delay=".06s" handStyle={{ fontSize: 17, lineHeight: 1.32 }}>
+            <HandText delay=".06s" handStyle={{ fontSize: 16, lineHeight: 1.32 }}>
               {project.description}
             </HandText>
           </p>
