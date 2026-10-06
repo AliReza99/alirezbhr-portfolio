@@ -1,0 +1,32 @@
+.about__text {
+  margin: 0;
+  max-width: 64ch;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.7;
+  color: var(--muted);
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+
+.doodle-word {
+  position: relative;
+  white-space: nowrap;
+  color: var(--ink);
+  padding-bottom: 3px;
+  background-image: repeating-linear-gradient(90deg, rgba(90, 73, 214, var(--ula)) 0 4px, transparent 4px 7px);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1.5px;
+  cursor: help;
+}
+
+.doodle-word__pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  width: 176px;
+  line-height: 0;
+  pointer-events: none;
+  z-index: 20;
+  white-space: normal;
+}

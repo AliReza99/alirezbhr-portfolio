@@ -1,3 +1,21 @@
+# Alireza Bahrani - Portfolio
+
+React 19 + Vite 8 + React Router 8 implementation of `project/Portfolio v27.dc.html`.
+
+```sh
+pnpm install
+pnpm dev        # local dev server
+pnpm build      # typecheck + production build into dist/
+pnpm preview    # serve the production build
+```
+
+- `src/components/*` - one folder per section (hero, about, experience, projects, skills, education, contact, basement), each with its own CSS.
+- `src/styles/global.css` - design tokens and the `data-*` animation rules ported verbatim from the design. Many animations hang off those attributes, so keep them.
+- `src/data/*` - copy: roles, projects, skills, toasts, 48 fāl fortunes, doodles.
+- `project/` and `chats/` - the original Claude Design handoff bundle, kept for reference.
+
+---
+
 # CODING AGENTS: READ THIS FIRST
 
 This is a **handoff bundle** from Claude Design (claude.ai/design).

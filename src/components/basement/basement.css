@@ -1,0 +1,360 @@
+/* Shared left offset of the ladder, in the floor strip and in the basement. */
+.basement-strip,
+.basement {
+  --ladder-x: clamp(12px, 7vw, 110px);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Floor strip under the footer: ladder tips poke up through it. */
+.basement-strip {
+  position: relative;
+  height: 84px;
+  pointer-events: none;
+}
+
+.basement-strip__clip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 84px;
+  overflow: clip;
+}
+
+.basement-strip__ladder {
+  position: absolute;
+  top: 34px;
+  left: var(--ladder-x);
+  width: 96px;
+  height: 220px;
+}
+
+.sleeping-cat {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: calc(var(--ladder-x) + 76px);
+  pointer-events: auto;
+  width: 124px;
+  height: 68px;
+  cursor: pointer;
+}
+
+.sleeping-cat__body {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+}
+
+.sleeping-cat__z {
+  position: absolute;
+}
+
+/* The basement itself. Clipped to a peek until it opens. */
+.basement-wrap {
+  position: relative;
+  overflow: clip;
+}
+
+.basement {
+  position: relative;
+  overflow: clip;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: var(--paper);
+  background: radial-gradient(ellipse 60% 55% at 50% 0%, rgba(255, 214, 150, 0.14), transparent 70%), #242424;
+}
+
+.basement__glow {
+  position: absolute;
+  z-index: 6;
+  left: calc(var(--ladder-x) - 112px);
+  top: -40px;
+  width: 320px;
+  height: 220px;
+  pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 30%, rgba(255, 214, 150, 0.3), rgba(255, 214, 150, 0.07) 55%, transparent 75%);
+  opacity: 0.3;
+}
+
+.basement__shade {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 20px;
+  pointer-events: none;
+  background: linear-gradient(rgba(0, 0, 0, 0.35), transparent);
+}
+
+.basement__ladder-btn {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 72px;
+  left: var(--ladder-x);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--paper);
+  transition: transform 0.3s ease;
+}
+
+.basement__ladder-btn:hover {
+  transform: translateY(-2px);
+}
+
+.basement__ladder {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 96px;
+  height: 100%;
+}
+
+.basement__ladder-label {
+  margin-top: 46px;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+  white-space: nowrap;
+  transform: rotate(-4deg);
+}
+
+.basement__room {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: clamp(170px, 24vh, 240px) clamp(16px, 4vw, 48px) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(40px, 6vw, 64px);
+}
+
+.basement__sign-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 28px 44px;
+}
+
+.basement__sign {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 26px 13px;
+  color: var(--ink);
+  transform: rotate(2deg);
+}
+
+.basement__sign-title {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.basement__sign-sub {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+}
+
+.basement__pile {
+  position: relative;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.basement__row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  margin-bottom: -3px;
+}
+
+.draft {
+  position: relative;
+  flex: none;
+  width: min(112px, calc((100vw - 64px) / 7.2));
+  aspect-ratio: 1.3;
+  margin: 0 -1px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.draft:hover {
+  transform: translateY(-6px) rotate(-3deg);
+}
+
+.draft__box {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px;
+}
+
+.draft__label {
+  position: relative;
+  isolation: isolate;
+  margin-top: 14%;
+  padding: 2px 8px 3px;
+  color: var(--ink);
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: clamp(17px, 2.1vw, 25px);
+  line-height: 1;
+  transform: rotate(-3deg);
+}
+
+.draft__note {
+  position: relative;
+  max-width: 94%;
+  font-family: var(--font-kalam);
+  font-size: clamp(9px, 1vw, 12px);
+  line-height: 1.1;
+  color: #1f1a24;
+  text-align: center;
+  text-wrap: balance;
+  overflow: hidden;
+}
+
+.basement__eyes {
+  position: absolute;
+  z-index: 6;
+  left: -46px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+  transition: opacity 0.25s ease;
+}
+
+.basement__eyes > span {
+  width: 8px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.basement__floor {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  height: 72px;
+}
+
+.basement__dark {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(8, 8, 8, 0.95);
+  transition: opacity 0.12s;
+}
+
+.lamp {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  left: 50%;
+  width: 60px;
+  margin-left: -30px;
+  transform-origin: 50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lamp__part {
+  position: relative;
+  isolation: isolate;
+}
+
+.lamp__cord {
+  position: relative;
+  width: 4px;
+  height: clamp(70px, 12vh, 120px);
+}
+
+.lamp__bulb {
+  position: relative;
+  isolation: isolate;
+  width: 34px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  background: none;
+  transition: box-shadow 0.15s;
+}
+
+.lamp__hint {
+  position: absolute;
+  left: 58px;
+  bottom: 4px;
+  font-size: 24px;
+  color: var(--paper);
+  white-space: nowrap;
+  transform: rotate(-5deg);
+}
+
+.basement__talk-rail {
+  position: absolute;
+  z-index: 7;
+  top: 150px;
+  bottom: 110px;
+  right: 30px;
+  width: min(320px, calc(100% - 60px));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.basement__talk {
+  position: sticky;
+  bottom: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+}

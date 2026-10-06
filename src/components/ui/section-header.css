@@ -1,0 +1,30 @@
+.section {
+  scroll-margin-top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.section-header__title {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: clamp(24px, 2.8vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  font-stretch: 112%;
+}
+
+.section-header__note {
+  font-size: 26px;
+  white-space: nowrap;
+  transform: rotate(-3deg);
+}

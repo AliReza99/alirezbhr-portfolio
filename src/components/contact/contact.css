@@ -1,0 +1,175 @@
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.6vw, 28px);
+}
+
+.contact__lead {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--ink);
+  font-weight: 400;
+  font-size: clamp(17px, 1.6vw, 19px);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.contact__email-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+}
+
+.contact__email {
+  font-weight: 700;
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.14em;
+  overflow-wrap: anywhere;
+}
+
+.contact__pointer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.contact__pointer-note {
+  font-size: clamp(20px, 1.8vw, 24px);
+  white-space: nowrap;
+  transform: rotate(-3deg);
+}
+
+.contact__rule {
+  height: 2px;
+  background: var(--ink);
+}
+
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding-bottom: 24px;
+}
+
+/* Copy button: presses into a purple hatch, fills with ink click by click. */
+.copy-btn {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.copy-btn__shadow {
+  background: var(--hatch-purple);
+  transform: translate(5px, 5px);
+}
+
+.copy-btn__face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 18px;
+  border: 2px solid var(--ink);
+  background: var(--face);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease-press);
+}
+
+.copy-btn__face:hover {
+  transform: translate(3px, 3px) !important;
+}
+
+.copy-btn__ink {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 8px 18px;
+  background: var(--ink);
+  color: var(--face);
+  pointer-events: none;
+  clip-path: polygon(
+    0 calc(100% - var(--lv) + var(--wv)),
+    20% calc(100% - var(--lv) - var(--wv)),
+    45% calc(100% - var(--lv) + var(--wv) * 0.6),
+    70% calc(100% - var(--lv) - var(--wv) * 0.8),
+    100% calc(100% - var(--lv) + var(--wv) * 0.4),
+    100% 100%,
+    0 100%
+  );
+  transition: --lv 0.7s cubic-bezier(0.3, 1.35, 0.5, 1);
+}
+
+/* Social links: flat at rest, lift out on hover. */
+.lift-link {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+  flex: none;
+  --lift: 0px;
+  --face: transparent;
+  --sh: 0;
+  --shd: 0.16s;
+}
+
+.lift-link:hover {
+  --lift: -5px;
+  --face: #fbf6ef;
+  --sh: 1;
+  --shd: 0s;
+}
+
+.lift-link__shadow {
+  opacity: var(--sh);
+  transition: opacity 0s linear var(--shd);
+}
+
+.lift-link__face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 16px;
+  border: 2px solid var(--ink);
+  background: var(--face);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transform: translate(var(--lift), var(--lift));
+  transition: transform 0.15s var(--ease-press), background 0s linear var(--shd);
+}
+
+.contact__claws {
+  position: absolute;
+  z-index: 3;
+  left: 14px;
+  right: 14px;
+  top: calc(100% - 8px);
+  height: 110px;
+  pointer-events: none;
+}
+
+.contact__catnote {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 104px);
+  margin-left: -60px;
+  font-size: 20px;
+  white-space: nowrap;
+  transform: rotate(-4deg);
+  pointer-events: none;
+}

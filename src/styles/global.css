@@ -1,0 +1,220 @@
+/*
+ * Global design rules ported verbatim from "Portfolio v27.dc.html".
+ * Most animations hang off data-* attributes, so keep those attributes on the
+ * components that render them.
+ */
+
+:root {
+  --ink: #3b3a55;
+  --ink-deep: #1a192a;
+  --paper: #fbf6ef;
+  --card: #fffcf7;
+  --face: #fffdf8;
+  --hatch-bg: #f5f1e6;
+  --purple: #5a49d6;
+  --lilac: #a89afe;
+  --muted: #6a6884;
+  --coral: #f4916b;
+
+  --font-sans: 'Archivo', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-hand: 'Caveat', cursive;
+  --font-kalam: 'Kalam', cursive;
+
+  --hatch-ink: repeating-linear-gradient(135deg, var(--ink) 0 1px, transparent 1px 3px), var(--hatch-bg);
+  --hatch-purple: repeating-linear-gradient(135deg, var(--purple) 0 1px, transparent 1px 3px), var(--hatch-bg);
+  --ease-snap: cubic-bezier(0.65, 0, 0.15, 1);
+  --ease-press: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+html { scroll-behavior: smooth }
+body { margin: 0; background: #FBF6EF; color: #3B3A55; -webkit-font-smoothing: antialiased }
+a { color: inherit; text-decoration: none }
+a:hover { color: inherit }
+::selection { background: #3B3A55; color: #FBF6EF }
+
+.app {
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Handwritten text is decoration, never selectable. */
+.hand {
+  font-family: var(--font-hand);
+  user-select: none;
+  -webkit-user-select: none;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple);
+}
+
+/* Card with the boxy extruded shadow (Experience, Skills, Education). */
+.boxed {
+  position: relative;
+  isolation: isolate;
+  --d: 5px;
+}
+
+.boxed__face {
+  position: relative;
+  border: 2px solid var(--ink);
+  background: var(--card);
+}
+
+/* Hatched offset shadow used behind buttons. */
+.btn-shadow {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--ink);
+  background: var(--hatch-ink);
+}
+
+/* Button whose face presses 3px into a hatched shadow on hover. */
+.press-btn {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+  flex: none;
+}
+
+.press-btn__shadow {
+  transform: translate(4px, 4px);
+}
+
+.press-btn__face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 26px;
+  border: 2px solid var(--ink);
+  background: var(--face);
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease-press);
+}
+
+.press-btn__face--primary {
+  background-color: var(--lilac);
+}
+
+.press-btn__face:hover {
+  transform: translate(3px, 3px);
+}
+
+#tv-static{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;opacity:.035;image-rendering:pixelated}
+
+/* Text morph: sans label wipes into Caveat on hover. */
+[data-morph]{overflow:hidden;padding:.15em 0;margin:-.15em 0;display:inline-grid}
+[data-ms],[data-mc]{grid-area:1/1;white-space:nowrap;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
+[data-ms]{clip-path:inset(-10% 0 -10% 0)}
+[data-mc]{font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none;font-weight:600;font-size:1.35em;line-height:1;margin:-.2em 0;justify-self:center;align-self:center;clip-path:inset(-20% 100% -20% 0);transform:translateX(-8px) rotate(-3deg)}
+a:hover [data-ms],button:hover [data-ms]{clip-path:inset(-10% 0 -10% 100%);transform:translateX(8px)}
+a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% 0 -20% 0);transform:rotate(-3deg)}
+
+/* Arrows: crisp at rest, rough.js sketch on hover. */
+[data-rarrow]{display:inline-grid}
+[data-rarrow]>svg{grid-area:1/1;width:100%;height:100%;overflow:visible;display:block;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
+[data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% -30%)}
+[data-rarrow]>[data-ar]{clip-path:inset(-30% 130% -30% -30%);transform:translateX(-4px)}
+a:hover [data-rarrow]>[data-ac],button:hover [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% 130%);transform:translateX(4px)}
+a:hover [data-rarrow]>[data-ar],button:hover [data-rarrow]>[data-ar]{clip-path:inset(-30% -30% -30% -30%);transform:rotate(-4deg)}
+@media (prefers-reduced-motion:reduce){[data-ms],[data-mc],[data-rarrow]>svg{transition:none}}
+
+[data-wob]{filter:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='w' x='-5%' y='-5%' width='110%' height='110%'><feTurbulence type='fractalNoise' baseFrequency='.02' numOctaves='2' seed='7'/><feDisplacementMap in='SourceGraphic' scale='5'/></filter></svg>#w")}
+[data-rule]{flex:1 1 40px;height:10px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 10' preserveAspectRatio='none'><path d='M0 5 C40 1 70 9 120 5 S190 2 240 6 S330 8 400 4' fill='none' stroke='%233B3A55' stroke-width='2.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
+
+/* Hand-drawn filled bullets, four shapes cycling down each list. */
+[data-tick]{width:14px;height:14px;opacity:1;transform:rotate(-8deg);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M7.4 4.3 C9.4 4.1 10.4 5.9 10 7.7 C9.6 9.5 7.5 10.2 5.9 9.5 C4.4 8.8 4.1 6.6 5.3 5.3 C5.9 4.7 6.6 4.4 7.4 4.3 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M7.2 3.9 C9.6 3.6 11 5.7 10.4 7.8 C9.9 9.8 7.4 10.6 5.6 9.8 C3.9 9 3.7 6.4 5 5 C5.7 4.3 6.9 4.1 8 4.4' fill='none' stroke='%233B3A55' stroke-width='1.1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+2) [data-tick]{transform:rotate(12deg) translateY(.5px);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M5.2 7.1 C5.3 5.6 6.8 4.7 8.2 5.2 C9.6 5.8 9.8 7.9 8.7 9 C7.6 10 5.8 9.8 5.3 8.5 C5.1 8 5.1 7.5 5.2 7.1 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M4.7 7.4 C4.8 5.4 6.7 4.2 8.4 4.9 C10.1 5.6 10.2 8.1 8.9 9.3 C7.6 10.5 5.4 10.1 4.9 8.6' fill='none' stroke='%233B3A55' stroke-width='1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+3) [data-tick]{transform:rotate(-3deg) translateX(.5px);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M5 6.8 C5.4 5.3 7.1 4.6 8.5 5.3 C9.8 6.1 9.8 8.1 8.6 9.1 C7.4 10 5.5 9.5 5.1 8.1 C5 7.6 4.9 7.2 5 6.8 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M4.6 6.6 C5 4.9 7.1 4 8.7 4.9 C10.3 5.8 10.3 8.3 8.8 9.5 C7.4 10.6 5.1 10 4.6 8.2 C4.5 7.8 4.6 7.3 4.8 7' fill='none' stroke='%233B3A55' stroke-width='1.2' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M6.5 4.8 C8.3 4.4 9.8 6 9.5 7.8 C9.2 9.4 7.2 10.2 5.8 9.3 C4.6 8.5 4.6 6.6 5.6 5.6 C5.9 5.2 6.2 4.9 6.5 4.8 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M6.3 4.3 C8.5 3.9 10.3 5.8 9.9 7.9 C9.5 9.9 7.1 10.8 5.5 9.7 C4 8.7 4.1 6.4 5.3 5.3' fill='none' stroke='%233B3A55' stroke-width='1.1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+[data-dash]{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 6' preserveAspectRatio='none'><path d='M2 3.2 L13 2.8 M20 3 L30.5 3.6 M38 3.4 L47 2.6 M55 2.9 L66.5 3.3 M73 3.7 L82 3.1 M89.5 2.7 L101 3.2 M108 3.5 L117.5 2.9' fill='none' stroke='%233B3A55' stroke-opacity='.12' stroke-width='1.3' stroke-linecap='round'/></svg>") left top/120px 6px repeat-x}
+
+/* Marker highlight. */
+[data-hl]{padding:.08em .12em;margin:0 -.12em;border-radius:.2em .6em .25em .5em;background:linear-gradient(104deg,transparent 0,rgba(122,106,232,.14) 2%,rgba(122,106,232,.14) 98%,transparent 100%) 0 70%/100% 100% no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+#work [data-hl]{background-size:0% 100%;transition:background-size .6s cubic-bezier(.65,0,.15,1)}
+#work [data-hl][data-hl-on]{background-size:100% 100%}
+@media (prefers-reduced-motion:reduce){#work [data-hl]{transition:none}}
+
+/* Torn tape strip. */
+[data-tape]{position:absolute;top:-13px;left:50%;width:var(--tw,110px);height:30px;margin-left:calc(var(--tw,110px) / -2);z-index:3;pointer-events:none;background:linear-gradient(var(--ta,100deg),rgba(255,255,255,.18),transparent 40%,rgba(255,255,255,.1) 70%,rgba(0,0,0,.04)),var(--tc,#F6AE8C);opacity:.93;transform:rotate(var(--tr,-3deg));clip-path:var(--tp,polygon(0 8%,96% 0,99% 14%,95% 34%,100% 52%,95% 72%,99% 86%,97% 100%,2% 100%,0 88%,4% 66%,0 48%,4% 28%))}
+
+/* Fāl corner. */
+@keyframes fal-peek{0%,100%{scale:1}40%{scale:1.22}60%{scale:1.16}}
+[data-falcard]:hover [data-falfold]{animation:fal-peek 1.6s cubic-bezier(.4,0,.3,1) infinite}
+[data-falcard] button:hover [data-falfold]{animation:none}
+@media (hover:none){[data-falhint]{opacity:1!important;transform:rotate(-4deg)!important}}
+@media (prefers-reduced-motion:reduce){[data-falfold]{animation:none!important}}
+
+@property --p{syntax:'<length>';inherits:true;initial-value:0px}
+@property --lv{syntax:'<length-percentage>';inherits:true;initial-value:-6px}
+@property --wv{syntax:'<length>';inherits:true;initial-value:1.5px}
+@property --ula{syntax:'<number>';inherits:true;initial-value:.3}
+@property --cd{syntax:'<length>';inherits:true;initial-value:5px}
+
+/* About: hoverable doodle words. */
+[data-doo]{transition:color .2s,--ula .2s;--ula:.3}
+[data-doo]:hover,[data-doo]:focus{--ula:.9}
+[data-seen] [data-doo]{animation:doo-ul 1.5s cubic-bezier(.5,0,.3,1) var(--ud) backwards}
+@keyframes doo-ul{0%{background-size:0% 1.5px;--ula:.9}55%{background-size:100% 1.5px;--ula:.9}100%{background-size:100% 1.5px;--ula:.3}}
+@media (prefers-reduced-motion:reduce){[data-seen] [data-doo]{animation:none}}
+[data-doo]:hover,[data-doo]:focus{color:#5A49D6;outline:none}
+[data-pop]{opacity:0;visibility:hidden;transform:translate(-50%,8px) rotate(-2deg) scale(.9);transform-origin:50% 100%;transition:opacity .15s,transform .15s,visibility 0s .15s}
+[data-doo]:hover [data-pop],[data-doo]:focus [data-pop]{opacity:1;visibility:visible;transform:translate(-50%,0) rotate(-2deg) scale(1);transition:opacity .2s,transform .45s cubic-bezier(.3,1.6,.5,1),visibility 0s}
+[data-pop] [data-ln]{stroke-dasharray:1 1;stroke-dashoffset:1}
+[data-doo]:hover [data-ln],[data-doo]:focus [data-ln]{stroke-dashoffset:0;transition:stroke-dashoffset .55s cubic-bezier(.5,0,.3,1) var(--d,0s)}
+[data-pop] [data-fade]{opacity:0}
+[data-doo]:hover [data-fade],[data-doo]:focus [data-fade]{opacity:1;transition:opacity .35s var(--d,0s)}
+[data-doo]:hover [data-an],[data-doo]:focus [data-an]{animation:var(--an) both}
+@keyframes doo-boil{0%{filter:url(#doo-r1)}33%{filter:url(#doo-r2)}66%{filter:url(#doo-r3)}}
+@media (prefers-reduced-motion:reduce){[data-doo] [data-an]{animation:none!important}[data-doo] [data-ln]{transition:none!important}}
+
+/* Boxy 3D "extruded" card shadow with a subtle hand-made wobble. */
+[data-ext]{--e:calc(var(--d,5px) - var(--p));filter:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='x' x='-2%' y='-2%' width='104%' height='104%'><feTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='11'/><feDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/></filter></svg>#x");position:absolute;top:var(--p);left:var(--p);right:calc(var(--d,5px) * -1);bottom:calc(var(--d,5px) * -1);pointer-events:none}
+[data-ext]::before,[data-ext]::after{content:"";position:absolute;inset:0}
+[data-ext]::before{background:#3B3A55;opacity:.85;clip-path:polygon(calc(100% - var(--e)) 0,100% var(--e),100% 100%,var(--e) 100%,0 calc(100% - var(--e)),calc(100% - var(--e)) calc(100% - var(--e)))}
+[data-ext]::after{background:repeating-linear-gradient(135deg,#3B3A55 0 1px,transparent 1px 2.5px),#FBF6EF;clip-path:polygon(2px calc(100% - var(--e)),calc(100% - var(--e) - 2px) calc(100% - var(--e)),calc(100% - 3.5px) calc(100% - 1.5px),calc(var(--e) + .5px) calc(100% - 1.5px))}
+
+/* Selected work cards: doodle mode on hover. */
+[data-pcard]{--cd:5px;transition:--p .15s cubic-bezier(.2,.8,.2,1),rotate .5s cubic-bezier(.3,1.6,.5,1),--cd .5s cubic-bezier(.3,1.7,.5,1)!important}
+[data-pcard] [data-ext]{--e:calc(var(--cd) - var(--p))}
+[data-pcard]:hover,[data-pcard]:focus-visible{--cd:10px}
+[data-pcard]:hover [data-ext],[data-pcard]:focus-visible [data-ext]{animation:doo-boil .48s infinite}
+[data-pface],[data-pimg]{transition:border-color .2s}
+[data-pcard]:hover [data-pface],[data-pcard]:focus-visible [data-pface]{border-color:transparent!important}
+[data-pcard]:hover [data-pimg],[data-pcard]:focus-visible [data-pimg]{border-bottom-color:transparent!important}
+[data-sk]{opacity:0;transition:opacity .35s}
+[data-pcard]:hover [data-sk],[data-pcard]:focus-visible [data-sk]{opacity:1;animation:doo-boil .48s infinite}
+[data-rbox]{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .2s}
+[data-pcard]:hover [data-rbox],[data-pcard]:focus-visible [data-rbox]{opacity:1}
+[data-tw]{display:grid}
+[data-ts],[data-th]{grid-area:1/1;align-self:center;transition:clip-path .22s cubic-bezier(.65,0,.15,1) calc(var(--td,0s) / 2)}
+[data-ts]{clip-path:inset(-20% -4% -20% 0)}
+[data-th]{font-family:'Kalam',cursive;font-weight:400;color:#3B3A55;user-select:none;-webkit-user-select:none;clip-path:inset(-20% 104% -20% 0)}
+[data-pcard]:hover [data-ts],[data-pcard]:focus-visible [data-ts]{clip-path:inset(-20% -4% -20% 104%)}
+[data-pcard]:hover [data-th],[data-pcard]:focus-visible [data-th]{clip-path:inset(-20% -4% -20% 0)}
+[data-bsh]{opacity:0;transform:translate(0,0);transition:opacity .2s,transform .4s cubic-bezier(.3,1.6,.5,1) .1s}
+[data-pcard]:hover [data-bsh],[data-pcard]:focus-visible [data-bsh]{opacity:1;transform:translate(4px,4px)}
+@media (prefers-reduced-motion:reduce){[data-pcard] [data-sk],[data-pcard] [data-ext]{animation:none!important}[data-ts],[data-th],[data-bsh],[data-pcard]{transition:none!important}}
+
+/* Skills category labels. */
+[data-rcat]{transition:color .2s}[data-rcat]:hover{color:#5A49D6!important}[data-rcat]:hover [data-rbullet]{transform:scale(1.15) rotate(10deg)}
+
+/* Sleeping cat. */
+@keyframes cat-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.045)}}
+[data-catbreathe]{animation:cat-breathe 3.2s ease-in-out infinite}
+@keyframes zz{0%{opacity:0;transform:translate(0,0) rotate(-8deg)}20%{opacity:1}100%{opacity:0;transform:translate(14px,-28px) rotate(18deg)}}
+[data-zz]{opacity:0;animation:zz 3.6s ease-out var(--zd,0s) infinite}
+@media (prefers-reduced-motion:reduce){[data-catbreathe],[data-zz]{animation:none}[data-zz]{opacity:1}}
+[data-catnote]{opacity:0;transition:opacity .2s}
+[data-catmark]:hover [data-catnote]{opacity:1}
+@keyframes b-blink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.1)}}
+[data-beye]{animation:b-blink 3.4s infinite}
+@media (prefers-reduced-motion:reduce){[data-beye]{animation:none}}

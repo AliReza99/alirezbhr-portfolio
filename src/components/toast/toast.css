@@ -1,0 +1,79 @@
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 50;
+  width: min(92vw, 430px);
+  transition: transform 0.55s cubic-bezier(0.3, 1.45, 0.5, 1), opacity 0.25s ease;
+}
+
+.toast__paper {
+  position: relative;
+  isolation: isolate;
+  --d: 5px;
+}
+
+.toast__body {
+  position: relative;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  padding: 20px 22px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.toast__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toast__title {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--purple);
+  transform: rotate(-1deg);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.toast__message {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Square × button shared by the toast and the fāl dialog. */
+.close-x {
+  flex: none;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--ink);
+  background: var(--face);
+  box-sizing: border-box;
+  padding: 0;
+  cursor: pointer;
+}
+
+.close-x > span {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+
+.close-x > span + span {
+  transform: rotate(-45deg);
+}
