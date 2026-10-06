@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../../data/profile';
 import { useSketch } from '../../hooks/use-sketch';
 import { useBasement } from '../basement/basement-context';
+import { RoughArrow } from '../ui/rough-arrow';
 import { SectionHeader } from '../ui/section-header';
 import { CopyButton } from './copy-button';
 import './contact.css';
@@ -32,7 +33,7 @@ const LiftLink = ({ href, label, catMark }: LiftLinkProps) => (
     <span data-wob="" className="btn-shadow lift-link__shadow" />
     <span className="lift-link__face">
       <span>{label}</span>
-      <span style={{ lineHeight: 1 }}>↗</span>
+      <RoughArrow dir="ne" still />
     </span>
     {catMark && <ClawMarks />}
   </a>

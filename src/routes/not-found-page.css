@@ -23,3 +23,9 @@
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
+
+@media (max-width: 600px) {
+  .not-found {
+    padding-inline: 20px;
+  }
+}

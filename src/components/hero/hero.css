@@ -37,3 +37,20 @@
   gap: 16px 22px;
   padding: 0 4px 4px 0;
 }
+
+/* Phones: both buttons share one row and fill it. */
+@media (max-width: 600px) {
+  .hero__actions {
+    gap: 14px 12px;
+  }
+
+  .hero__actions .press-btn {
+    flex: 1 1 auto;
+  }
+
+  .hero__actions .press-btn__face {
+    flex: 1;
+    justify-content: center;
+    padding-inline: 16px;
+  }
+}

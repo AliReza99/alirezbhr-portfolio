@@ -28,8 +28,8 @@
   --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 
-html { scroll-behavior: smooth }
-body { margin: 0; background: #FBF6EF; color: #3B3A55; -webkit-font-smoothing: antialiased }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
+body { margin: 0; -webkit-tap-highlight-color: transparent; background: #FBF6EF; color: #3B3A55; -webkit-font-smoothing: antialiased }
 a { color: inherit; text-decoration: none }
 a:hover { color: inherit }
 ::selection { background: #3B3A55; color: #FBF6EF }
@@ -125,9 +125,9 @@ a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% 0 -20% 0);transfor
 [data-rarrow]>[data-ar]{clip-path:inset(-30% 130% -30% -30%);transform:translateX(-4px)}
 a:hover [data-rarrow]>[data-ac],button:hover [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% 130%);transform:translateX(4px)}
 a:hover [data-rarrow]>[data-ar],button:hover [data-rarrow]>[data-ar]{clip-path:inset(-30% -30% -30% -30%);transform:rotate(-4deg)}
+a:hover [data-rarrow][data-still]>[data-ac],button:hover [data-rarrow][data-still]>[data-ac]{clip-path:inset(-30% -30% -30% -30%);transform:none}
 @media (prefers-reduced-motion:reduce){[data-ms],[data-mc],[data-rarrow]>svg{transition:none}}
 
-[data-wob]{filter:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='w' x='-5%' y='-5%' width='110%' height='110%'><feTurbulence type='fractalNoise' baseFrequency='.02' numOctaves='2' seed='7'/><feDisplacementMap in='SourceGraphic' scale='5'/></filter></svg>#w")}
 [data-rule]{flex:1 1 40px;height:10px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 10' preserveAspectRatio='none'><path d='M0 5 C40 1 70 9 120 5 S190 2 240 6 S330 8 400 4' fill='none' stroke='%233B3A55' stroke-width='2.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
 
 /* Hand-drawn filled bullets, four shapes cycling down each list. */
@@ -176,8 +176,8 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 @keyframes doo-boil{0%{filter:url(#doo-r1)}33%{filter:url(#doo-r2)}66%{filter:url(#doo-r3)}}
 @media (prefers-reduced-motion:reduce){[data-doo] [data-an]{animation:none!important}[data-doo] [data-ln]{transition:none!important}}
 
-/* Boxy 3D "extruded" card shadow with a subtle hand-made wobble. */
-[data-ext]{--e:calc(var(--d,5px) - var(--p));filter:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='x' x='-2%' y='-2%' width='104%' height='104%'><feTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='2' seed='11'/><feDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/></filter></svg>#x");position:absolute;top:var(--p);left:var(--p);right:calc(var(--d,5px) * -1);bottom:calc(var(--d,5px) * -1);pointer-events:none}
+/* Boxy 3D "extruded" card shadow with crisp edges. */
+[data-ext]{--e:calc(var(--d,5px) - var(--p));position:absolute;top:var(--p);left:var(--p);right:calc(var(--d,5px) * -1);bottom:calc(var(--d,5px) * -1);pointer-events:none}
 [data-ext]::before,[data-ext]::after{content:"";position:absolute;inset:0}
 [data-ext]::before{background:#3B3A55;opacity:.85;clip-path:polygon(calc(100% - var(--e)) 0,100% var(--e),100% 100%,var(--e) 100%,0 calc(100% - var(--e)),calc(100% - var(--e)) calc(100% - var(--e)))}
 [data-ext]::after{background:repeating-linear-gradient(135deg,#3B3A55 0 1px,transparent 1px 2.5px),#FBF6EF;clip-path:polygon(2px calc(100% - var(--e)),calc(100% - var(--e) - 2px) calc(100% - var(--e)),calc(100% - 3.5px) calc(100% - 1.5px),calc(var(--e) + .5px) calc(100% - 1.5px))}
@@ -186,7 +186,6 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 [data-pcard]{--cd:5px;transition:--p .15s cubic-bezier(.2,.8,.2,1),rotate .5s cubic-bezier(.3,1.6,.5,1),--cd .5s cubic-bezier(.3,1.7,.5,1)!important}
 [data-pcard] [data-ext]{--e:calc(var(--cd) - var(--p))}
 [data-pcard]:hover,[data-pcard]:focus-visible{--cd:10px}
-[data-pcard]:hover [data-ext],[data-pcard]:focus-visible [data-ext]{animation:doo-boil .48s infinite}
 [data-pface],[data-pimg]{transition:border-color .2s}
 [data-pcard]:hover [data-pface],[data-pcard]:focus-visible [data-pface]{border-color:transparent!important}
 [data-pcard]:hover [data-pimg],[data-pcard]:focus-visible [data-pimg]{border-bottom-color:transparent!important}
@@ -202,7 +201,7 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 [data-pcard]:hover [data-th],[data-pcard]:focus-visible [data-th]{clip-path:inset(-20% -4% -20% 0)}
 [data-bsh]{opacity:0;transform:translate(0,0);transition:opacity .2s,transform .4s cubic-bezier(.3,1.6,.5,1) .1s}
 [data-pcard]:hover [data-bsh],[data-pcard]:focus-visible [data-bsh]{opacity:1;transform:translate(4px,4px)}
-@media (prefers-reduced-motion:reduce){[data-pcard] [data-sk],[data-pcard] [data-ext]{animation:none!important}[data-ts],[data-th],[data-bsh],[data-pcard]{transition:none!important}}
+@media (prefers-reduced-motion:reduce){[data-pcard] [data-sk]{animation:none!important}[data-ts],[data-th],[data-bsh],[data-pcard]{transition:none!important}}
 
 /* Skills category labels. */
 [data-rcat]{transition:color .2s}[data-rcat]:hover{color:#5A49D6!important}[data-rcat]:hover [data-rbullet]{transform:scale(1.15) rotate(10deg)}

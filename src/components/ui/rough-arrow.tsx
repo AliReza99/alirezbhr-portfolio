@@ -5,6 +5,8 @@ type RoughArrowProps = {
   /** `e` points right, `ne` points up-right. */
   dir: 'e' | 'ne';
   style?: CSSProperties;
+  /** Crisp arrow only, no hover sketch. */
+  still?: boolean;
 };
 
 const CRISP = {
@@ -21,14 +23,14 @@ const SKETCH = {
  * A clean arrow that wipes into a boiling rough.js sketch while its
  * enclosing link or button is hovered (wipe itself is pure CSS).
  */
-export const RoughArrow = ({ dir, style }: RoughArrowProps) => {
+export const RoughArrow = ({ dir, style, still }: RoughArrowProps) => {
   const hostRef = useRef<HTMLSpanElement>(null);
   const sketchRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const el = hostRef.current;
     const svg = sketchRef.current;
-    if (!el || !svg) return;
+    if (still || !el || !svg) return;
     const base = randomSeed();
     let k = 0;
     let boil: number | undefined;
@@ -61,14 +63,14 @@ export const RoughArrow = ({ dir, style }: RoughArrowProps) => {
       host.removeEventListener('mouseenter', enter);
       host.removeEventListener('mouseleave', stop);
     };
-  }, [dir]);
+  }, [dir, still]);
 
   return (
-    <span ref={hostRef} data-rarrow={dir} style={{ display: 'grid', width: '1em', height: '1em', flex: 'none', ...style }}>
+    <span ref={hostRef} data-rarrow={dir} data-still={still ? '' : undefined} style={{ display: 'grid', width: '1em', height: '1em', flex: 'none', ...style }}>
       <svg data-ac="" viewBox="0 0 24 24">
         <path d={CRISP[dir]} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" strokeLinejoin="miter" />
       </svg>
-      <svg data-ar="" viewBox="0 0 24 24" ref={sketchRef} />
+      {!still && <svg data-ar="" viewBox="0 0 24 24" ref={sketchRef} />}
     </span>
   );
 };

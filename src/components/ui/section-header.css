@@ -28,3 +28,32 @@
   white-space: nowrap;
   transform: rotate(-3deg);
 }
+
+/* Phones: title, note and rule stay on one row; type scales with the screen so the longest pair fits. */
+@media (max-width: 600px) {
+  .section {
+    gap: 26px;
+  }
+
+  .section-header {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .section-header__title {
+    flex: none;
+    font-size: clamp(16px, 5.3vw, 26px);
+    font-stretch: 100%;
+    white-space: nowrap;
+  }
+
+  .section-header__note {
+    flex: none;
+    font-size: clamp(18px, 5.6vw, 28px);
+  }
+
+  .section-header [data-rule] {
+    flex: 1 1 0;
+    min-width: 12px;
+  }
+}

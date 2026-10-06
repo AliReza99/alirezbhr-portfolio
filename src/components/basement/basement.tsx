@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { useSketch } from '../../hooks/use-sketch';
-import { prefersReducedMotion } from '../../lib/motion';
+import { canAnimate, prefersReducedMotion } from '../../lib/motion';
 import { useToast } from '../toast/toast-context';
 import { useBasement } from './basement-context';
 import { BasementVoice } from './basement-voice';
@@ -12,8 +12,8 @@ import { throwBox } from './throw-box';
 import { useBasementTease } from './use-basement-tease';
 import './basement.css';
 
-/** How much of the closed basement sits below the footer: just the ladder. */
-const PEEK = 120;
+/** What comes up through the floor when the ladder is clicked. The next click gets in. */
+const KNOCK_LINES = ['occupied.', 'it’s just storage.', 'no ladder. go away.'];
 
 /**
  * Easter egg below the footer. The page pushes back when you reach the end;
@@ -26,12 +26,17 @@ export const Basement = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [catGone, setCatGone] = useState(false);
+  const [knock, setKnock] = useState<{ n: number; line: string } | null>(null);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const tipsRef = useRef<HTMLDivElement>(null);
   const tipsSketchRef = useRef<HTMLSpanElement>(null);
+  const knockBtnRef = useRef<HTMLButtonElement>(null);
+  const upBtnRef = useRef<HTMLButtonElement>(null);
+  const knockAnim = useRef<Animation | undefined>(undefined);
   const glowRef = useRef<HTMLSpanElement>(null);
+  const hintRef = useRef<HTMLSpanElement>(null);
   const wallRef = useRef<HTMLDivElement>(null);
   const ladderRef = useRef<HTMLSpanElement>(null);
   const signRef = useRef<HTMLDivElement>(null);
@@ -48,7 +53,7 @@ export const Basement = () => {
   useSketch(floorRef, 'floor');
 
   // Mutable mirror of state for timers and listeners, plus in-flight flags.
-  const live = useRef({ open, dark, catUp, busy: false, catGoing: false, catGone: false, flips: 0, deepSaid: false });
+  const live = useRef({ open, dark, catUp, busy: false, catGoing: false, catGone: false, flips: 0, lastFlip: 0, discos: 0, deepSaid: false });
   live.current.open = open;
   live.current.dark = dark;
   live.current.catUp = catUp;
@@ -56,6 +61,7 @@ export const Basement = () => {
   const catTimer = useRef<number | undefined>(undefined);
   const darkTimer = useRef<number | undefined>(undefined);
   const upTimer = useRef<number | undefined>(undefined);
+  const knockTimer = useRef<number | undefined>(undefined);
 
   const voiceRef = useRef<BasementVoice | null>(null);
   voiceRef.current ??= new BasementVoice({
@@ -72,6 +78,7 @@ export const Basement = () => {
       clearTimeout(catTimer.current);
       clearTimeout(darkTimer.current);
       clearTimeout(upTimer.current);
+      clearTimeout(knockTimer.current);
     },
     [voice],
   );
@@ -122,17 +129,24 @@ export const Basement = () => {
     });
   };
 
-  const openBasement = () => {
+  const openBasement = (knocked = false) => {
     if (live.current.open || live.current.busy) return;
     live.current.busy = true;
     const tips = tipsRef.current;
     const reduce = prefersReducedMotion();
+    // The ladder may still be hiding from the last knock.
+    knockAnim.current?.cancel();
+    clearTimeout(knockTimer.current);
 
     const go = () => {
+      const hadFocus = document.activeElement === knockBtnRef.current;
       flushSync(() => {
         setOpen(true);
         setDark(false);
+        setKnock(null);
       });
+      // The knock button is gone now; keep keyboard visitors on the ladder.
+      if (hadFocus) upBtnRef.current?.focus({ preventScroll: true });
       tips?.getAnimations().forEach((a) => a.cancel());
       if (tips) tips.style.transform = '';
       if (!reduce)
@@ -145,7 +159,7 @@ export const Basement = () => {
         if (sec) scrollTo({ top: sec.getBoundingClientRect().top + scrollY, behavior: reduce ? 'instant' : 'smooth' });
         lightsFlicker();
         markCatGone(live.current.catUp);
-        voice.start(live.current.catUp);
+        voice.start(live.current.catUp, knocked);
         if (!reduce) throwLastDrafts();
         timers.current.push(window.setTimeout(() => (live.current.busy = false), 1400));
       });
@@ -161,13 +175,34 @@ export const Basement = () => {
     } else go();
   };
 
-  useBasementTease({
+  /** The ladder was clicked and nobody is letting them in yet. */
+  const knockBack = (n: number) => {
+    const last = n >= KNOCK_LINES.length;
+    setKnock({ n, line: KNOCK_LINES[Math.min(n, KNOCK_LINES.length) - 1] });
+    clearTimeout(knockTimer.current);
+    knockTimer.current = window.setTimeout(() => setKnock(null), 2600);
+    const tips = tipsRef.current;
+    if (!canAnimate(tips)) return;
+    knockAnim.current?.cancel();
+    // `rotate` and `translate`, so the lift the tease keeps in `transform` survives.
+    knockAnim.current = last
+      ? // Yanked down out of sight, then it creeps back up.
+        tips.animate([{ translate: '0 64px', offset: 0.1 }, { translate: '0 64px', offset: 0.72, easing: 'cubic-bezier(.3,1.2,.5,1)' }], { duration: 2600 })
+      : tips.animate(
+          [0, -1, 1.2, -0.8, 0.5, 0].map((k) => ({ rotate: `${k * n * 1.6}deg` })),
+          { duration: 300 + n * 120, easing: 'ease-out' },
+        );
+  };
+
+  const knockLadder = useBasementTease({
     wrapRef,
     ladderRef: tipsRef,
     glowRef,
+    hintRef,
     isOpen: () => live.current.open,
     isBusy: () => live.current.busy,
     onOpen: openBasement,
+    onKnock: knockBack,
     onDeep: () => {
       if (live.current.deepSaid) return;
       live.current.deepSaid = true;
@@ -182,8 +217,11 @@ export const Basement = () => {
       removeEventListener('scrollend', done);
       clearTimeout(upTimer.current);
       live.current.deepSaid = false;
+      // Leaving right after arriving cancels the timer that would have cleared this.
+      live.current.busy = false;
       voice.clear();
       clearTimeout(catTimer.current);
+      catTimer.current = undefined;
       setOpen(false);
       setDark(false);
       markCatGone(live.current.catUp);
@@ -193,7 +231,7 @@ export const Basement = () => {
     scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  /** In the dark, the cat's eyes look around, walk to the ladder and climb out. */
+  /** In the dark, the cat's eyes look around, walk to the ladder and start up it, then fade out. */
   const catLeaves = () => {
     if (live.current.catGone || live.current.catGoing) return;
     live.current.catGoing = true;
@@ -210,7 +248,8 @@ export const Basement = () => {
     const er = el.getBoundingClientRect();
     const lr = lad.getBoundingClientRect();
     const dx = lr.left + lr.width / 2 - (er.left + er.width / 2);
-    const up = lr.top + 14 - er.top;
+    // Only the first fifth of the climb: any higher and the daylight from the hatch would show her.
+    const up = Math.min(0, lr.bottom - lr.height * 0.2 - er.top);
     const walk = Math.min(1800, 500 + Math.abs(dx) * 3);
     const climb = Math.min(2200, 600 + Math.abs(up) * 3);
     const T = walk + climb + 400;
@@ -246,15 +285,23 @@ export const Basement = () => {
       lamp.animate([{ translate: '0 0' }, { translate: '0 10px' }, { translate: '0 0' }], { duration: 260, easing: 'cubic-bezier(.3,1.6,.5,1)' });
     const nowDark = !live.current.dark;
     flushSync(() => setDark(nowDark));
-    live.current.flips++;
-    if (live.current.flips === 6) return voice.react('disco', ['it’s not a disco.'], 0);
+    // Off and on twice in a row is a disco. A pause between pulls starts the count over.
+    // He only says so twice; after that he gives up.
+    const now = performance.now();
+    live.current.flips = now - live.current.lastFlip < 3000 ? live.current.flips + 1 : 1;
+    live.current.lastFlip = now;
+    if (live.current.flips % 4 === 0 && live.current.discos < 2) {
+      live.current.discos++;
+      return voice.react('disco', ['it’s not a disco.'], 0);
+    }
     if (nowDark) {
-      clearTimeout(catTimer.current);
-      if (!live.current.catGone)
+      // Once the lights have gone out the cat commits to leaving, even if they come back on first.
+      if (!live.current.catGone && catTimer.current === undefined)
         catTimer.current = window.setTimeout(() => {
-          if (live.current.dark && live.current.open) catLeaves();
+          catTimer.current = undefined;
+          if (live.current.open) catLeaves();
         }, 2200);
-      voice.react('dark', ['hey!', 'I’m still down here!'], 2500);
+      voice.react('dark', ['hey!', 'turn the lights back on.'], 2500);
       clearTimeout(darkTimer.current);
       darkTimer.current = window.setTimeout(() => {
         if (live.current.dark && live.current.open) voice.say('…I can’t see my boxes.');
@@ -271,20 +318,26 @@ export const Basement = () => {
 
   return (
     <>
-      <div aria-hidden="true" className="basement-strip">
-        <div className="basement-strip__clip">
+      <div className="basement-strip">
+        {!open && <button ref={knockBtnRef} type="button" onClick={knockLadder} aria-label="Basement ladder" className="basement-strip__knock" />}
+        <div aria-hidden="true" className="basement-strip__clip">
           <div ref={tipsRef} data-blad="" className="basement-strip__ladder">
             <span ref={tipsSketchRef} className="fill" />
           </div>
         </div>
+        <span aria-live="polite" className="basement-strip__says">
+          {knock && <span key={knock.n}>{knock.line}</span>}
+        </span>
         {catUp && <SleepingCat basementOpen={open} onClick={() => showToast('cat')} />}
       </div>
-      <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : PEEK }}>
+      <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
         <section ref={sectionRef} data-screen-label="Basement" aria-label="The basement" className="basement">
           <div ref={wallRef} aria-hidden="true" className="fill" />
           <span ref={glowRef} data-bglow="" aria-hidden="true" className="basement__glow" />
           <span aria-hidden="true" className="basement__shade" />
+          {!open && <span ref={hintRef} aria-hidden="true" className="basement__pull-hint" />}
           <button
+            ref={upBtnRef}
             type="button"
             onClick={goUpstairs}
             onMouseEnter={() => voice.react('ladder', ['leaving already?'], 12000)}
@@ -318,7 +371,13 @@ export const Basement = () => {
             </div>
           </div>
           <div ref={floorRef} aria-hidden="true" className="basement__floor" />
-          <div ref={darkOverlayRef} aria-hidden="true" className="basement__dark" style={{ opacity: dark ? 1 : open ? 0 : 0.45 }} />
+          <div
+            ref={darkOverlayRef}
+            aria-hidden="true"
+            className={dark ? 'basement__dark basement__dark--hatch' : 'basement__dark'}
+            style={{ opacity: dark ? 1 : open ? 0 : 0.45 }}
+          />
+          <span aria-hidden="true" className="basement__daylight" style={{ opacity: dark ? 1 : 0 }} />
           <Lamp ref={lampRef} dark={dark} visible={open} onToggle={toggleLight} />
           <div className="basement__talk-rail">
             <div ref={talkRef} aria-live="polite" className="basement__talk" />

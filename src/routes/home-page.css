@@ -8,3 +8,9 @@
   gap: clamp(72px, 10vw, 128px);
   padding-bottom: clamp(72px, 10vw, 128px);
 }
+
+@media (max-width: 600px) {
+  .home {
+    padding-inline: 20px;
+  }
+}

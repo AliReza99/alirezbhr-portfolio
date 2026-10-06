@@ -8,14 +8,14 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 26px;
 }
 
 .skills__row {
   display: grid;
   grid-template-columns: minmax(130px, 180px) minmax(0, 1fr);
   align-items: start;
-  gap: 6px 24px;
+  gap: 0 16px;
 }
 
 .skills__label {
@@ -23,17 +23,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 23px;
+  min-height: 27px; /* first line of .skills__items: 15px * 1.8 */
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--purple);
 }
 
 .skills__bullet {
@@ -53,16 +53,9 @@
 
 .skills__items {
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.8;
   color: var(--ink);
   text-wrap: pretty;
-}
-
-.skills__core {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 14px;
 }
 
 .skills__skill {
@@ -71,10 +64,6 @@
   user-select: none;
   -webkit-user-select: none;
   transition: transform 0.2s var(--ease-spring);
-}
-
-strong.skills__skill {
-  font-weight: 600;
 }
 
 .skills__skill:hover {
@@ -87,13 +76,30 @@ strong.skills__skill {
 
 .skills__sep {
   color: var(--purple);
+  padding: 0 0.4em;
 }
 
-.skills__note {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 22px;
-  white-space: nowrap;
-  transform: rotate(-3deg);
+/* Phones: category on its own line, skills below it. */
+@media (max-width: 600px) {
+  .skills__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .skills__list {
+    gap: 32px;
+  }
+
+  /* Fewer distractions: static label, no bullet. */
+  .skills__label {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .skills__bullet {
+    display: none;
+  }
+
+  .skills__skill:hover {
+    transform: none;
+  }
 }

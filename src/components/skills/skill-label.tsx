@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { canAnimate } from '../../lib/motion';
 import { roughSvg, roundCaps, type RoughOptions, type RoughSVG } from '../../lib/rough';
 
-const INK = '#3B3A55';
+const INK = '#5A49D6';
 const C = 8;
 
 const star = (n: number): [number, number][] =>
@@ -30,6 +30,8 @@ const SHAPES: ShapeFn[] = [
   (rc, o) => rc.path('M8 1.5 V14.5 M1.5 8 H14.5 M3.4 3.4 L12.6 12.6 M12.6 3.4 L3.4 12.6', o({ strokeWidth: 1.5 })),
   (rc, o) =>
     rc.path('M8 8 m0 0 c1.6 0 1.8 2.6 0 2.8 c-2.6 .2 -3.6 -3 -1.8 -4.8 c2.4 -2.4 6.6 -.6 6.6 2.6 c0 3.8 -4.4 5.8 -7.6 4', o({ strokeWidth: 1.5, roughness: 0.6 })),
+  // Stroke-only code glyphs.
+  (rc, o) => rc.path('M6 2 L4.5 14 M11.5 2 L10 14 M2.5 5.5 H14 M2 10.5 H13.5', o({ strokeWidth: 1.5 })),
 ];
 
 const randomRotation = () => Math.round(Math.random() * 60 - 30);

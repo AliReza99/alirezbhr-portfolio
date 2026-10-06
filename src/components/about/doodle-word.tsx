@@ -1,9 +1,12 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import type { Doodle } from '../../data/doodles';
 
 const FRAME = 'M-1 4 C40 1 104 3 142 3 C145 40 143 88 143 123 C100 126 40 124 -2 124 C-4 88 -2 40 -3 6';
 const GHOST = { strokeWidth: 1.1, strokeOpacity: 0.45, transform: 'translate(.9 .8)' } as const;
 const PURPLE = '#5A49D6';
+const POP_WIDTH = 176;
+/** Closest the doodle may get to the edge of the screen. */
+const POP_GUTTER = 8;
 
 const Stroke = ({ d, delay, stroke }: { d: string; delay: number; stroke?: string }) => (
   <>
@@ -15,10 +18,40 @@ const Stroke = ({ d, delay, stroke }: { d: string; delay: number; stroke?: strin
 /** A dashed-underlined phrase that draws a small pencil doodle above itself on hover or focus. */
 export const DoodleWord = ({ doodle }: { doodle: Doodle }) => {
   const twoLines = doodle.caption.length > 1;
+  const popRef = useRef<HTMLSpanElement>(null);
+
+  // The doodle is centered on the phrase; nudge it sideways when that would push it off a narrow screen.
+  const keepOnScreen = () => {
+    const pop = popRef.current;
+    if (!pop) return;
+    // Measured on the doodle itself, because a phrase that wraps has no single center.
+    const r = pop.getBoundingClientRect();
+    const applied = parseFloat(pop.style.getPropertyValue('--pop-x')) || 0;
+    const left = r.left + r.width / 2 - POP_WIDTH / 2 - applied;
+    const max = document.documentElement.clientWidth - POP_GUTTER - POP_WIDTH;
+    const shift = Math.max(POP_GUTTER, Math.min(max, left)) - left;
+    pop.style.setProperty('--pop-x', `${Math.round(shift)}px`);
+  };
+
+  // Hidden doodles still widen the page, so place them before anyone hovers.
+  useEffect(() => {
+    keepOnScreen();
+    document.fonts?.ready.then(keepOnScreen);
+    addEventListener('resize', keepOnScreen);
+    return () => removeEventListener('resize', keepOnScreen);
+  }, []);
+
   return (
-    <span data-doo="" tabIndex={0} className="doodle-word" style={{ '--ud': doodle.underlineDelay }}>
+    <span
+      data-doo=""
+      tabIndex={0}
+      onPointerEnter={keepOnScreen}
+      onFocus={keepOnScreen}
+      className="doodle-word"
+      style={{ '--ud': doodle.underlineDelay }}
+    >
       {doodle.phrase}
-      <span data-pop="" aria-hidden="true" className="doodle-word__pop">
+      <span ref={popRef} data-pop="" aria-hidden="true" className="doodle-word__pop">
         <svg
           viewBox="-10 -4 160 134"
           width="176"

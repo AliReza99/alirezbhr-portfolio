@@ -39,16 +39,15 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
   wall: (rc, w, h, o) => {
     const st = o({ stroke: 'rgba(251,246,239,.17)', strokeWidth: 1.4, roughness: 1.7 });
     const r: SVGElement[] = [];
-    // A few loose patches of sketched bricks.
-    (
-      [
-        [0.05, 0.42],
-        [0.74, 0.2],
-        [0.86, 0.6],
-        [0.3, 0.14],
-        [0.52, 0.47],
-      ] as const
-    ).forEach(([fx, fy], q) => {
+    // A few loose patches of sketched bricks; a phone-width wall only has room for two.
+    const patches: [number, number][] = [
+      [0.05, 0.42],
+      [0.52, 0.47],
+      [0.74, 0.2],
+      [0.86, 0.6],
+      [0.3, 0.14],
+    ];
+    patches.slice(0, w < 600 ? 2 : 5).forEach(([fx, fy], q) => {
       const x = fx * w;
       const y = fy * h;
       for (let i = 0; i < 3; i++)
@@ -114,11 +113,10 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
     const fill = o({ fill: F, fillStyle: 'solid', stroke: INK, strokeWidth: 2.2, roughness: 0.9 });
     const line = o({ stroke: INK, strokeWidth: 2, roughness: 0.8 });
     const thin = o({ stroke: INK, strokeWidth: 1.6, roughness: 0.6 });
-    const hanging = 'M104 60 C116 66 118 84 113 100 C110 110 114 118 120 119';
-    const tail = open
-      ? rc.path(hanging, o({ stroke: INK, strokeWidth: 5.5, roughness: 0.7 }))
-      : rc.path('M108 62 C104 70 66 72 46 66 C40 64 41 59 47 60', o({ stroke: INK, strokeWidth: 2.2, roughness: 0.8, fill: F, fillStyle: 'solid' }));
-    const tailIn = open ? rc.path(hanging, o({ stroke: F, strokeWidth: 2, roughness: 0.7 })) : null;
+    // One curve each: rough.js jitters every segment's ends, so a two-segment tail comes apart at the joint.
+    const d = open ? 'M104 60 C122 72 102 102 119 118' : 'M108 62 C100 73 56 73 44 61';
+    const tail = rc.path(d, o({ stroke: INK, strokeWidth: 5.5, roughness: 0.5 }));
+    const tailIn = rc.path(d, o({ stroke: F, strokeWidth: 2, roughness: 0.5 }));
     [
       rc.path('M16 66 C10 42 32 24 62 24 C92 24 112 40 112 66 Z', fill),
       tail,
@@ -135,7 +133,7 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
       rc.line(18, 54, 8, 52, thin),
       rc.line(18, 57, 9, 59, thin),
       rc.line(46, 54, 56, 52, thin),
-    ].forEach((p) => p && g.appendChild(p));
+    ].forEach((p) => g.appendChild(p));
     return [g];
   },
 

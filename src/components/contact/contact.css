@@ -173,3 +173,31 @@
   transform: rotate(-4deg);
   pointer-events: none;
 }
+
+/* Phones: the pointer note is hidden. */
+@media (max-width: 600px) {
+  .contact__claws,
+  .contact__catnote {
+    display: none;
+  }
+
+  .contact__pointer {
+    display: none;
+  }
+
+  /* All three links share one row and fill it. */
+  .contact__links {
+    gap: 12px 10px;
+  }
+
+  .lift-link {
+    flex: 1 1 auto;
+  }
+
+  .lift-link__face {
+    flex: 1;
+    justify-content: space-between;
+    gap: 6px;
+    padding-inline: 10px;
+  }
+}

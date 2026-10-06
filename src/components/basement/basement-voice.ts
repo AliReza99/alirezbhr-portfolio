@@ -84,14 +84,16 @@ export class BasementVoice {
     this.speaking = false;
   }
 
-  start(catAlreadyUp: boolean) {
+  /** `knocked`: the visitor got in by pestering the ladder, and he gave up. */
+  start(catAlreadyUp: boolean, knocked = false) {
     this.clear();
     this.visits++;
     this.scriptIndex = 0;
     this.spoken = 0;
     this.boxClicks = 0;
     this.darkLineUsed = catAlreadyUp;
-    this.later(() => this.say(this.visits > 1 ? ['you again?', 'I just finished sweeping.'] : ['…huh?', 'oh. someone’s here.']), 2000);
+    const hello = knocked ? ['fine.', 'don’t touch anything.'] : this.visits > 1 ? ['you again?', 'I just finished sweeping.'] : ['…huh?', 'oh. someone’s here.'];
+    this.later(() => this.say(hello), 2000);
   }
 
   say(lines: Line, interrupt = false) {

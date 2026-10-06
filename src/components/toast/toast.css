@@ -4,6 +4,8 @@
   bottom: 28px;
   z-index: 50;
   width: min(92vw, 430px);
+  /* Rendered outside .app, so it needs its own base font. */
+  font-family: var(--font-sans);
   transition: transform 0.55s cubic-bezier(0.3, 1.45, 0.5, 1), opacity 0.25s ease;
 }
 
@@ -61,6 +63,13 @@
   box-sizing: border-box;
   padding: 0;
   cursor: pointer;
+}
+
+/* Larger hit area than the drawn square. */
+.close-x::after {
+  content: '';
+  position: absolute;
+  inset: -9px;
 }
 
 .close-x > span {

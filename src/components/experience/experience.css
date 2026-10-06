@@ -7,10 +7,9 @@
 .role__header {
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px 24px;
+  gap: 14px clamp(14px, 3vw, 24px);
   padding: clamp(18px, 2.4vw, 26px) clamp(20px, 3vw, 32px);
   border: 0;
   background: none;
@@ -21,7 +20,7 @@
 }
 
 .role__heading {
-  flex: 1 1 300px;
+  flex: 1 1 0;
   min-width: 0;
   display: flex;
   flex-direction: column;

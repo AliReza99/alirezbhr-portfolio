@@ -89,7 +89,7 @@ export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogPr
             <span data-fl="" className="fal__line">
               {fal[0]}
             </span>
-            <span data-fl="" className="fal__line fal__line--indent">
+            <span data-fl="" className="fal__line">
               {fal[1]}
             </span>
             <span data-fl="" className="fal__meaning">

@@ -125,14 +125,12 @@
 }
 
 .fal__sheet {
-  --margin: clamp(36px, 5.5vw, 48px);
   position: relative;
   display: flex;
   flex-direction: column;
   border: 2px solid var(--ink);
-  padding: 30px clamp(18px, 4vw, 34px) 16px clamp(52px, 8vw, 72px);
+  padding: 30px clamp(18px, 4vw, 34px) 16px clamp(24px, 4vw, 36px);
   background:
-    linear-gradient(to right, transparent var(--margin), rgba(244, 145, 107, 0.7) var(--margin) calc(var(--margin) + 2px), transparent calc(var(--margin) + 2px)),
     repeating-linear-gradient(to bottom, transparent 0 37px, rgba(59, 58, 85, 0.13) 37px 38px) 0 30px,
     var(--card);
 }
@@ -143,16 +141,11 @@
   right: 14px;
   width: 32px;
   height: 32px;
-  transition: transform 0.3s var(--ease-spring);
 }
 
 .fal__close > span {
   left: 6px;
   right: 6px;
-}
-
-.fal__close:hover {
-  transform: rotate(90deg);
 }
 
 .fal__number {
@@ -172,10 +165,6 @@
   line-height: 38px;
   color: var(--ink);
   text-wrap: pretty;
-}
-
-.fal__line--indent {
-  padding-left: 1.2em;
 }
 
 .fal__meaning {
@@ -202,4 +191,43 @@
   font-size: 24px;
   line-height: 38px;
   color: var(--ink);
+}
+
+/* Phones: no room beside the school name, so the hint wraps into the free corner under the fold. */
+@media (max-width: 600px) {
+  .education__hint {
+    top: calc(100% + 4px);
+    right: 8px;
+    width: 104px;
+    margin-right: 0;
+    justify-content: flex-end;
+    font-size: 19px;
+    text-align: right;
+    white-space: normal;
+  }
+
+  /* Inline styles on these two are for the desktop layout. */
+  .education__hint > span {
+    padding-top: 0 !important;
+  }
+
+  .education__hint > svg {
+    display: none;
+  }
+
+  .fal {
+    padding: 16px;
+  }
+}
+
+/* Narrowest phones: the degree reaches the corner, so the hint gets its own strip below it. */
+@media (max-width: 380px) {
+  .education__text {
+    padding-bottom: 46px;
+  }
+
+  .education__hint {
+    top: calc(100% + 26px);
+    width: 180px;
+  }
 }

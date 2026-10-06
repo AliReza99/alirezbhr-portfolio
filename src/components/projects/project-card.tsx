@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties, type SyntheticEvent } from 'react';
+import { useRef, type CSSProperties, type MouseEvent, type SyntheticEvent } from 'react';
 import type { Project } from '../../data/projects';
 import { RoughArrow } from '../ui/rough-arrow';
 import { RoughFrame } from './rough-frame';
@@ -24,12 +24,22 @@ const hideBrokenImage = (e: SyntheticEvent<HTMLImageElement>) => {
   e.currentTarget.style.display = 'none';
 };
 
+/**
+ * On phones a tap on the card only puts it in sketch mode (touch browsers keep
+ * it hovered); the link opens from the "Read more" button alone. Keyboard
+ * activation reports no pointer detail and always opens.
+ */
+const openOnlyFromButton = (e: MouseEvent<HTMLAnchorElement>) => {
+  if (e.detail === 0 || !matchMedia('(max-width: 600px)').matches) return;
+  if (!(e.target as Element).closest('.project__more')) e.preventDefault();
+};
+
 export const ProjectCard = ({ project }: { project: Project }) => {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
   return (
-    <a ref={cardRef} href={project.href} target="_blank" rel="noopener" data-pcard="" className="project">
+    <a ref={cardRef} href={project.href} target="_blank" rel="noopener" data-pcard="" onClick={openOnlyFromButton} className="project">
       <span data-ext="" aria-hidden="true" />
       <div data-pface="" className="project__face">
         <div ref={imageRef} data-pimg="" className="project__image">

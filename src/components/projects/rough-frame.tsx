@@ -50,28 +50,29 @@ export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
       }
     };
     const show = () => frames.forEach((g, n) => (g.style.display = n === k % 3 ? '' : 'none'));
-    const stop = () => clearInterval(boil);
+    const stop = () => {
+      clearInterval(boil);
+      boil = undefined;
+    };
+    // The frame is visible exactly while the card is hovered or focused, so the boil follows that
+    // state instead of leave events: a tap on a touch screen keeps the card hovered without them.
+    const shown = () => host.matches(':hover') || host.matches(':focus-visible');
     const enter = () => {
       build();
-      stop();
-      if (!reduce)
-        boil = window.setInterval(() => {
-          k++;
-          show();
-        }, 160);
+      if (reduce || boil !== undefined) return;
+      boil = window.setInterval(() => {
+        if (!shown()) return stop();
+        k++;
+        show();
+      }, 160);
     };
 
-    host.addEventListener('mouseenter', enter);
-    host.addEventListener('focus', enter);
-    host.addEventListener('mouseleave', stop);
-    host.addEventListener('blur', stop);
+    const START = ['mouseenter', 'focus', 'touchend', 'click'] as const;
+    START.forEach((type) => host.addEventListener(type, enter));
     build();
     return () => {
       stop();
-      host.removeEventListener('mouseenter', enter);
-      host.removeEventListener('focus', enter);
-      host.removeEventListener('mouseleave', stop);
-      host.removeEventListener('blur', stop);
+      START.forEach((type) => host.removeEventListener(type, enter));
       svg.remove();
     };
   }, [hostRef, imageRef]);

@@ -12,13 +12,12 @@ const CATEGORIES = SKILLS.map((c) => c.name);
 type SkillProps = {
   name: string;
   slot: number;
-  highlight: boolean;
   faded: boolean;
   /** Bounce when a drag shifts a different skill into this slot. */
   bounce: boolean;
 };
 
-const Skill = ({ name, slot, highlight, faded, bounce }: SkillProps) => {
+const Skill = ({ name, slot, faded, bounce }: SkillProps) => {
   const ref = useRef<HTMLElement>(null);
   const prev = useRef(name);
 
@@ -31,33 +30,22 @@ const Skill = ({ name, slot, highlight, faded, bounce }: SkillProps) => {
     prev.current = name;
   }, [name, bounce]);
 
-  const Tag = highlight ? 'strong' : 'span';
   return (
-    <Tag
+    <span
       ref={ref}
       data-skill=""
       data-slot={slot}
-      data-hl={highlight ? '' : undefined}
       className="skills__skill"
       style={faded ? { opacity: 0.25 } : undefined}
     >
       {name}
-    </Tag>
+    </span>
   );
 };
 
 const Separator = () => (
   <span aria-hidden="true" className="skills__sep">
     {' · '}
-  </span>
-);
-
-const DailyDrivers = () => (
-  <span className="hand skills__note">
-    <svg aria-hidden="true" width="30" height="14" viewBox="0 0 64 30" style={{ flex: 'none' }}>
-      <path d="M62 18 C50 6 28 4 6 14 M6 14 L19 4 M6 14 L21 24" fill="none" stroke="#5A49D6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-    daily drivers
   </span>
 );
 
@@ -94,21 +82,14 @@ export const Skills = () => {
               const skills = items.map((name, slot) => (
                 <Fragment key={slot}>
                   {slot > 0 && <Separator />}
-                  <Skill name={name} slot={slot} highlight={!!cat.core} faded={dragging && preview.slot === slot} bounce={dragging && preview.slot !== slot} />
+                  <Skill name={name} slot={slot} faded={dragging && preview.slot === slot} bounce={dragging && preview.slot !== slot} />
                 </Fragment>
               ));
               return (
                 <li key={cat.name} data-skill-row={row} className="skills__row">
                   <SkillLabel name={cat.name} onReroll={handleReroll} />
                   <div className="skills__items">
-                    {cat.core ? (
-                      <span className="skills__core">
-                        <span>{skills}</span>
-                        <DailyDrivers />
-                      </span>
-                    ) : (
-                      <span>{skills}</span>
-                    )}
+                    <span>{skills}</span>
                   </div>
                 </li>
               );
