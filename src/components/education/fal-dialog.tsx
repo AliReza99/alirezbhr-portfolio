@@ -23,7 +23,7 @@ export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogPr
   const closeRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
 
-  // Fly out of the corner and write the lines in; fly back on close.
+  // Fly out of the corner; fly back on close.
   useLayoutEffect(() => {
     const el = slipRef.current;
     if (!el) return;
@@ -38,14 +38,6 @@ export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogPr
           easing: 'cubic-bezier(.3,1.25,.5,1)',
           fill: 'backwards',
         });
-        el.querySelectorAll('[data-fl]').forEach((line, i) =>
-          line.animate([{ clipPath: 'inset(-20% 100% -20% 0)' }, { clipPath: 'inset(-20% -2% -20% 0)' }], {
-            duration: 750,
-            delay: delay + 380 + i * 620,
-            easing: 'cubic-bezier(.5,0,.3,1)',
-            fill: 'backwards',
-          }),
-        );
       }
     } else if (!open && wasOpen.current && canAnimate(el)) {
       el.getAnimations().forEach((a) => a.cancel());
@@ -86,13 +78,13 @@ export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogPr
               <span />
             </button>
             <span className="fal__number">fāl no. {number}</span>
-            <span data-fl="" className="fal__line">
+            <span className="fal__line">
               {fal[0]}
             </span>
-            <span data-fl="" className="fal__line">
+            <span className="fal__line">
               {fal[1]}
             </span>
-            <span data-fl="" className="fal__meaning">
+            <span className="fal__meaning">
               meaning: {fal[2]}
             </span>
             <span className="fal__sign">
