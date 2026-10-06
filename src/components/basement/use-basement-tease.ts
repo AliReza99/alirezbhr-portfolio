@@ -43,6 +43,8 @@ const BELOW_OPEN = '#242424';
  * The page ends a little early. Reaching the bottom lifts the ladder, holds,
  * then slowly pushes the visitor back up. The third try drops them into the basement.
  * Clicking the ladder tips counts as a try too; the returned function reports one.
+ * Once they have been down, it stays unlocked until the page reloads: one click on
+ * the ladder, or one push at the end of the page, lets them back in.
  *
  * Touch works differently: the ladder follows how far the visitor pulls past the
  * end of the page, and letting go after a deep pull opens the basement. Safari
@@ -81,6 +83,9 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     let stage = 0;
     let pulls = 0;
     let below = '';
+    /** They have been in once; nothing resists any more. */
+    let unlocked = false;
+    let arrivedAt = 0;
 
     const root = document.documentElement;
     const atBottom = () => innerHeight + scrollY >= root.scrollHeight - 4;
@@ -147,6 +152,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       clearTimeout(backTimer);
       cancelAnimationFrame(backRaf);
       pushingBack = false;
+      unlocked = true;
       o().onOpen(knocked);
     };
 
@@ -164,6 +170,11 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       if (o().isOpen()) {
         deep += d;
         if (deep > 900) o().onDeep();
+        return;
+      }
+      if (unlocked) {
+        // Not on the scroll that brought them here, or just reading the footer would drop them in.
+        if (now - arrivedAt > 500) open();
         return;
       }
       if (!isNew) {
@@ -187,6 +198,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const now = performance.now();
       if (now - last > RESET_MS) tries = knocks = 0;
       last = now;
+      if (unlocked) return open();
       knocks++;
       if (tries + knocks >= KNOCKS_TO_OPEN) return open(true);
       o().onKnock(tries + knocks);
@@ -213,7 +225,8 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const color = over > -200 ? (o().isOpen() ? BELOW_OPEN : closedColor) : '';
       if (color !== below) root.style.backgroundColor = below = color;
       // Touch visitors are not pushed back; the browser's own bounce does that.
-      if (b && !wasAtBottom && scrollY > lastY && !o().isOpen() && !touch) push(60, true);
+      if (b && !wasAtBottom) arrivedAt = performance.now();
+      if (b && !wasAtBottom && scrollY > lastY && !o().isOpen() && !touch && !unlocked) push(60, true);
       if (!b) deep = 0;
       wasAtBottom = b;
       lastY = scrollY;
@@ -262,12 +275,13 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const now = performance.now();
       if (now - last > RESET_MS) pulls = 0;
       last = now;
-      if (p < PULL_OPEN && ++pulls < PULLS_TO_OPEN) return;
+      if (p < PULL_OPEN && !unlocked && ++pulls < PULLS_TO_OPEN) return;
       pulls = 0;
       knocks = 0;
       goal = 0;
       progress = 0;
       stage = 0;
+      unlocked = true;
       o().onOpen();
     };
 
