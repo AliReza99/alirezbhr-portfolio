@@ -146,6 +146,16 @@
   transform-origin: 50% 100%;
 }
 
+.sleeping-cat__walker,
+.walking-cat {
+  position: absolute;
+  inset: 0;
+}
+
+.sleeping-cat__walker {
+  transform-origin: 50% 100%;
+}
+
 .sleeping-cat__z {
   position: absolute;
 }
@@ -376,6 +386,17 @@
   text-align: center;
   text-wrap: balance;
   overflow: hidden;
+}
+
+/* The cat caught in the light, on the floor line. Under the dark overlay, so switching off again hides her. */
+.basement__runaway {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  bottom: var(--floor-h);
+  width: 124px;
+  height: 68px;
+  pointer-events: none;
 }
 
 .basement__eyes {

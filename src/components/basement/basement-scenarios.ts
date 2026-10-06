@@ -255,23 +255,23 @@ const KNOCK_HELLOS: Line[] = [
 /** One turn of a chat on the floor strip: him through the floor, or the cat from where she sleeps. */
 export type CatTurn = readonly [who: 'him' | 'cat', line: string];
 
-/** What poking the sleeping cat starts while the basement is shut. Kept short: the strip does not wrap. */
+/** What poking the sleeping cat, Vega, starts while the basement is shut. Kept short: the strip does not wrap. */
 export const CAT_TALKS: CatTurn[][] = [
   [
-    ['him', 'hey. don’t poke the cat.'],
+    ['him', 'hey. don’t poke Vega.'],
     ['cat', 'mrrp.'],
     ['him', 'great. she’s writing a review.'],
   ],
   [
-    ['him', 'is someone poking the cat?'],
+    ['him', 'is someone poking Vega?'],
     ['cat', 'yes.'],
     ['him', '…she talks? that wasn’t budgeted.'],
   ],
   [
-    ['him', 'she won’t walk. don’t bother.'],
-    ['him', 'I ran out of tokens at the legs.'],
+    ['him', 'she walked once. you saw it.'],
+    ['him', 'that was the whole token budget.'],
     ['cat', 'zzz.'],
-    ['him', 'she breathes. that was the budget.'],
+    ['him', 'now she breathes. for free.'],
   ],
   [
     ['him', 'not my cat.'],
@@ -279,13 +279,13 @@ export const CAT_TALKS: CatTurn[][] = [
     ['him', '…okay, that one hurt.'],
   ],
   [
-    ['him', 'let her sleep.'],
-    ['him', 'she climbed a whole ladder today.'],
-    ['cat', 'two rungs.'],
-    ['him', 'a whole ladder.'],
+    ['him', 'let Vega sleep.'],
+    ['him', 'she walked the whole floor today.'],
+    ['cat', 'six steps.'],
+    ['him', 'the whole floor.'],
   ],
   [
-    ['him', 'walking is on her v2 roadmap.'],
+    ['him', 'running is on her v2 roadmap.'],
     ['cat', 'mrow?'],
     ['him', 'v3. don’t get your hopes up.'],
   ],
@@ -379,12 +379,27 @@ export const CAT_TALKS: CatTurn[][] = [
     ['cat', 'mrrp.'],
     ['him', 'she says try being soft.'],
   ],
+  [
+    ['him', 'her name is Vega.'],
+    ['him', 'I didn’t pick it. she came named.'],
+    ['cat', 'mrrp.'],
+  ],
+  [
+    ['him', 'Vega. hey. Vega.'],
+    ['cat', 'zzz.'],
+    ['him', 'she only answers to tuna.'],
+  ],
+  [
+    ['him', 'Vega is named after a star.'],
+    ['cat', 'correct.'],
+    ['him', 'it went to her head.'],
+  ],
 ];
 
 /** The same poke with the basement open: he is right there, and she is out of earshot. */
 export const CAT_POKES: Line[] = [
-  ['hands off the cat.', 'she’s the only one here with a schedule.'],
-  ['is she still up there?', 'tell her the rent is due.'],
+  ['hands off Vega.', 'she’s the only one here with a schedule.'],
+  ['is Vega still up there?', 'tell her the rent is due.'],
   ['don’t wake her.', 'she comes back down and sits on v3.'],
   ['she’s not mine.', 'I just know her whole routine by heart.'],
   ['poke me instead.', '…no. don’t. I take it back.'],

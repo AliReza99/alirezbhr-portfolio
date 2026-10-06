@@ -1,4 +1,4 @@
-import { createGroup, SVG_NS, type RoughOptions, type RoughSVG } from './rough';
+import { createGroup, type RoughOptions, type RoughSVG } from './rough';
 
 /**
  * rough.js sketches drawn into `data-bd` elements (mostly the basement).
@@ -14,7 +14,7 @@ export type SketchContext = {
 
 export type SketchFn = (rc: RoughSVG, w: number, h: number, o: (x?: RoughOptions) => RoughOptions, ctx: SketchContext) => SVGElement[];
 
-export type SketchType = 'wall' | 'floor' | 'ladder' | 'ladink' | 'box' | 'paper' | 'sign' | 'cat' | 'climb' | 'cord' | 'socket' | 'bulb';
+export type SketchType = 'wall' | 'floor' | 'ladder' | 'ladink' | 'box' | 'paper' | 'sign' | 'cat' | 'catstep' | 'catstride' | 'cord' | 'socket' | 'bulb';
 
 /** Sketches that sit behind their element's own content. */
 export const BACK_SKETCHES: readonly SketchType[] = ['box', 'paper', 'sign', 'socket', 'bulb'];
@@ -28,6 +28,54 @@ const ladderTop = (rc: RoughSVG, h: number, o: (x?: RoughOptions) => RoughOption
   const r = [rc.line(18, 4, 15, h, o({ stroke: c, strokeWidth: 3, bowing: 1.2 })), rc.line(78, 4, 81, h, o({ stroke: c, strokeWidth: 3, bowing: 1.2 }))];
   for (let y = 24, k = 0; y < h - 8; y += 38, k++) r.push(rc.line(17, y, 80, y + (k % 2 ? 2 : -2), o({ stroke: c, strokeWidth: 2.6 })));
   return r;
+};
+
+const FUR = '#FFFDF8';
+
+/** Where each leg's foot lands, front pair then back pair. The tops stay tucked under the body. */
+const CAT_LEGS: [top: number, foot: number][] = [
+  [46, 38],
+  [54, 60],
+  [88, 82],
+  [96, 104],
+];
+
+/**
+ * The same cat as the sleeping one, up on her feet and awake. Drawn in the same 124-wide box and
+ * mirrored the same way, so she faces right. `stride` is how far the feet are thrown: 1 is mid-step, 0 is legs together.
+ */
+const standingCat = (rc: RoughSVG, w: number, o: (x?: RoughOptions) => RoughOptions, stride: number): SVGElement[] => {
+  const g = createGroup();
+  const k = w / 124;
+  g.setAttribute('transform', `translate(${w},0) scale(${-k},${k})`);
+  const fill = o({ fill: FUR, fillStyle: 'solid', stroke: INK, strokeWidth: 2.2, roughness: 0.9 });
+  const thin = o({ stroke: INK, strokeWidth: 1.6, roughness: 0.6 });
+  const limb = o({ stroke: INK, strokeWidth: 6.5, roughness: 0.4 });
+  const limbIn = o({ stroke: FUR, strokeWidth: 2.6, roughness: 0.4 });
+  const tail = stride ? 'M102 34 C116 31 119 16 111 6' : 'M102 34 C117 32 121 18 115 7';
+  const legs = CAT_LEGS.flatMap(([top, foot]) => {
+    const x = top + (foot - top) * (stride ? 1 : 0.15);
+    return [rc.line(top, 46, x, 64, limb), rc.line(top, 46, x, 64, limbIn)];
+  });
+  [
+    rc.path(tail, o({ stroke: INK, strokeWidth: 5.5, roughness: 0.5 })),
+    rc.path(tail, o({ stroke: FUR, strokeWidth: 2, roughness: 0.5 })),
+    ...legs,
+    rc.path('M38 30 C56 21 92 21 103 31 C110 39 107 50 98 52 L46 52 C37 50 33 40 38 30 Z', fill),
+    rc.path('M66 25 Q70 30 68 37', thin),
+    rc.path('M80 25 Q84 30 82 37', thin),
+    rc.path('M93 28 Q96 33 94 39', thin),
+    rc.path('M12 20 L14 4 L25 13 Z', fill),
+    rc.path('M30 11 L40 2 L42 18 Z', fill),
+    rc.ellipse(28, 28, 34, 30, fill),
+    rc.circle(21.5, 27, 3.4, o({ stroke: INK, fill: INK, fillStyle: 'solid', strokeWidth: 1, roughness: 0.4 })),
+    rc.circle(34.5, 27, 3.4, o({ stroke: INK, fill: INK, fillStyle: 'solid', strokeWidth: 1, roughness: 0.4 })),
+    rc.path('M27 33 L28 34.5 L29 33', thin),
+    rc.line(14, 32, 4, 30, thin),
+    rc.line(14, 35, 5, 37, thin),
+    rc.line(42, 32, 52, 30, thin),
+  ].forEach((p) => g.appendChild(p));
+  return [g];
 };
 
 export const SKETCHES: Record<SketchType, SketchFn> = {
@@ -102,7 +150,7 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
 
   /** Curled-up sleeping cat, facing right. Her tail hangs through the hatch while the basement is open. */
   cat: (rc, w, _h, o, { open }) => {
-    const F = '#FFFDF8';
+    const F = FUR;
     const g = createGroup();
     const k = w / 124;
     g.setAttribute('transform', `translate(${w},0) scale(${-k},${k})`);
@@ -133,64 +181,9 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
     return [g];
   },
 
-  /** Two paws of tapered claw marks dragging down off the LinkedIn button. */
-  climb: (_rc, w, h, o) => {
-    const r: SVGElement[] = [];
-    let s = o().seed ?? 1;
-    const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
-    const sliver = (x0: number, y0: number, cx: number, cy: number, x1: number, y1: number, t0: number, t1: number, wd: number) => {
-      const L: [number, number][] = [];
-      const R: [number, number][] = [];
-      const N = 14;
-      for (let k = 0; k <= N; k++) {
-        const t = t0 + ((t1 - t0) * k) / N;
-        const u = 1 - t;
-        const x = u * u * x0 + 2 * u * t * cx + t * t * x1;
-        const y = u * u * y0 + 2 * u * t * cy + t * t * y1;
-        const dx = 2 * u * (cx - x0) + 2 * t * (x1 - cx);
-        const dy = 2 * u * (cy - y0) + 2 * t * (y1 - cy);
-        const m = Math.hypot(dx, dy) || 1;
-        const half = ((wd * Math.pow(1 - t, 0.7) + 0.15) * (0.8 + rnd() * 0.4)) / 2;
-        L.push([x - (dy / m) * half, y + (dx / m) * half]);
-        R.unshift([x + (dy / m) * half, y - (dx / m) * half]);
-      }
-      const p = document.createElementNS(SVG_NS, 'path');
-      p.setAttribute('d', `M${L.concat(R).map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(' L')} Z`);
-      p.setAttribute('fill', '#16161C');
-      return p;
-    };
-    (
-      [
-        [w * 0.2, 2, 1, 0.95],
-        [w * 0.66, 4, -1, 0.7],
-      ] as const
-    ).forEach(([bx, by, d, len]) => {
-      for (let i = 0; i < 4; i++) {
-        const outer = i === 0 || i === 3;
-        const x0 = bx + i * 5.5 + (rnd() - 0.5) * 1.5;
-        const y0 = by + (outer ? 3 : 0) + rnd() * 2;
-        const Lh = h * len * (outer ? 0.78 : 1) * (0.85 + rnd() * 0.2);
-        const x1 = x0 + d * (4 + i * 1.5);
-        const cx = x0 + d * (1 + rnd() * 2);
-        const wd = outer ? 2.2 : 3;
-        if (rnd() < 0.45) {
-          // The claw skipped: leave a small break in the mark.
-          const gap = 0.5 + rnd() * 0.12;
-          r.push(sliver(x0, y0, cx, y0 + Lh / 2, x1, y0 + Lh, 0, gap, wd));
-          r.push(sliver(x0, y0, cx, y0 + Lh / 2, x1, y0 + Lh, gap + 0.07, 1, wd));
-        } else r.push(sliver(x0, y0, cx, y0 + Lh / 2, x1, y0 + Lh, 0, 1, wd));
-      }
-      for (let k = 0; k < 3; k++) {
-        const c = document.createElementNS(SVG_NS, 'circle');
-        c.setAttribute('cx', (bx + rnd() * 22 - 3).toFixed(1));
-        c.setAttribute('cy', (by + 6 + rnd() * 10).toFixed(1));
-        c.setAttribute('r', (0.5 + rnd() * 0.7).toFixed(2));
-        c.setAttribute('fill', '#16161C');
-        r.push(c);
-      }
-    });
-    return r;
-  },
+  /** The cat walking: legs together, then mid-step. Swapping the two is her walk. */
+  catstep: (rc, w, _h, o) => standingCat(rc, w, o, 0),
+  catstride: (rc, w, _h, o) => standingCat(rc, w, o, 1),
 
   cord: (rc, _w, h, o) => [rc.line(2, 0, 2, h, o({ stroke: CREAM, strokeWidth: 1.6, roughness: 0.4, bowing: 0.3 }))],
 

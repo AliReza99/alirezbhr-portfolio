@@ -216,8 +216,6 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 @keyframes zz{0%{opacity:0;transform:translate(0,0) rotate(-8deg)}20%{opacity:1}100%{opacity:0;transform:translate(14px,-28px) rotate(18deg)}}
 [data-zz]{opacity:0;animation:zz 3.6s ease-out var(--zd,0s) infinite}
 @media (prefers-reduced-motion:reduce){[data-catbreathe],[data-zz]{animation:none}[data-zz]{opacity:1}}
-[data-catnote]{opacity:0;transition:opacity .2s}
-[data-catmark]:hover [data-catnote]{opacity:1}
 @keyframes b-blink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.1)}}
 [data-beye]{animation:b-blink 3.4s infinite}
 @media (prefers-reduced-motion:reduce){[data-beye]{animation:none}}

@@ -153,34 +153,8 @@
   transition: transform 0.15s var(--ease-press), background 0s linear var(--shd);
 }
 
-.contact__claws {
-  position: absolute;
-  z-index: 3;
-  left: 14px;
-  right: 14px;
-  top: calc(100% - 8px);
-  height: 110px;
-  pointer-events: none;
-}
-
-.contact__catnote {
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 104px);
-  margin-left: -60px;
-  font-size: 20px;
-  white-space: nowrap;
-  transform: rotate(-4deg);
-  pointer-events: none;
-}
-
 /* Phones: the pointer note is hidden. */
 @media (max-width: 600px) {
-  .contact__claws,
-  .contact__catnote {
-    display: none;
-  }
-
   .contact__pointer {
     display: none;
   }

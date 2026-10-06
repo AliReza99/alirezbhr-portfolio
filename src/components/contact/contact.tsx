@@ -1,47 +1,26 @@
-import { useRef } from 'react';
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../../data/profile';
-import { useSketch } from '../../hooks/use-sketch';
-import { useBasement } from '../basement/basement-context';
 import { RoughArrow } from '../ui/rough-arrow';
 import { SectionHeader } from '../ui/section-header';
 import { CopyButton } from './copy-button';
 import './contact.css';
 
-/** Claw marks left by the cat trying to climb the LinkedIn button. */
-const ClawMarks = () => {
-  const ref = useRef<HTMLSpanElement>(null);
-  useSketch(ref, 'climb');
-  return (
-    <>
-      <span ref={ref} aria-hidden="true" className="contact__claws" />
-      <span data-catnote="" className="hand contact__catnote">
-        she almost made it.
-      </span>
-    </>
-  );
-};
-
 type LiftLinkProps = {
   href: string;
   label: string;
-  catMark?: boolean;
 };
 
 /** Sits flat; on hover the face lifts up-left out of the page and reveals a hatched shadow. */
-const LiftLink = ({ href, label, catMark }: LiftLinkProps) => (
-  <a href={href} target="_blank" rel="noopener" className="lift-link" data-catmark={catMark ? '' : undefined}>
+const LiftLink = ({ href, label }: LiftLinkProps) => (
+  <a href={href} target="_blank" rel="noopener" className="lift-link">
     <span data-wob="" className="btn-shadow lift-link__shadow" />
     <span className="lift-link__face">
       <span>{label}</span>
       <RoughArrow dir="ne" still />
     </span>
-    {catMark && <ClawMarks />}
   </a>
 );
 
 export const Contact = () => {
-  const { catUp } = useBasement();
-
   return (
     <section id="contact" data-screen-label="Contact" className="section">
       <SectionHeader title="Get in Touch" note="say hi!" />
@@ -61,7 +40,7 @@ export const Contact = () => {
         </div>
         <div className="contact__rule" />
         <div className="contact__links">
-          <LiftLink href={LINKEDIN_URL} label="LinkedIn" catMark={catUp} />
+          <LiftLink href={LINKEDIN_URL} label="LinkedIn" />
           <LiftLink href={GITHUB_URL} label="GitHub" />
           <LiftLink href={RESUME_URL} label="Resume" />
         </div>

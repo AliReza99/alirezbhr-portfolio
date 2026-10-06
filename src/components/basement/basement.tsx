@@ -5,6 +5,7 @@ import { canAnimate, prefersReducedMotion } from '../../lib/motion';
 import { useBasement } from './basement-context';
 import { BasementVoice, catTalk, knockLines, knocksToOpen } from './basement-voice';
 import { DRAFT_ROWS, DraftBox, THROWN_DRAFTS } from './draft-box';
+import { EscapingCat } from './escaping-cat';
 import { Lamp } from './lamp';
 import { SleepingCat } from './sleeping-cat';
 import { Spider } from './spider';
@@ -25,6 +26,7 @@ export const Basement = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [catGone, setCatGone] = useState(false);
+  const [escape, setEscape] = useState<{ from: number } | null>(null);
   const [says, setSays] = useState<{ key: number; line: string; cat: boolean } | null>(null);
 
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -52,7 +54,7 @@ export const Basement = () => {
   useSketch(floorRef, 'floor');
 
   // Mutable mirror of state for timers and listeners, plus in-flight flags.
-  const live = useRef({ open, dark, catUp, busy: false, catGoing: false, catGone: false, flips: 0, lastFlip: 0, discos: 0, deepSaid: false });
+  const live = useRef({ open, dark, catUp, busy: false, catGoing: false, catRunning: false, catGone: false, flips: 0, lastFlip: 0, discos: 0, deepSaid: false });
   live.current.open = open;
   live.current.dark = dark;
   live.current.catUp = catUp;
@@ -287,24 +289,25 @@ export const Basement = () => {
   /** The cat is out of the basement and asleep on the floor strip. */
   const catArrives = () => {
     live.current.catGoing = false;
+    live.current.catRunning = false;
+    setEscape(null);
     voice.darkLineUsed = true;
     markCatGone(true);
     setCatUp(true);
     voice.later(() => voice.say(['…was that a cat?', 'we don’t have a cat.']), 900);
   };
 
-  /** In the dark, the cat's eyes look around, slide along the floor to the ladder and vanish. She shows up asleep on top. */
+  /** In the dark, the cat's eyes look around, slide along the floor and out the left side of the room. She turns up on top, coming in from the same side. */
   const catLeaves = () => {
     if (live.current.catGone || live.current.catGoing) return;
     live.current.catGoing = true;
     voice.darkLineUsed = true;
     const el = eyesRef.current;
     const gone = catArrives;
-    const lad = ladderRef.current;
-    if (!el?.animate || prefersReducedMotion() || !lad) return gone();
+    const sec = sectionRef.current;
+    if (!el?.animate || prefersReducedMotion() || !sec) return gone();
     const er = el.getBoundingClientRect();
-    const lr = lad.getBoundingClientRect();
-    const dx = lr.left + lr.width / 2 - (er.left + er.width / 2);
+    const dx = sec.getBoundingClientRect().left - 24 - er.right;
     const walk = Math.min(1800, 500 + Math.abs(dx) * 3);
     const T = walk + 250;
     el.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)', offset: 0.3 }, { transform: 'translateX(4px)', offset: 0.7 }, { transform: 'translateX(0)' }], {
@@ -355,11 +358,14 @@ export const Basement = () => {
         if (live.current.dark && live.current.open) voice.say('…I can’t see my boxes.');
       }, 6000);
     } else {
-      // Lights back on before she is out: skip the rest of the walk and put her on top now.
-      if (!live.current.catGone && (live.current.catGoing || catTimer.current !== undefined)) {
+      // Lights back on before she is out: she is caught where her eyes were, and bolts off the left side.
+      if (!live.current.catGone && !live.current.catRunning && (live.current.catGoing || catTimer.current !== undefined)) {
         clearTimeout(catTimer.current);
         catTimer.current = undefined;
         const eyes = eyesRef.current;
+        const sec = sectionRef.current?.getBoundingClientRect();
+        // Measured before the slide is cancelled, which would snap her eyes back to the pile.
+        const er = eyes?.getBoundingClientRect();
         if (eyes) {
           eyes.style.opacity = '0';
           eyes.getAnimations().forEach((a) => {
@@ -367,7 +373,13 @@ export const Basement = () => {
             a.cancel();
           });
         }
-        catArrives();
+        if (!er || !sec || prefersReducedMotion()) catArrives();
+        else {
+          live.current.catGoing = true;
+          live.current.catRunning = true;
+          setEscape({ from: er.left + er.width / 2 - sec.left });
+          return voice.react('lit', ['thank you.', '…wait.'], 0);
+        }
       }
       voice.react('lit', ['thank you.'], 2500);
     }
@@ -427,12 +439,13 @@ export const Basement = () => {
                   </div>
                 ))}
               </div>
-              <span ref={eyesRef} aria-hidden="true" className="basement__eyes" style={{ opacity: dark && !catGone ? 1 : 0 }}>
+              <span ref={eyesRef} aria-hidden="true" className="basement__eyes" style={{ opacity: dark && !catGone && !escape ? 1 : 0 }}>
                 <span data-beye="" />
                 <span data-beye="" />
               </span>
             </div>
           </div>
+          {escape && <EscapingCat {...escape} onOut={catArrives} />}
           <div ref={floorRef} aria-hidden="true" className="basement__floor" />
           <div
             ref={darkOverlayRef}
