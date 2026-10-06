@@ -15,7 +15,7 @@ export const FALS: readonly Fal[] = [
   ["He polished this portfolio for months, beloved,", "while the job listings quietly expired.", "you have seen more of his portfolio than recruiters have."],
   ["A thousand tokens he burned to hide this fortune,", "and the AI still asked if he wanted a variation.", "somewhere, a GPU is sighing."],
   ["He built an easter egg inside an easter egg,", "yet his LinkedIn still says “Open to work.”", "please, just hire him. He needs to stop."],
-  ["Version twenty-five of a portfolio, O seeker,", "and still not a single offer letter.", "perfection is a very slow deploy."],
+  ["Version ten of a portfolio, O seeker,", "and still not a single offer letter.", "perfection is a very slow deploy."],
   ["He asked the machine for “something less distracting,”", "then hid a fortune teller in a folded corner.", "consistency was never his strongest skill."],
   ["The doodles are hand-drawn, the shadows are hatched,", "the rent, however, is still unpaid.", "aesthetics do not cover groceries."],
   ["You opened a fortune on a stranger’s portfolio;", "he spent a week making sure you could.", "you are both avoiding something today."],

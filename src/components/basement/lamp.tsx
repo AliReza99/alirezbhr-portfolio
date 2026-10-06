@@ -45,7 +45,7 @@ export const Lamp = ({ ref, dark, visible, onToggle }: LampProps) => {
         </button>
         {!pulled && (
           <span className="hand lamp__hint">
-            <span className="lamp__hint-arrow">←</span> pull me
+            <span className="lamp__hint-arrow">←</span> clickable
           </span>
         )}
       </div>

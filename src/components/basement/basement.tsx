@@ -231,18 +231,22 @@ export const Basement = () => {
     scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  /** The cat is out of the basement and asleep on the floor strip. */
+  const catArrives = () => {
+    live.current.catGoing = false;
+    voice.darkLineUsed = true;
+    markCatGone(true);
+    setCatUp(true);
+    voice.later(() => voice.say(['…was that a cat?', 'we don’t have a cat.']), 900);
+  };
+
   /** In the dark, the cat's eyes look around, walk to the ladder and start up it, then fade out. */
   const catLeaves = () => {
     if (live.current.catGone || live.current.catGoing) return;
     live.current.catGoing = true;
     voice.darkLineUsed = true;
     const el = eyesRef.current;
-    const gone = () => {
-      live.current.catGoing = false;
-      markCatGone(true);
-      setCatUp(true);
-      voice.later(() => voice.say(['…was that a cat?', 'we don’t have a cat.']), 900);
-    };
+    const gone = catArrives;
     const lad = ladderRef.current;
     if (!el?.animate || prefersReducedMotion() || !lad) return gone();
     const er = el.getBoundingClientRect();
@@ -295,7 +299,7 @@ export const Basement = () => {
       return voice.react('disco', ['it’s not a disco.'], 0);
     }
     if (nowDark) {
-      // Once the lights have gone out the cat commits to leaving, even if they come back on first.
+      // Once the lights go out the cat starts to leave. If they come back on first, she shows up asleep on top at once.
       if (!live.current.catGone && catTimer.current === undefined)
         catTimer.current = window.setTimeout(() => {
           catTimer.current = undefined;
@@ -307,10 +311,19 @@ export const Basement = () => {
         if (live.current.dark && live.current.open) voice.say('…I can’t see my boxes.');
       }, 6000);
     } else {
-      const eyes = eyesRef.current;
-      if (live.current.catGoing && eyes) {
-        eyes.style.opacity = '0';
-        eyes.getAnimations().forEach((a) => a.finish());
+      // Lights back on before she is out: skip the rest of the walk and put her on top now.
+      if (!live.current.catGone && (live.current.catGoing || catTimer.current !== undefined)) {
+        clearTimeout(catTimer.current);
+        catTimer.current = undefined;
+        const eyes = eyesRef.current;
+        if (eyes) {
+          eyes.style.opacity = '0';
+          eyes.getAnimations().forEach((a) => {
+            a.onfinish = null;
+            a.cancel();
+          });
+        }
+        catArrives();
       }
       voice.react('lit', ['thank you.'], 2500);
     }
@@ -356,14 +369,16 @@ export const Basement = () => {
                 <span className="basement__sign-sub">B1 · DRAFTS &amp; REGRETS</span>
               </div>
             </div>
-            <div className="basement__pile">
-              {DRAFT_ROWS.map((row) => (
-                <div key={row[0].v} className="basement__row">
-                  {row.map((d) => (
-                    <DraftBox key={d.v} draft={d} onOpen={(v) => voice.boxClicked(v)} />
-                  ))}
-                </div>
-              ))}
+            <div className="basement__pile-wrap">
+              <div className="basement__pile">
+                {DRAFT_ROWS.map((row) => (
+                  <div key={row[0].v} className="basement__row">
+                    {row.map((d) => (
+                      <DraftBox key={d.v} draft={d} onOpen={(v) => voice.boxClicked(v)} />
+                    ))}
+                  </div>
+                ))}
+              </div>
               <span ref={eyesRef} aria-hidden="true" className="basement__eyes" style={{ opacity: dark && !catGone ? 1 : 0 }}>
                 <span data-beye="" />
                 <span data-beye="" />

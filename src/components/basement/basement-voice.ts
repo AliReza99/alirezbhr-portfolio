@@ -168,7 +168,6 @@ export class BasementVoice {
     const tx = document.createElement('span');
     tx.textContent = text;
     tx.style.cssText = 'position:relative;display:block';
-    if (tired >= 2) tx.setAttribute('data-wob', '');
     b.appendChild(tx);
     box.appendChild(b);
     b.addEventListener('click', () => this.react('poke', ['don’t poke the words.'], 9000));
@@ -202,12 +201,6 @@ export class BasementVoice {
       b.animate([{ opacity: 0, transform: 'translateX(40px) rotate(4deg)' }, { opacity: 1, transform: 'none' }], {
         duration: 420,
         easing: 'cubic-bezier(.3,1.4,.5,1)',
-      });
-      tx.animate([{ clipPath: 'inset(-20% 100% -20% 0)' }, { clipPath: 'inset(-20% -.4em -20% 0)' }], {
-        duration: Math.max(500, text.length * 45),
-        delay: 160,
-        easing: 'cubic-bezier(.5,0,.3,1)',
-        fill: 'backwards',
       });
     }
     // At most two bubbles on screen.
