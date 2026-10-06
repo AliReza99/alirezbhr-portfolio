@@ -252,5 +252,150 @@ const KNOCK_HELLOS: Line[] = [
   ['persistence noted.', 'I’ll write you a review. five stars. I’m the one writing it. listen.'],
 ];
 
-export const knockHelloFor = (n: number, pick: (len: number) => number): Line =>
+/** One turn of a chat on the floor strip: him through the floor, or the cat from where she sleeps. */
+export type CatTurn = readonly [who: 'him' | 'cat', line: string];
+
+/** What poking the sleeping cat starts while the basement is shut. Kept short: the strip does not wrap. */
+export const CAT_TALKS: CatTurn[][] = [
+  [
+    ['him', 'hey. don’t poke the cat.'],
+    ['cat', 'mrrp.'],
+    ['him', 'great. she’s writing a review.'],
+  ],
+  [
+    ['him', 'is someone poking the cat?'],
+    ['cat', 'yes.'],
+    ['him', '…she talks? that wasn’t budgeted.'],
+  ],
+  [
+    ['him', 'she won’t walk. don’t bother.'],
+    ['him', 'I ran out of tokens at the legs.'],
+    ['cat', 'zzz.'],
+    ['him', 'she breathes. that was the budget.'],
+  ],
+  [
+    ['him', 'not my cat.'],
+    ['cat', 'not my human.'],
+    ['him', '…okay, that one hurt.'],
+  ],
+  [
+    ['him', 'let her sleep.'],
+    ['him', 'she climbed a whole ladder today.'],
+    ['cat', 'two rungs.'],
+    ['him', 'a whole ladder.'],
+  ],
+  [
+    ['him', 'walking is on her v2 roadmap.'],
+    ['cat', 'mrow?'],
+    ['him', 'v3. don’t get your hopes up.'],
+  ],
+  [
+    ['him', 'one more poke and she bills you.'],
+    ['cat', 'purrr.'],
+    ['him', 'that’s the meter running.'],
+  ],
+  [
+    ['him', 'we don’t have a cat.'],
+    ['cat', 'mrrp.'],
+    ['him', 'not one that pays rent, anyway.'],
+  ],
+  [
+    ['him', 'she’s not asleep. she’s judging.'],
+    ['cat', 'both.'],
+    ['him', 'see?'],
+  ],
+  [
+    ['him', 'careful. she has claws.'],
+    ['cat', 'zzz.'],
+    ['him', '…in theory. I didn’t draw them.'],
+  ],
+  [
+    ['him', 'that’s the senior engineer.'],
+    ['cat', 'zzz.'],
+    ['him', 'deep focus. do not disturb.'],
+  ],
+  [
+    ['him', 'she reviewed v10, you know.'],
+    ['cat', 'meh.'],
+    ['him', 'that’s her highest score.'],
+  ],
+  [
+    ['him', 'ask her about v5.'],
+    ['cat', 'hiss.'],
+    ['him', 'yeah. same.'],
+  ],
+  [
+    ['him', 'she’s on a break.'],
+    ['him', 'since March.'],
+    ['cat', 'union rules.'],
+  ],
+  [
+    ['him', 'you woke her.'],
+    ['cat', 'no.'],
+    ['him', 'you almost woke her.'],
+  ],
+  [
+    ['him', 'she knocked v7 off a shelf.'],
+    ['cat', 'allegedly.'],
+    ['him', 'there was a merge. and a paw.'],
+  ],
+  [
+    ['him', 'careful. she’s load-bearing.'],
+    ['cat', 'zzz.'],
+    ['him', 'move her and the footer falls.'],
+  ],
+  [
+    ['him', 'does she look fed to you?'],
+    ['cat', 'no.'],
+    ['him', 'she’s lying. I heard the bowl.'],
+  ],
+  [
+    ['him', 'three z’s. I counted.'],
+    ['cat', 'z.'],
+    ['him', 'four. she’s showing off.'],
+  ],
+  [
+    ['him', 'she’s a rescue.'],
+    ['cat', 'I rescued you.'],
+    ['him', '…that’s fair.'],
+  ],
+  [
+    ['him', 'poking is not petting.'],
+    ['cat', 'mrrp.'],
+    ['him', 'she says learn the difference.'],
+  ],
+  [
+    ['him', 'she owes me nine drafts.'],
+    ['cat', 'I sat on them.'],
+    ['him', 'that’s why they’re flat.'],
+  ],
+  [
+    ['him', 'she left me for the sunlight.'],
+    ['cat', 'purr.'],
+    ['him', 'no, it’s fine. I’m fine.'],
+  ],
+  [
+    ['him', 'she has more visitors than me.'],
+    ['cat', 'mrrp.'],
+    ['him', 'she says try being soft.'],
+  ],
+];
+
+/** The same poke with the basement open: he is right there, and she is out of earshot. */
+export const CAT_POKES: Line[] = [
+  ['hands off the cat.', 'she’s the only one here with a schedule.'],
+  ['is she still up there?', 'tell her the rent is due.'],
+  ['don’t wake her.', 'she comes back down and sits on v3.'],
+  ['she’s not mine.', 'I just know her whole routine by heart.'],
+  ['poke me instead.', '…no. don’t. I take it back.'],
+  ['I can hear that from down here.', 'the floor is thin. so is my patience.'],
+  ['she left the second the light went out.', 'I try not to take it personally.'],
+  ['her tail is hanging through my ceiling.', 'I’ve decided it’s a second lamp. Gary is jealous.'],
+  ['you came down here to poke up there?', 'inefficient. I respect it.'],
+  ['if she falls through the hatch,', 'you’re catching her. I have boxes.'],
+  ['she’s asleep on the job.', 'the job is being asleep. she’s overperforming.'],
+  ['every poke goes on her invoice.', 'I’m the one who pays it. please stop.'],
+];
+
+export const knockHelloFor =(n: number, pick: (len: number) => number): Line =>
   KNOCK_HELLOS[n] ?? KNOCK_HELLOS[1 + pick(KNOCK_HELLOS.length - 1)];

@@ -2,9 +2,8 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { useSketch } from '../../hooks/use-sketch';
 import { canAnimate, prefersReducedMotion } from '../../lib/motion';
-import { useToast } from '../toast/toast-context';
 import { useBasement } from './basement-context';
-import { BasementVoice, knockLines, knocksToOpen } from './basement-voice';
+import { BasementVoice, catTalk, knockLines, knocksToOpen } from './basement-voice';
 import { DRAFT_ROWS, DraftBox, THROWN_DRAFTS } from './draft-box';
 import { Lamp } from './lamp';
 import { SleepingCat } from './sleeping-cat';
@@ -13,18 +12,20 @@ import { throwBox } from './throw-box';
 import { useBasementTease } from './use-basement-tease';
 import './basement.css';
 
+/** How long each line of a cat chat stays up before the next one; the fade in `knock-says` ends just before. */
+const CAT_TURN_MS = 2100;
+
 /**
  * Easter egg below the footer. The page pushes back when you reach the end;
  * the third try drops you into a basement full of abandoned portfolio drafts,
  * a light you can pull, an invisible tired voice and a cat that wants out.
  */
 export const Basement = () => {
-  const { showToast } = useToast();
   const { catUp, setCatUp } = useBasement();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [catGone, setCatGone] = useState(false);
-  const [knock, setKnock] = useState<{ n: number; line: string } | null>(null);
+  const [says, setSays] = useState<{ key: number; line: string; cat: boolean } | null>(null);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -60,6 +61,8 @@ export const Basement = () => {
   const darkTimer = useRef<number | undefined>(undefined);
   const upTimer = useRef<number | undefined>(undefined);
   const knockTimer = useRef<number | undefined>(undefined);
+  const catTimers = useRef<number[]>([]);
+  const sayKey = useRef(0);
   const knockSet = useRef<string[]>([]);
   const knockShown = useRef(0);
   const leaveWarned = useRef(false);
@@ -80,9 +83,18 @@ export const Basement = () => {
       clearTimeout(darkTimer.current);
       clearTimeout(upTimer.current);
       clearTimeout(knockTimer.current);
+      catTimers.current.forEach(clearTimeout);
     },
     [voice],
   );
+
+  /** One line on the floor strip: his by the ladder, the cat's over her head. */
+  const show = (line: string, cat = false) => setSays({ key: ++sayKey.current, line, cat });
+
+  const hushCat = () => {
+    catTimers.current.forEach(clearTimeout);
+    catTimers.current = [];
+  };
 
   const markCatGone = (gone: boolean) => {
     live.current.catGone = gone;
@@ -134,11 +146,12 @@ export const Basement = () => {
 
   const openBasement = (knocked = false, lastWordSaid = false) => {
     if (live.current.open || live.current.busy) return;
+    hushCat();
     const owed = knocked && !lastWordSaid ? knockSet.current[knockSet.current.length - 1] : undefined;
     if (owed && knockShown.current < knockSet.current.length) {
       // The opening click has a line of its own: let it show, then drop them in.
       live.current.busy = true;
-      setKnock({ n: knockSet.current.length, line: owed });
+      show(owed);
       clearTimeout(knockTimer.current);
       knockTimer.current = window.setTimeout(() => {
         live.current.busy = false;
@@ -158,7 +171,7 @@ export const Basement = () => {
       flushSync(() => {
         setOpen(true);
         setDark(false);
-        setKnock(null);
+        setSays(null);
       });
       // The knock button is gone now; keep keyboard visitors on the ladder.
       if (hadFocus) upBtnRef.current?.focus({ preventScroll: true });
@@ -198,9 +211,10 @@ export const Basement = () => {
     knockShown.current = n;
     const lines = knockSet.current;
     const last = n >= lines.length;
-    setKnock({ n, line: lines[Math.min(n, lines.length) - 1] });
+    hushCat();
+    show(lines[Math.min(n, lines.length) - 1]);
     clearTimeout(knockTimer.current);
-    knockTimer.current = window.setTimeout(() => setKnock(null), 2600);
+    knockTimer.current = window.setTimeout(() => setSays(null), 2600);
     const tips = tipsRef.current;
     if (!canAnimate(tips)) return;
     knockAnim.current?.cancel();
@@ -230,6 +244,17 @@ export const Basement = () => {
       voice.react('deep', ['there’s no sub-basement.', 'stop scrolling. please.'], 0);
     },
   });
+
+  /** Poking the sleeping cat gets him talking through the floor, and her answering. Down in the basement he says it in person. */
+  const pokeCat = () => {
+    if (live.current.busy) return;
+    if (live.current.open) return voice.catPoked();
+    clearTimeout(knockTimer.current);
+    hushCat();
+    const talk = catTalk();
+    talk.forEach(([who, line], i) => catTimers.current.push(window.setTimeout(() => show(line, who === 'cat'), i * CAT_TURN_MS)));
+    catTimers.current.push(window.setTimeout(() => setSays(null), (talk.length - 1) * CAT_TURN_MS + 2600));
+  };
 
   const goUpstairs = () => {
     // First click: he objects. Clicking again leaves.
@@ -358,9 +383,12 @@ export const Basement = () => {
           </div>
         </div>
         <span aria-live="polite" className="basement-strip__says">
-          {knock && <span key={knock.n}>{knock.line}</span>}
+          {says && !says.cat && <span key={says.key}>{says.line}</span>}
         </span>
-        {catUp && <SleepingCat basementOpen={open} onClick={() => showToast('cat')} />}
+        <span aria-live="polite" className="basement-strip__says basement-strip__says--cat">
+          {says?.cat && <span key={says.key}>{says.line}</span>}
+        </span>
+        {catUp && <SleepingCat basementOpen={open} onClick={pokeCat} />}
       </div>
       <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
         <section ref={sectionRef} data-screen-label="Basement" aria-label="The basement" className="basement">

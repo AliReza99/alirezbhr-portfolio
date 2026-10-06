@@ -1,5 +1,5 @@
 import { prefersReducedMotion, pickIndex } from '../../lib/motion';
-import { BACKTRACK, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type Line } from './basement-scenarios';
+import { BACKTRACK, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
 import { createSvg, randomSeed, roughSvg, roundCaps, type RoughOptions } from '../../lib/rough';
 
 /** Share of lines that show typing dots before the text. */
@@ -31,6 +31,11 @@ export const knocksToOpen = (): number => (recall().knocks === 0 ? 4 : 3);
 
 /** What comes up through the floor on each knock; the first-ever knocker gets the original lines. */
 export const knockLines = (): string[] => knockLinesFor(recall().knocks, pickIndex);
+
+let lastCatTalk: number | undefined;
+
+/** The chat that poking the sleeping cat starts on the floor strip; never the same one twice in a row. */
+export const catTalk = (): CatTurn[] => CAT_TALKS[(lastCatTalk = pickIndex(CAT_TALKS.length, lastCatTalk))];
 
 const remember = () => {
   try {
@@ -88,6 +93,7 @@ export class BasementVoice {
   private boxClicks = 0;
   private lastMutter?: number;
   private lastBox?: number;
+  private lastCatPoke?: number;
   private dots?: Bubble;
   private dotsTimer?: number;
   private cooldowns: Record<string, number> = {};
@@ -148,12 +154,13 @@ export class BasementVoice {
     this.pump();
   }
 
-  /** Interrupting reaction, rate-limited per `key`. */
+  /** Interrupting reaction, rate-limited per `key`. Returns whether he said it. */
   react(key: string, lines: Line, cooldown = 4000) {
     const t = performance.now();
-    if (this.cooldowns[key] && t - this.cooldowns[key] < cooldown) return;
+    if (this.cooldowns[key] && t - this.cooldowns[key] < cooldown) return false;
     this.cooldowns[key] = t;
     this.say(lines, true);
+    return true;
   }
 
   boxClicked(v: number) {
@@ -162,6 +169,12 @@ export class BasementVoice {
     const n = pickIndex(BOX_LINES.length, this.lastBox);
     this.lastBox = n;
     this.react('box', [BOX_LINES[n].replace(/\{v\}/g, String(v))], 1200);
+  }
+
+  /** The cat upstairs was poked while the visitor is down here with him. */
+  catPoked() {
+    const n = pickIndex(CAT_POKES.length, this.lastCatPoke);
+    if (this.react('cat', CAT_POKES[n], 5000)) this.lastCatPoke = n;
   }
 
   private pump() {

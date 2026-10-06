@@ -1,4 +1,4 @@
-export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'cat' | 'deeper' | 'draw' | 'touch';
+export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'deeper' | 'draw' | 'touch';
 
 /** [title, body]. Bodies may contain {s} / {c} / {v} placeholders. */
 export type ToastMessage = readonly [title: string, body: string];
@@ -43,14 +43,6 @@ export const TOASTS: Record<ToastKind, readonly ToastMessage[]> = {
     ['Please.', 'v{v} used three fonts for one heading.'],
     ['Careful.', 'v{v} is held together by !important.'],
     ['Nope.', 'v{v} only worked in Safari. Somehow.'],
-  ],
-  cat: [
-    ['Shh.', 'She’s had a long day in the basement.'],
-    ['Let her sleep.', 'She climbed a whole ladder for this.'],
-    ['Not my cat.', 'She just showed up one day and stayed.'],
-    ['No, she won’t walk.', 'I ran out of tokens before she got legs. She breathes. That was the budget.'],
-    ['Why is she so still?', 'My token balance hit zero right after the tail. Walking cat is in the v2 roadmap.'],
-    ['Poke all you want.', 'Her animation budget was one breath and two z’s. The rest went to the basement.'],
   ],
   deeper: [
     ['That’s it.', 'There is no sub-basement. I checked.'],
