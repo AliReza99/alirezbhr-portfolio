@@ -58,7 +58,7 @@ const ring = (card: HTMLElement, cx: number, cy: number, n: number, r0: number, 
   }
 };
 
-/** Card 1: the + crouches, drops onto the bottom edge, rides it down, then springs back up. */
+/** Card 1: the + crouches, drops onto the card's bottom edge, then springs back up as the panel opens. */
 export const openFall = ({ plus, panel, card, header, done, flip }: ExpandParts) => {
   plus.style.transformOrigin = '50% 100%';
   plus.style.zIndex = '2';
@@ -68,7 +68,17 @@ export const openFall = ({ plus, panel, card, header, done, flip }: ExpandParts)
   const cx = plus.offsetLeft + plus.offsetWidth / 2;
   const d0 = hh - top - ph;
   const hc = panel.offsetHeight;
-  const T = 1100;
+  // Timings are tuned for a ~75px fall and ~270px panel. Taller cards (small screens)
+  // stretch the fall so the landing stays readable, and the panel opens only after it.
+  const stretch = (dist: number, base: number) => Math.min(2, Math.max(1, Math.sqrt(dist / base)));
+  const t1 = 80;
+  const t2 = t1 + 170 * stretch(d0, 75);
+  const t3 = t2 + 40;
+  const t4 = t3 + 400 * stretch(hc, 270);
+  const t5 = t3 + 240;
+  const t6 = t5 + 80;
+  const t7 = t6 + 80;
+  const T = Math.max(t4, t7);
   const o = (ms: number) => ms / T;
   const fallIn = 'cubic-bezier(.55,0,1,.55)';
   const push = 'cubic-bezier(.25,.8,.35,1)';
@@ -81,13 +91,12 @@ export const openFall = ({ plus, panel, card, header, done, flip }: ExpandParts)
   plus.animate(
     [
       P(0, 1, 1, 0, 'ease-out'),
-      P(-6, 1.08, 0.9, o(80), fallIn),
-      P(d0, 0.9, 1.12, o(250), 'linear'),
-      P(d0, 1.22, 0.74, o(275), push),
-      P(d0 + hc, 1.08, 0.9, o(650), 'ease-out'),
-      P(d0 + hc, 1, 1, o(700), 'cubic-bezier(.3,0,.2,1)'),
-      P(-10, 0.94, 1.08, o(940), 'cubic-bezier(.5,0,1,.6)'),
-      P(0, 1.1, 0.9, o(1020), 'ease-out'),
+      P(-6, 1.08, 0.9, o(t1), fallIn),
+      P(d0, 0.9, 1.12, o(t2), 'linear'),
+      P(d0, 1.22, 0.74, o(t3), 'cubic-bezier(.3,0,.2,1)'),
+      P(-10, 0.94, 1.08, o(t5), 'cubic-bezier(.5,0,1,.6)'),
+      P(0, 1.1, 0.9, o(t6), 'ease-out'),
+      P(0, 1, 1, o(t7)),
       P(0, 1, 1, 1),
     ],
     { duration: T },
@@ -95,8 +104,8 @@ export const openFall = ({ plus, panel, card, header, done, flip }: ExpandParts)
   panel.animate(
     [
       { height: '0px', offset: 0 },
-      { height: '0px', offset: o(275), easing: push },
-      { height: `${hc}px`, offset: o(650) },
+      { height: '0px', offset: o(t3), easing: push },
+      { height: `${hc}px`, offset: o(t4) },
       { height: `${hc}px`, offset: 1 },
     ],
     { duration: T },
@@ -104,7 +113,7 @@ export const openFall = ({ plus, panel, card, header, done, flip }: ExpandParts)
   setTimeout(() => {
     burst(card, cx, hh);
     flip();
-  }, 255);
+  }, t2 + 5);
 };
 
 /** Card 2: the + lifts like a rubber stamp and slams down, popping the panel open. */
