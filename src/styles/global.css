@@ -111,12 +111,12 @@ a:hover { color: inherit }
 #tv-static{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;opacity:.035;image-rendering:pixelated}
 
 /* Text morph: sans label wipes into Caveat on hover. */
-[data-morph]{overflow:hidden;padding:.15em 0;margin:-.15em 0;display:inline-grid}
+[data-morph]{overflow:hidden;padding:.15em .25em;margin:-.15em -.25em;display:inline-grid}
 [data-ms],[data-mc]{grid-area:1/1;white-space:nowrap;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
 [data-ms]{clip-path:inset(-10% 0 -10% 0)}
 [data-mc]{font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none;font-weight:600;font-size:1.35em;line-height:1;margin:-.2em 0;justify-self:center;align-self:center;clip-path:inset(-20% 100% -20% 0);transform:translateX(-8px) rotate(-3deg)}
 a:hover [data-ms],button:hover [data-ms]{clip-path:inset(-10% 0 -10% 100%);transform:translateX(8px)}
-a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% 0 -20% 0);transform:rotate(-3deg)}
+a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% -25% -20% -25%);transform:rotate(-3deg)}
 
 /* Arrows: crisp at rest, rough.js sketch on hover. */
 [data-rarrow]{display:inline-grid}

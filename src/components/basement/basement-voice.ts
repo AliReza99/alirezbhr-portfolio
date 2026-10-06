@@ -203,7 +203,7 @@ export class BasementVoice {
         duration: 420,
         easing: 'cubic-bezier(.3,1.4,.5,1)',
       });
-      tx.animate([{ clipPath: 'inset(-20% 100% -20% 0)' }, { clipPath: 'inset(-20% -2% -20% 0)' }], {
+      tx.animate([{ clipPath: 'inset(-20% 100% -20% 0)' }, { clipPath: 'inset(-20% -.4em -20% 0)' }], {
         duration: Math.max(500, text.length * 45),
         delay: 160,
         easing: 'cubic-bezier(.5,0,.3,1)',
