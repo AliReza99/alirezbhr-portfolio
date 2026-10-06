@@ -166,11 +166,15 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 @keyframes doo-ul{0%{background-size:0% 1.5px;--ula:.9}55%{background-size:100% 1.5px;--ula:.9}100%{background-size:100% 1.5px;--ula:.3}}
 @media (prefers-reduced-motion:reduce){[data-seen] [data-doo]{animation:none}}
 [data-doo]:hover,[data-doo]:focus{color:#5A49D6;outline:none}
-[data-pop]{opacity:0;visibility:hidden;transform:translate(-50%,8px) rotate(-2deg) scale(.9);transform-origin:50% 100%;transition:opacity .15s,transform .15s,visibility 0s .15s}
+/* Leaving tips the paper over and drops it; the drawing stays put until it is gone. */
+[data-pop]{opacity:0;visibility:hidden;transform:translate(-50%,12px) rotate(-9deg) scale(.85);transform-origin:50% 100%;transition:opacity .3s cubic-bezier(.5,0,.8,.4),transform .3s cubic-bezier(.5,0,.8,.4),visibility 0s .3s}
 [data-doo]:hover [data-pop],[data-doo]:focus [data-pop]{opacity:1;visibility:visible;transform:translate(-50%,0) rotate(-2deg) scale(1);transition:opacity .2s,transform .45s cubic-bezier(.3,1.6,.5,1),visibility 0s}
-[data-pop] [data-ln]{stroke-dasharray:1 1;stroke-dashoffset:1}
+/* Phones: a tap leaves the word hovered, so the doodle puts itself away the same way after 5s. */
+@media (max-width:600px){[data-doo]:hover [data-pop],[data-doo]:focus [data-pop]{animation:doo-out .3s cubic-bezier(.5,0,.8,.4) 5s forwards}}
+@keyframes doo-out{to{opacity:0;visibility:hidden;transform:translate(-50%,12px) rotate(-9deg) scale(.85)}}
+[data-pop] [data-ln]{stroke-dasharray:1 1;stroke-dashoffset:1;transition:stroke-dashoffset 0s .3s}
 [data-doo]:hover [data-ln],[data-doo]:focus [data-ln]{stroke-dashoffset:0;transition:stroke-dashoffset .55s cubic-bezier(.5,0,.3,1) var(--d,0s)}
-[data-pop] [data-fade]{opacity:0}
+[data-pop] [data-fade]{opacity:0;transition:opacity 0s .3s}
 [data-doo]:hover [data-fade],[data-doo]:focus [data-fade]{opacity:1;transition:opacity .35s var(--d,0s)}
 [data-doo]:hover [data-an],[data-doo]:focus [data-an]{animation:var(--an) both}
 @keyframes doo-boil{0%{filter:url(#doo-r1)}33%{filter:url(#doo-r2)}66%{filter:url(#doo-r3)}}

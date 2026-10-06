@@ -33,6 +33,16 @@ export const DoodleWord = ({ doodle }: { doodle: Doodle }) => {
     pop.style.setProperty('--pop-x', `${Math.round(shift)}px`);
   };
 
+  // A second tap on a still-hovered word brings back a doodle that has timed out on a phone.
+  const replay = () => {
+    for (const a of popRef.current?.getAnimations() ?? []) {
+      if (a instanceof CSSAnimation && a.animationName === 'doo-out') {
+        a.cancel();
+        a.play();
+      }
+    }
+  };
+
   // Hidden doodles still widen the page, so place them before anyone hovers.
   useEffect(() => {
     keepOnScreen();
@@ -46,56 +56,60 @@ export const DoodleWord = ({ doodle }: { doodle: Doodle }) => {
       data-doo=""
       tabIndex={0}
       onPointerEnter={keepOnScreen}
+      onPointerDown={replay}
       onFocus={keepOnScreen}
       className="doodle-word"
       style={{ '--ud': doodle.underlineDelay }}
     >
       {doodle.phrase}
       <span ref={popRef} data-pop="" aria-hidden="true" className="doodle-word__pop">
-        <svg
-          viewBox="-10 -4 160 134"
-          width="176"
-          height="147"
-          fill="none"
-          stroke="#3B3A55"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ display: 'block', overflow: 'visible' }}
-        >
-          <g data-an="" style={{ filter: 'url(#doo-r1)', '--an': 'doo-boil .42s steps(1) infinite' }}>
-            <path d={`${FRAME} Z`} fill="#FFFCF7" stroke="none" />
-            <Stroke d={FRAME} delay={0} />
-            {doodle.strokes.slice(0, doodle.trail ? 2 : undefined).map((s) => (
-              <Stroke key={s.d} {...s} />
-            ))}
-            {doodle.trail && (
-              <>
-                <path data-fade="" d={doodle.trail} stroke={PURPLE} strokeWidth="2.4" strokeDasharray=".1 5" style={{ '--d': '.45s' }} />
-                {doodle.strokes.slice(2).map((s) => (
-                  <Stroke key={s.d} {...s} />
-                ))}
-              </>
-            )}
-            <text
-              x="70"
-              y="104"
-              textAnchor="middle"
-              fill={PURPLE}
-              stroke="none"
-              data-fade=""
-              style={{ '--d': '.7s', fontFamily: "'Caveat',cursive", fontWeight: 700, fontSize: '15px' }}
-            >
-              {twoLines
-                ? doodle.caption.map((line, i) => (
-                    <tspan key={line} x="70" y={98 + i * 14}>
-                      {line}
-                    </tspan>
-                  ))
-                : doodle.caption.map((line) => <Fragment key={line}>{line}</Fragment>)}
-            </text>
-          </g>
-        </svg>
+        {/* The boil sits on an HTML wrapper: iOS Safari won't repaint an animated filter on an SVG <g>. */}
+        <span data-an="" style={{ display: 'block', filter: 'url(#doo-r1)', '--an': 'doo-boil .42s steps(1) infinite' }}>
+          <svg
+            viewBox="-10 -4 160 134"
+            width="176"
+            height="147"
+            fill="none"
+            stroke="#3B3A55"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ display: 'block', overflow: 'visible' }}
+          >
+            <g>
+              <path d={`${FRAME} Z`} fill="#FFFCF7" stroke="none" />
+              <Stroke d={FRAME} delay={0} />
+              {doodle.strokes.slice(0, doodle.trail ? 2 : undefined).map((s) => (
+                <Stroke key={s.d} {...s} />
+              ))}
+              {doodle.trail && (
+                <>
+                  <path data-fade="" d={doodle.trail} stroke={PURPLE} strokeWidth="2.4" strokeDasharray=".1 5" style={{ '--d': '.45s' }} />
+                  {doodle.strokes.slice(2).map((s) => (
+                    <Stroke key={s.d} {...s} />
+                  ))}
+                </>
+              )}
+              <text
+                x="70"
+                y="104"
+                textAnchor="middle"
+                fill={PURPLE}
+                stroke="none"
+                data-fade=""
+                style={{ '--d': '.7s', fontFamily: "'Caveat',cursive", fontWeight: 700, fontSize: '15px' }}
+              >
+                {twoLines
+                  ? doodle.caption.map((line, i) => (
+                      <tspan key={line} x="70" y={98 + i * 14}>
+                        {line}
+                      </tspan>
+                    ))
+                  : doodle.caption.map((line) => <Fragment key={line}>{line}</Fragment>)}
+              </text>
+            </g>
+          </svg>
+        </span>
       </span>
     </span>
   );
