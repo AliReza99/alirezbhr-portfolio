@@ -114,8 +114,9 @@ export const Basement = () => {
   };
 
   const throwLastDrafts = () => {
-    voice.later(() => voice.say('hold on… two more.'), 5000);
-    voice.later(() => voice.say(['huff.', 'last ones. I swear.']), 8000);
+    const [before, after] = voice.throwLines();
+    voice.later(() => voice.say(before), 5000);
+    voice.later(() => voice.say(after), 8000);
     THROWN_DRAFTS.forEach((v, i) => {
       timers.current.push(
         window.setTimeout(
@@ -240,7 +241,7 @@ export const Basement = () => {
     voice.later(() => voice.say(['…was that a cat?', 'we don’t have a cat.']), 900);
   };
 
-  /** In the dark, the cat's eyes look around, walk to the ladder and start up it, then fade out. */
+  /** In the dark, the cat's eyes look around, slide along the floor to the ladder and vanish. She shows up asleep on top. */
   const catLeaves = () => {
     if (live.current.catGone || live.current.catGoing) return;
     live.current.catGoing = true;
@@ -252,11 +253,8 @@ export const Basement = () => {
     const er = el.getBoundingClientRect();
     const lr = lad.getBoundingClientRect();
     const dx = lr.left + lr.width / 2 - (er.left + er.width / 2);
-    // Only the first fifth of the climb: any higher and the daylight from the hatch would show her.
-    const up = Math.min(0, lr.bottom - lr.height * 0.2 - er.top);
     const walk = Math.min(1800, 500 + Math.abs(dx) * 3);
-    const climb = Math.min(2200, 600 + Math.abs(up) * 3);
-    const T = walk + climb + 400;
+    const T = walk + 250;
     el.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)', offset: 0.3 }, { transform: 'translateX(4px)', offset: 0.7 }, { transform: 'translateX(0)' }], {
       duration: 900,
       easing: 'ease-in-out',
@@ -266,17 +264,11 @@ export const Basement = () => {
         el.style.opacity = '0';
         return gone();
       }
-      el.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-3px)' }, { transform: 'translateY(0)' }], {
-        duration: 260,
-        iterations: Math.ceil(T / 260),
-        composite: 'add',
-      });
       el.animate(
         [
-          { transform: 'translate(0,0)', opacity: 1, easing: 'ease-in-out' },
-          { transform: `translate(${dx}px,0)`, opacity: 1, offset: walk / T, easing: 'cubic-bezier(.4,0,.6,1)' },
-          { transform: `translate(${dx}px,${up}px)`, opacity: 1, offset: (walk + climb) / T },
-          { transform: `translate(${dx}px,${up - 14}px)`, opacity: 0 },
+          { transform: 'translateX(0)', opacity: 1, easing: 'cubic-bezier(.4,0,.6,1)' },
+          { transform: `translateX(${dx}px)`, opacity: 1, offset: walk / T },
+          { transform: `translateX(${dx}px)`, opacity: 0 },
         ],
         { duration: T, fill: 'forwards' },
       ).onfinish = gone;
