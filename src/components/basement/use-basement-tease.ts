@@ -12,6 +12,8 @@ type UseBasementTeaseOptions = {
   hintRef: RefObject<HTMLElement | null>;
   isOpen: () => boolean;
   isBusy: () => boolean;
+  /** Ladder clicks needed to get in; the voice gets a last word before the final one. */
+  knocksToOpen: () => number;
   /** `knocked` is true when the last straw was a click on the ladder. */
   onOpen: (knocked?: boolean) => void;
   /** Visitor clicked the ladder tips and it stayed shut. `n` counts up from 1. */
@@ -22,8 +24,6 @@ type UseBasementTeaseOptions = {
 
 const OPEN = 340;
 const TRIES_TO_OPEN = 3;
-/** Clicking the ladder takes one more, so the voice gets a last word in. */
-const KNOCKS_TO_OPEN = 4;
 /** A pause longer than this starts the count over. */
 const RESET_MS = 4000;
 /** Wheel distance pushed into the end of the page, after the first try, that counts as enough. */
@@ -200,7 +200,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       last = now;
       if (unlocked) return open();
       knocks++;
-      if (tries + knocks >= KNOCKS_TO_OPEN) return open(true);
+      if (tries + knocks >= o().knocksToOpen()) return open(true);
       o().onKnock(tries + knocks);
     };
 

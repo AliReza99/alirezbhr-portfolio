@@ -4,7 +4,7 @@ import { useSketch } from '../../hooks/use-sketch';
 import { canAnimate, prefersReducedMotion } from '../../lib/motion';
 import { useToast } from '../toast/toast-context';
 import { useBasement } from './basement-context';
-import { BasementVoice } from './basement-voice';
+import { BasementVoice, knockLines, knocksToOpen } from './basement-voice';
 import { DRAFT_ROWS, DraftBox, THROWN_DRAFTS } from './draft-box';
 import { Lamp } from './lamp';
 import { SleepingCat } from './sleeping-cat';
@@ -12,9 +12,6 @@ import { Spider } from './spider';
 import { throwBox } from './throw-box';
 import { useBasementTease } from './use-basement-tease';
 import './basement.css';
-
-/** What comes up through the floor when the ladder is clicked. The next click gets in. */
-const KNOCK_LINES = ['occupied.', 'it’s just storage.', 'no ladder. go away.'];
 
 /**
  * Easter egg below the footer. The page pushes back when you reach the end;
@@ -63,6 +60,9 @@ export const Basement = () => {
   const darkTimer = useRef<number | undefined>(undefined);
   const upTimer = useRef<number | undefined>(undefined);
   const knockTimer = useRef<number | undefined>(undefined);
+  const knockSet = useRef<string[]>([]);
+  const knockShown = useRef(0);
+  const leaveWarned = useRef(false);
 
   const voiceRef = useRef<BasementVoice | null>(null);
   voiceRef.current ??= new BasementVoice({
@@ -132,8 +132,20 @@ export const Basement = () => {
     });
   };
 
-  const openBasement = (knocked = false) => {
+  const openBasement = (knocked = false, lastWordSaid = false) => {
     if (live.current.open || live.current.busy) return;
+    const owed = knocked && !lastWordSaid ? knockSet.current[knockSet.current.length - 1] : undefined;
+    if (owed && knockShown.current < knockSet.current.length) {
+      // The opening click has a line of its own: let it show, then drop them in.
+      live.current.busy = true;
+      setKnock({ n: knockSet.current.length, line: owed });
+      clearTimeout(knockTimer.current);
+      knockTimer.current = window.setTimeout(() => {
+        live.current.busy = false;
+        openBasement(true, true);
+      }, 1800);
+      return;
+    }
     live.current.busy = true;
     const tips = tipsRef.current;
     const reduce = prefersReducedMotion();
@@ -163,6 +175,8 @@ export const Basement = () => {
         lightsFlicker();
         markCatGone(live.current.catUp);
         voice.start(live.current.catUp, knocked);
+        knockSet.current = [];
+        knockShown.current = 0;
         if (!reduce) throwLastDrafts();
         timers.current.push(window.setTimeout(() => (live.current.busy = false), 1400));
       });
@@ -180,8 +194,11 @@ export const Basement = () => {
 
   /** The ladder was clicked and nobody is letting them in yet. */
   const knockBack = (n: number) => {
-    const last = n >= KNOCK_LINES.length;
-    setKnock({ n, line: KNOCK_LINES[Math.min(n, KNOCK_LINES.length) - 1] });
+    if (n === 1) knockSet.current = knockLines();
+    knockShown.current = n;
+    const lines = knockSet.current;
+    const last = n >= lines.length;
+    setKnock({ n, line: lines[Math.min(n, lines.length) - 1] });
     clearTimeout(knockTimer.current);
     knockTimer.current = window.setTimeout(() => setKnock(null), 2600);
     const tips = tipsRef.current;
@@ -204,6 +221,7 @@ export const Basement = () => {
     hintRef,
     isOpen: () => live.current.open,
     isBusy: () => live.current.busy,
+    knocksToOpen,
     onOpen: openBasement,
     onKnock: knockBack,
     onDeep: () => {
@@ -214,12 +232,19 @@ export const Basement = () => {
   });
 
   const goUpstairs = () => {
+    // First click: he objects. Clicking again leaves.
+    if (!leaveWarned.current) {
+      leaveWarned.current = true;
+      voice.say(['wait, already?', 'I was about to get to the good part.'], true);
+      return;
+    }
     timers.current.forEach(clearTimeout);
     timers.current = [];
     const done = () => {
       removeEventListener('scrollend', done);
       clearTimeout(upTimer.current);
       live.current.deepSaid = false;
+      leaveWarned.current = false;
       // Leaving right after arriving cancels the timer that would have cleared this.
       live.current.busy = false;
       voice.clear();

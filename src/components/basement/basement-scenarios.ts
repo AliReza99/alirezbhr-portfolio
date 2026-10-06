@@ -231,13 +231,25 @@ const THROW_REPEATS: [Line, Line][] = [
 export const throwLinesFor = (n: number, pick: (len: number) => number): [Line, Line] =>
   THROW_LINES[n] ?? THROW_REPEATS[pick(THROW_REPEATS.length)];
 
+/** What comes up through the floor while the ladder is knocked on. The first time is "occupied."; later he gives in a little funnier, one click sooner. Repeat knockers see the last line on the opening click, then drop in. */
+const KNOCK_LINES: string[][] = [
+  ['occupied.', 'it’s just storage.', 'no ladder. go away.'],
+  ['still occupied.', 'in a meeting. with myself.', 'okay, stop. you’re worse than the cat.'],
+  ['I said occupied. again.', 'I wrote the sign myself.', 'fine. don’t make it weird.'],
+  ['occupied. still.', 'the cat knocks less.', 'ugh. fine. mind the boxes.'],
+];
+
+export const knockLinesFor = (times: number, pick: (len: number) => number): string[] =>
+  KNOCK_LINES[times === 0 ? 0 : 1 + pick(KNOCK_LINES.length - 1)];
+
 /** What he says when the ladder pestering finally works: first time, then the later ones. */
 const KNOCK_HELLOS: Line[] = [
-  ['fine.', 'don’t touch anything.'],
-  ['…again?', 'okay, come in. I’ll stop pretending I’m not here.'],
   ['I said occupied.', 'you can read, right? you’re reading this.'],
-  ['you knock the way my landlord knocks.', 'come in. I’ll pay next week.'],
-  ['okay, the door was never locked.', 'it’s a ladder. there’s no door.'],
+  ['…you again.', 'at this point you owe me rent. sit. I was mid-sentence anyway.'],
+  ['you knock the way my landlord knocks.', 'come in. I’ll pay next week. where was I…'],
+  ['the door was never locked.', 'it’s a ladder, there’s no door. anyway, sit. I’ll start from the top.'],
+  ['four knocks. I counted.', 'a normal person stops at two. I respect it. okay, story time.'],
+  ['persistence noted.', 'I’ll write you a review. five stars. I’m the one writing it. listen.'],
 ];
 
 export const knockHelloFor = (n: number, pick: (len: number) => number): Line =>

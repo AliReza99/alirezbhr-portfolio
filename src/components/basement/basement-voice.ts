@@ -1,5 +1,5 @@
 import { prefersReducedMotion, pickIndex } from '../../lib/motion';
-import { BACKTRACK, HESITATE, SCENARIOS, helloFor, knockHelloFor, throwLinesFor, type Line } from './basement-scenarios';
+import { BACKTRACK, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type Line } from './basement-scenarios';
 import { createSvg, randomSeed, roughSvg, roundCaps, type RoughOptions } from '../../lib/rough';
 
 /** Share of lines that show typing dots before the text. */
@@ -25,6 +25,12 @@ const recall = (): Memory => {
 
 /** How many times the last two drafts had been tossed before this page load. */
 export const timesThrown = (): number => recall().throws;
+
+/** First-ever knockers take four clicks to get in; anyone who has knocked before takes three. */
+export const knocksToOpen = (): number => (recall().knocks === 0 ? 4 : 3);
+
+/** What comes up through the floor on each knock; the first-ever knocker gets the original lines. */
+export const knockLines = (): string[] => knockLinesFor(recall().knocks, pickIndex);
 
 const remember = () => {
   try {
