@@ -56,12 +56,32 @@ export const RoughArrow = ({ dir, style, still }: RoughArrowProps) => {
         draw();
       }, 160);
     };
+    // Touch has no hover: play the animation for a moment after a tap.
+    let tap: number | undefined;
+    const press = (e: Event) => {
+      if ((e as PointerEvent).pointerType === 'mouse') return;
+      clearTimeout(tap);
+      host.setAttribute('data-rplay', '');
+      enter();
+      tap = window.setTimeout(() => {
+        host.removeAttribute('data-rplay');
+        stop();
+      }, 900);
+    };
+    // Releasing a touch fires an emulated mouseleave; let the tap timer end it.
+    const leave = () => {
+      if (!host.hasAttribute('data-rplay')) stop();
+    };
     host.addEventListener('mouseenter', enter);
-    host.addEventListener('mouseleave', stop);
+    host.addEventListener('mouseleave', leave);
+    host.addEventListener('pointerdown', press);
     return () => {
       stop();
+      clearTimeout(tap);
+      host.removeAttribute('data-rplay');
+      host.removeEventListener('pointerdown', press);
       host.removeEventListener('mouseenter', enter);
-      host.removeEventListener('mouseleave', stop);
+      host.removeEventListener('mouseleave', leave);
     };
   }, [dir, still]);
 

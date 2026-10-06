@@ -123,9 +123,9 @@ a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% 0 -20% 0);transfor
 [data-rarrow]>svg{grid-area:1/1;width:100%;height:100%;overflow:visible;display:block;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
 [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% -30%)}
 [data-rarrow]>[data-ar]{clip-path:inset(-30% 130% -30% -30%);transform:translateX(-4px)}
-a:hover [data-rarrow]>[data-ac],button:hover [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% 130%);transform:translateX(4px)}
-a:hover [data-rarrow]>[data-ar],button:hover [data-rarrow]>[data-ar]{clip-path:inset(-30% -30% -30% -30%);transform:rotate(-4deg)}
-a:hover [data-rarrow][data-still]>[data-ac],button:hover [data-rarrow][data-still]>[data-ac]{clip-path:inset(-30% -30% -30% -30%);transform:none}
+a:hover [data-rarrow]>[data-ac],button:hover [data-rarrow]>[data-ac],[data-rplay] [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% 130%);transform:translateX(4px)}
+a:hover [data-rarrow]>[data-ar],button:hover [data-rarrow]>[data-ar],[data-rplay] [data-rarrow]>[data-ar]{clip-path:inset(-30% -30% -30% -30%);transform:rotate(-4deg)}
+a:hover [data-rarrow][data-still]>[data-ac],button:hover [data-rarrow][data-still]>[data-ac],[data-rplay] [data-rarrow][data-still]>[data-ac]{clip-path:inset(-30% -30% -30% -30%);transform:none}
 @media (prefers-reduced-motion:reduce){[data-ms],[data-mc],[data-rarrow]>svg{transition:none}}
 
 [data-rule]{flex:1 1 40px;height:10px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 10' preserveAspectRatio='none'><path d='M0 5 C40 1 70 9 120 5 S190 2 240 6 S330 8 400 4' fill='none' stroke='%233B3A55' stroke-width='2.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
