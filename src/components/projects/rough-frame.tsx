@@ -9,6 +9,9 @@ type RoughFrameProps = {
   imageRef: RefObject<HTMLElement | null>;
 };
 
+/** Depth of the extruded shadow drawn while hovered. */
+const D = 10;
+
 /** Hand-drawn border plus image divider that boils between three frames while the card is hovered. */
 export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
   const ref = useRef<HTMLSpanElement>(null);
@@ -43,6 +46,10 @@ export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
         const o = { stroke: '#3B3A55', strokeWidth: 2.2, roughness: 1.1, bowing: 1.2, seed: base + n * 13 };
         g.appendChild(rc.rectangle(1.5, 1.5, w - 3, h - 3, o));
         g.appendChild(rc.line(1.5, y, w - 1.5, y + (n - 1) * 0.8, { ...o, seed: o.seed + 5 }));
+        // Extruded shadow, redrawn each frame so it boils with the border.
+        const so = { ...o, strokeWidth: 1.6, seed: o.seed + 9, fill: '#3B3A55', fillStyle: 'hachure', hachureGap: 3, fillWeight: 1 };
+        g.appendChild(rc.polygon([[w, 0], [w + D, D], [w + D, h + D], [w, h]], { ...so, fillStyle: 'solid' }));
+        g.appendChild(rc.polygon([[0, h], [D, h + D], [w + D, h + D], [w, h]], { ...so, seed: so.seed + 3 }));
         roundCaps(g);
         g.style.display = n ? 'none' : '';
         svg.appendChild(g);

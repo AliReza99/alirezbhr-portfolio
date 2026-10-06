@@ -183,9 +183,9 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 [data-ext]::after{background:repeating-linear-gradient(135deg,#3B3A55 0 1px,transparent 1px 2.5px),#FBF6EF;clip-path:polygon(2px calc(100% - var(--e)),calc(100% - var(--e) - 2px) calc(100% - var(--e)),calc(100% - 3.5px) calc(100% - 1.5px),calc(var(--e) + .5px) calc(100% - 1.5px))}
 
 /* Selected work cards: doodle mode on hover. */
-[data-pcard]{--cd:5px;transition:--p .15s cubic-bezier(.2,.8,.2,1),rotate .5s cubic-bezier(.3,1.6,.5,1),--cd .5s cubic-bezier(.3,1.7,.5,1)!important}
-[data-pcard] [data-ext]{--e:calc(var(--cd) - var(--p))}
-[data-pcard]:hover,[data-pcard]:focus-visible{--cd:10px}
+[data-pcard]{transition:--p .15s cubic-bezier(.2,.8,.2,1),rotate .5s cubic-bezier(.3,1.6,.5,1)!important}
+[data-pcard] [data-ext]{transition:opacity .2s}
+[data-pcard]:hover [data-ext],[data-pcard]:focus-visible [data-ext]{opacity:0}
 [data-pface],[data-pimg]{transition:border-color .2s}
 [data-pcard]:hover [data-pface],[data-pcard]:focus-visible [data-pface]{border-color:transparent!important}
 [data-pcard]:hover [data-pimg],[data-pcard]:focus-visible [data-pimg]{border-bottom-color:transparent!important}
