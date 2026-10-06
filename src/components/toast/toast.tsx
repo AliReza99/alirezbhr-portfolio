@@ -21,7 +21,6 @@ export const Toast = () => {
     >
       <div className="toast__paper">
         <span data-ext="" aria-hidden="true" />
-        <span data-tape="" aria-hidden="true" style={{ '--tw': '96px', '--ta': '97deg' }} />
         <div className="toast__body">
           <div className="toast__text">
             <span className="toast__title">{fill(title, vars)}</span>
