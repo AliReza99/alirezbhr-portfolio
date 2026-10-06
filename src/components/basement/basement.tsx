@@ -8,6 +8,7 @@ import { BasementVoice } from './basement-voice';
 import { DRAFT_ROWS, DraftBox, THROWN_DRAFTS } from './draft-box';
 import { Lamp } from './lamp';
 import { SleepingCat } from './sleeping-cat';
+import { Spider } from './spider';
 import { throwBox } from './throw-box';
 import { useBasementTease } from './use-basement-tease';
 import './basement.css';
@@ -338,6 +339,7 @@ export const Basement = () => {
       <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
         <section ref={sectionRef} data-screen-label="Basement" aria-label="The basement" className="basement">
           <div ref={wallRef} aria-hidden="true" className="fill" />
+          <Spider open={open} dark={dark} holdStill={() => !!talkRef.current?.childElementCount} />
           <span ref={glowRef} data-bglow="" aria-hidden="true" className="basement__glow" />
           <span aria-hidden="true" className="basement__shade" />
           {!open && <span ref={hintRef} aria-hidden="true" className="basement__pull-hint" />}

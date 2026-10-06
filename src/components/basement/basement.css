@@ -387,6 +387,72 @@
   background: var(--paper);
 }
 
+/*
+ * Pinned where the wall sketch ends the cobweb's second spoke: the web's corner
+ * is 6px in and 34px down, the spoke runs at 120deg and she hangs 62% along it.
+ */
+.spider {
+  --web-ln: min(110px, 22vw);
+  position: absolute;
+  z-index: 1;
+  top: calc(34px + var(--web-ln) * 0.537);
+  right: calc(6px + var(--web-ln) * 0.31);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  color: var(--paper);
+  transform-origin: 50% 0;
+  /* Hides the spare thread above the web as she reels up. */
+  clip-path: inset(0 -24px -160px);
+  animation: spider-sway 5s ease-in-out infinite alternate;
+}
+
+.basement-wrap[inert] .spider {
+  animation: none;
+}
+
+.spider__drop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: 0 46px;
+}
+
+.spider__thread {
+  position: absolute;
+  left: -0.5px;
+  bottom: 0;
+  width: 1px;
+  height: 160px;
+  background: rgba(251, 246, 239, 0.28);
+}
+
+.spider__body {
+  position: absolute;
+  left: -11px;
+  top: -1px;
+  width: 22px;
+  height: 16.5px;
+  opacity: 0.45;
+  transform-origin: 50% 35%;
+}
+
+@keyframes spider-sway {
+  from {
+    rotate: -2deg;
+  }
+
+  to {
+    rotate: 2deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spider {
+    animation: none;
+  }
+}
+
 .basement__floor {
   position: relative;
   z-index: 2;

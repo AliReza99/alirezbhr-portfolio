@@ -53,7 +53,7 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
       for (let i = 0; i < 3; i++)
         for (let j = 0; j < 3 - (i % 2); j++) if ((i + j + q) % 4) r.push(rc.rectangle(x + j * 46 + (i % 2) * 23, y + i * 22, 42, 18, st));
     });
-    // Cobweb in the top-right corner, with a spider.
+    // Cobweb in the top-right corner. The spider hangs from the second spoke; `.spider` repeats these numbers.
     const cx = w - 6;
     const cy = 34;
     const ln = Math.min(110, w * 0.22);
@@ -61,10 +61,6 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
     const an = [95, 120, 145, 170].map((a) => (a * Math.PI) / 180);
     an.forEach((a) => r.push(rc.line(cx, cy, cx + Math.cos(a) * ln, cy + Math.sin(a) * ln, web)));
     [0.35, 0.62, 0.9].forEach((t) => r.push(rc.curve(an.map((a) => [cx + Math.cos(a) * ln * t, cy + Math.sin(a) * ln * t] as [number, number]), web)));
-    const sx = cx + Math.cos(an[1]) * ln * 0.62;
-    const sy = cy + Math.sin(an[1]) * ln * 0.62;
-    r.push(rc.line(sx, sy, sx, sy + 46, web));
-    r.push(rc.circle(sx, sy + 50, 8, o({ stroke: 'rgba(251,246,239,.4)', fill: 'rgba(251,246,239,.4)', fillStyle: 'solid' })));
     // A crack.
     r.push(
       rc.linearPath(
