@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Alireza Bahrani — Frontend Engineer (Mobile)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;family=Geist+Mono:wght@400;500&amp;family=Caveat:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#FBF6EF;color:#3B3A55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+::selection{background:#3B3A55;color:#FBF6EF}
+#tv-static{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:-1;opacity:.035;image-rendering:pixelated}
+[data-morph]{overflow:hidden;padding:.15em 0;margin:-.15em 0}
+[data-ms],[data-mc]{grid-area:1/1;white-space:nowrap;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
+[data-ms]{clip-path:inset(-10% 0 -10% 0)}
+[data-mc]{font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none;font-weight:600;font-size:1.35em;line-height:1;margin:-.2em 0;justify-self:center;align-self:center;clip-path:inset(-20% 100% -20% 0);transform:translateX(-8px) rotate(-3deg)}
+a:hover [data-ms],button:hover [data-ms]{clip-path:inset(-10% 0 -10% 100%);transform:translateX(8px)}
+a:hover [data-mc],button:hover [data-mc]{clip-path:inset(-20% 0 -20% 0);transform:rotate(-3deg)}
+[data-rarrow]{display:inline-grid}
+[data-rarrow]>svg{grid-area:1/1;width:100%;height:100%;overflow:visible;display:block;transition:clip-path .25s cubic-bezier(.65,0,.15,1),transform .25s cubic-bezier(.65,0,.15,1)}
+[data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% -30%)}
+[data-rarrow]>[data-ar]{clip-path:inset(-30% 130% -30% -30%);transform:translateX(-4px)}
+a:hover [data-rarrow]>[data-ac],button:hover [data-rarrow]>[data-ac]{clip-path:inset(-30% -30% -30% 130%);transform:translateX(4px)}
+a:hover [data-rarrow]>[data-ar],button:hover [data-rarrow]>[data-ar]{clip-path:inset(-30% -30% -30% -30%);transform:rotate(-4deg)}
+@media (prefers-reduced-motion:reduce){[data-ms],[data-mc],[data-rarrow]>svg{transition:none}}
+
+[data-wob]{filter:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='w' x='-5%' y='-5%' width='110%' height='110%'><feTurbulence type='fractalNoise' baseFrequency='.02' numOctaves='2' seed='7'/><feDisplacementMap in='SourceGraphic' scale='5'/></filter></svg>#w")}
+[data-rule]{flex:1 1 40px;height:10px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 10' preserveAspectRatio='none'><path d='M0 5 C40 1 70 9 120 5 S190 2 240 6 S330 8 400 4' fill='none' stroke='%233B3A55' stroke-width='2.5' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
+[data-tick]{width:14px;height:14px;opacity:1;transform:rotate(-8deg);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M7.4 4.3 C9.4 4.1 10.4 5.9 10 7.7 C9.6 9.5 7.5 10.2 5.9 9.5 C4.4 8.8 4.1 6.6 5.3 5.3 C5.9 4.7 6.6 4.4 7.4 4.3 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M7.2 3.9 C9.6 3.6 11 5.7 10.4 7.8 C9.9 9.8 7.4 10.6 5.6 9.8 C3.9 9 3.7 6.4 5 5 C5.7 4.3 6.9 4.1 8 4.4' fill='none' stroke='%233B3A55' stroke-width='1.1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+2) [data-tick]{transform:rotate(12deg) translateY(.5px);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M5.2 7.1 C5.3 5.6 6.8 4.7 8.2 5.2 C9.6 5.8 9.8 7.9 8.7 9 C7.6 10 5.8 9.8 5.3 8.5 C5.1 8 5.1 7.5 5.2 7.1 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M4.7 7.4 C4.8 5.4 6.7 4.2 8.4 4.9 C10.1 5.6 10.2 8.1 8.9 9.3 C7.6 10.5 5.4 10.1 4.9 8.6' fill='none' stroke='%233B3A55' stroke-width='1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+3) [data-tick]{transform:rotate(-3deg) translateX(.5px);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M5 6.8 C5.4 5.3 7.1 4.6 8.5 5.3 C9.8 6.1 9.8 8.1 8.6 9.1 C7.4 10 5.5 9.5 5.1 8.1 C5 7.6 4.9 7.2 5 6.8 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M4.6 6.6 C5 4.9 7.1 4 8.7 4.9 C10.3 5.8 10.3 8.3 8.8 9.5 C7.4 10.6 5.1 10 4.6 8.2 C4.5 7.8 4.6 7.3 4.8 7' fill='none' stroke='%233B3A55' stroke-width='1.2' stroke-linecap='round'/></svg>") center/contain no-repeat}
+li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M6.5 4.8 C8.3 4.4 9.8 6 9.5 7.8 C9.2 9.4 7.2 10.2 5.8 9.3 C4.6 8.5 4.6 6.6 5.6 5.6 C5.9 5.2 6.2 4.9 6.5 4.8 Z' fill='%233B3A55' fill-opacity='.88'/><path d='M6.3 4.3 C8.5 3.9 10.3 5.8 9.9 7.9 C9.5 9.9 7.1 10.8 5.5 9.7 C4 8.7 4.1 6.4 5.3 5.3' fill='none' stroke='%233B3A55' stroke-width='1.1' stroke-linecap='round'/></svg>") center/contain no-repeat}
+[data-dash]{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 6' preserveAspectRatio='none'><path d='M2 3.2 L13 2.8 M20 3 L30.5 3.6 M38 3.4 L47 2.6 M55 2.9 L66.5 3.3 M73 3.7 L82 3.1 M89.5 2.7 L101 3.2 M108 3.5 L117.5 2.9' fill='none' stroke='%233B3A55' stroke-opacity='.12' stroke-width='1.3' stroke-linecap='round'/></svg>") left top/120px 6px repeat-x}
+[data-under]{position:relative;display:inline-block}
+[data-under]::after{content:"";position:absolute;left:-2%;right:-2%;bottom:-.1em;height:.26em;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'><path d='M2 12 C30 4 50 18 90 10 S150 5 198 11' fill='none' stroke='%23F4916B' stroke-width='7' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
+[data-circ]{position:relative;display:inline-block}
+[data-circ]::after{content:"";position:absolute;inset:-12px -18px;pointer-events:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M60 4 C25 3 4 18 8 34 C12 52 60 58 98 50 C124 42 118 12 70 5 C50 2 30 6 22 12' fill='none' stroke='%23F4916B' stroke-width='3' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>") center/100% 100% no-repeat}
+[data-hl]{padding:.08em .12em;margin:0 -.12em;border-radius:.2em .6em .25em .5em;background:linear-gradient(104deg,transparent 0,rgba(122,106,232,.14) 2%,rgba(122,106,232,.14) 98%,transparent 100%) 0 70%/100% 100% no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+[data-tape]{position:absolute;top:-13px;left:50%;width:var(--tw,110px);height:30px;margin-left:calc(var(--tw,110px) / -2);z-index:3;pointer-events:none;background:linear-gradient(var(--ta,100deg),rgba(255,255,255,.18),transparent 40%,rgba(255,255,255,.1) 70%,rgba(0,0,0,.04)),var(--tc,#F6AE8C);opacity:.93;transform:rotate(var(--tr,-3deg));clip-path:var(--tp,polygon(0 8%,96% 0,99% 14%,95% 34%,100% 52%,95% 72%,99% 86%,97% 100%,2% 100%,0 88%,4% 66%,0 48%,4% 28%))}
+[data-arrow]{display:block;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' ><path d='M32 37 C35 21 24 12 8 6 M8 6 L9 18 M8 6 L20 9' fill='none' stroke='%233B3A55' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat}
+[data-star]{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' ><path d='M32 6 L33 24 M32 58 L31 40 M6 32 L24 31 M58 33 L40 32 M14 14 L26 26 M50 50 L38 38 M50 14 L38 26 M14 50 L26 38' fill='none' stroke='%23F4916B' stroke-width='4' stroke-linecap='round'/></svg>") center/contain no-repeat}
+#work [data-hl]{background-size:0% 100%;transition:background-size .6s cubic-bezier(.65,0,.15,1)}
+#work [data-hl][data-hl-on]{background-size:100% 100%}
+@media (prefers-reduced-motion:reduce){#work [data-hl]{transition:none}}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+</style>
+<script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+</helmet>
+<div style="min-height:100vh; color:#3B3A55; font-family:'Archivo',sans-serif; font-size:16px; line-height:1.6;">
+
+<main style="max-width:430px; margin:0 auto; padding:0 20px; box-sizing:border-box; display:flex; flex-direction:column; gap:72px; padding-bottom:72px;">
+
+<section id="top" data-screen-label="Hero" style="padding-top:64px; display:flex; flex-direction:column; gap:28px; position:relative;">
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <span style="align-self:flex-start; font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:26px; line-height:1; color:#5A49D6; transform:rotate(-3deg);">Hi, I'm Alireza Bahrani</span>
+    <h1 style="margin:0; max-width:30ch; color:#3B3A55; font-weight:700; font-stretch:80%; font-size:30px; line-height:1.2; letter-spacing:-.01em; text-wrap:balance;">Frontend engineer who loves building fast, scalable applications.</h1>
+  </div>
+  <div style="display:grid; gap:16px; padding:0 4px 4px 0;">
+    <a href="mailto:alirezawbhr@gmail.com" style="position:relative; display:flex; isolation:isolate;">
+      <span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #F5F1E6; transform:translate(4px,4px);"></span>
+      <span style="position: relative; flex: 1; display: flex; align-items: center; justify-content: center; gap: 14px; padding: 15px 26px; border: 2px solid #3B3A55; color: #3B3A55; font-size: 17px; line-height: 1.2; white-space: nowrap; transition: transform .15s cubic-bezier(.2,.8,.2,1); background-color: #A89AFE" style-hover="transform:translate(3px,3px);" style-active="transform:translate(6px,6px);"><span data-morph="" style="display:inline-grid;"><span data-ms="">Get in touch</span><span data-mc="" aria-hidden="true">Get in touch</span></span><span data-rarrow="e" style="display:grid; width:1.1em; height:1em; flex:none;"></span></span></a>
+    <a href="https://alirezbhr.site/resume/alireza-bahrani-resume.pdf" target="_blank" rel="noopener" style="position:relative; display:flex; isolation:isolate;">
+      <span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #F5F1E6; transform:translate(4px,4px);"></span>
+      <span style="position:relative; flex:1; display:flex; align-items:center; justify-content:center; gap:14px; padding:15px 26px; border:2px solid #3B3A55; background:#FFFDF8; color:#3B3A55; font-size:17px; line-height:1.2; white-space:nowrap; transition:transform .15s cubic-bezier(.2,.8,.2,1);" style-hover="transform:translate(3px,3px);" style-active="transform:translate(6px,6px);"><span data-morph="" style="display:inline-grid;"><span data-ms="">Resume</span><span data-mc="" aria-hidden="true">Resume</span></span><span data-rarrow="ne" style="display:grid; width:1em; height:1em; flex:none;"></span></span>
+    </a>
+  </div>
+</section>
+
+<section id="about" data-screen-label="About" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">About</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">the short version</span>
+    <span data-rule=""></span>
+  </div>
+  <p style="margin:0; max-width:64ch; font-size:16px; line-height:1.7; color:#6A6884; letter-spacing:-.015em; text-wrap:pretty;">I've spent 6 years building enterprise apps and automating myself out of boring work. Scaled small applications to super-application, achieved 12x performance improvements, built refactoring tools that save weeks. Outside code, I'm either reading existentialist literature, running until my knees give up, or getting lost in mountains (usually on purpose).</p>
+</section>
+
+<section id="work" data-screen-label="Experience" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">Experience</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">where I've worked</span>
+    <span data-rule=""></span>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:22px;">
+    <article style="position:relative; isolation:isolate;">
+      <div data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+      <div style="position:relative; border:2px solid #3B3A55; background:#FFFCF7;">
+        <button type="button" onClick="{{ t0 }}" aria-expanded="{{ exp0 }}" style="width:100%; display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px; padding:18px 18px; border:0; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer;">
+          <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:6px;">
+            <h3 style="margin:0; font-weight:600; font-size:19px; line-height:1.25; letter-spacing:-.015em;">Senior Frontend Engineer</h3>
+            <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; line-height:1.3; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#5A49D6;">Delinternet Telecom</span>
+            <p style="margin:0; max-width:92ch; color:#6A6884; font-size:15px; line-height:1.55; text-wrap:pretty;">Led frontend architecture for an enterprise ISP platform serving 14,000 active clients.</p>
+          </div>
+          <span aria-hidden="true" style="flex:none; position:relative; width:30px; height:30px; margin-top:-1px; border:2px solid #3B3A55; background:#FFFDF8; box-sizing:border-box;">
+            <span style="position:absolute; left:6px; right:6px; top:50%; height:2px; margin-top:-1px; background:#3B3A55;"></span>
+            <span style="position:absolute; top:6px; bottom:6px; left:50%; width:2px; margin-left:-1px; background:#3B3A55; transform:rotate({{ rot0 }}); transition:transform .25s cubic-bezier(.65,0,.15,1);"></span>
+          </span>
+        </button>
+        <div style="display:grid; grid-template-rows:{{ rows0 }}; transition:grid-template-rows .3s cubic-bezier(.65,0,.15,1);">
+          <div style="min-height:0; overflow:hidden;">
+            <ul data-dash="" style="margin:0 18px; padding:16px 0 20px; list-style:none; display:flex; flex-direction:column; gap:10px;">
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Architected scalable infrastructure that grew the platform <strong data-hl="" style="font-weight:600;">from 5 to 18 sub-applications and 300+ pages</strong>.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Architected <strong data-hl="" style="font-weight:600;">multi-backend</strong> abstraction layer integrating 6 different backend services with different auth and data models.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Built npm package for <strong data-hl="" style="font-weight:600;">translation completeness linting</strong> and automated translation generation across multiple languages.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Re-implemented MUI components in TailwindCSS, achieving up to <strong data-hl="" style="font-weight:600;">12x faster render</strong> times, reducing bundle size by <strong data-hl="" style="font-weight:600;">20%</strong>.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Developed <strong data-hl="" style="font-weight:600;">JSCodeShift codemods</strong>, reducing large-scale migrations from weeks to seconds.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Implemented task management and time tracking system, enabling operations to scale <strong data-hl="" style="font-weight:600;">from 3 to 18 engineers</strong>.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Achieved <strong data-hl="" style="font-weight:600;">30% faster CI builds</strong> by rewriting build scripts in Deno.js.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article style="position:relative; isolation:isolate;">
+      <div data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+      <div style="position:relative; border:2px solid #3B3A55; background:#FFFCF7;">
+        <button type="button" onClick="{{ t1 }}" aria-expanded="{{ exp1 }}" style="width:100%; display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px; padding:18px 18px; border:0; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer;">
+          <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:6px;">
+            <h3 style="margin:0; font-weight:600; font-size:19px; line-height:1.25; letter-spacing:-.015em;">Frontend Web Developer</h3>
+            <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; line-height:1.3; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#5A49D6;">Delinternet Telecom</span>
+            <p style="margin:0; max-width:92ch; color:#6A6884; font-size:15px; line-height:1.55; text-wrap:pretty;">Engineered a large-scale ISP platform, delivering <strong style="font-weight:600; color:#3B3A55;">CRM</strong>, <strong style="font-weight:600; color:#3B3A55;">HRMS</strong>, <strong style="font-weight:600; color:#3B3A55;">analytics</strong>, <strong style="font-weight:600; color:#3B3A55;">invoicing</strong>, <strong style="font-weight:600; color:#3B3A55;">payments</strong>, and <strong style="font-weight:600; color:#3B3A55;">admin panels</strong>.</p>
+          </div>
+          <span aria-hidden="true" style="flex:none; position:relative; width:30px; height:30px; margin-top:-1px; border:2px solid #3B3A55; background:#FFFDF8; box-sizing:border-box;">
+            <span style="position:absolute; left:6px; right:6px; top:50%; height:2px; margin-top:-1px; background:#3B3A55;"></span>
+            <span style="position:absolute; top:6px; bottom:6px; left:50%; width:2px; margin-left:-1px; background:#3B3A55; transform:rotate({{ rot1 }}); transition:transform .25s cubic-bezier(.65,0,.15,1);"></span>
+          </span>
+        </button>
+        <div style="display:grid; grid-template-rows:{{ rows1 }}; transition:grid-template-rows .3s cubic-bezier(.65,0,.15,1);">
+          <div style="min-height:0; overflow:hidden;">
+            <ul data-dash="" style="margin:0 18px; padding:16px 0 20px; list-style:none; display:flex; flex-direction:column; gap:10px;">
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Reduced <strong data-hl="" style="font-weight:600;">bundle size by 28%</strong> by rearchitecting the entire i18n layer.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Achieved <strong data-hl="" style="font-weight:600;">3x faster initial load</strong> by fixing render-blocking bottlenecks found by profiling.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Built <strong data-hl="" style="font-weight:600;">filesystem routing with link prefetching</strong> inside CRA via <strong data-hl="" style="font-weight:600;">custom webpack loader</strong>, eliminating per-route boilerplate.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Built a <strong data-hl="" style="font-weight:600;">multi-language</strong>, <strong data-hl="" style="font-weight:600;">multi-theme</strong>, responsive application with action-level access control.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Developed a <strong data-hl="" style="font-weight:600;">JSON-configurable form and page builder</strong> with 30+ input types.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article style="position:relative; isolation:isolate;">
+      <div data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+      <div style="position:relative; border:2px solid #3B3A55; background:#FFFCF7;">
+        <button type="button" onClick="{{ t2 }}" aria-expanded="{{ exp2 }}" style="width:100%; display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px; padding:18px 18px; border:0; background:none; color:inherit; font:inherit; text-align:left; cursor:pointer;">
+          <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:6px;">
+            <h3 style="margin:0; font-weight:600; font-size:19px; line-height:1.25; letter-spacing:-.015em;">Frontend Web Developer</h3>
+            <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; line-height:1.3; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#5A49D6;">TEDxShirazUniversity</span>
+            <p style="margin:0; max-width:92ch; color:#6A6884; font-size:15px; line-height:1.55; text-wrap:pretty;">Built the TEDxShirazUniversity web application, building features to support events, registrations, and content delivery.</p>
+          </div>
+          <span aria-hidden="true" style="flex:none; position:relative; width:30px; height:30px; margin-top:-1px; border:2px solid #3B3A55; background:#FFFDF8; box-sizing:border-box;">
+            <span style="position:absolute; left:6px; right:6px; top:50%; height:2px; margin-top:-1px; background:#3B3A55;"></span>
+            <span style="position:absolute; top:6px; bottom:6px; left:50%; width:2px; margin-left:-1px; background:#3B3A55; transform:rotate({{ rot2 }}); transition:transform .25s cubic-bezier(.65,0,.15,1);"></span>
+          </span>
+        </button>
+        <div style="display:grid; grid-template-rows:{{ rows2 }}; transition:grid-template-rows .3s cubic-bezier(.65,0,.15,1);">
+          <div style="min-height:0; overflow:hidden;">
+            <ul data-dash="" style="margin:0 18px; padding:16px 0 20px; list-style:none; display:flex; flex-direction:column; gap:10px;">
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Developed event pages and a blog section to share TEDx event announcements and articles.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Implemented real-time streaming for TEDx events.</span></li>
+              <li style="display:grid; grid-template-columns:22px minmax(0,1fr); font-size:15px; line-height:1.55;"><span data-tick="" style="margin-top:5px;"></span><span style="text-wrap:pretty;">Built a registration process for attendees.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="projects" data-screen-label="Selected Work" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">Selected Work</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">stuff I'm proud of</span>
+    <span data-rule=""></span>
+  </div>
+  
+  <div style="display:grid; grid-template-columns:minmax(0,1fr); gap:28px;">
+    <a href="https://alirezbhr.site/blog/notewise" target="_blank" rel="noopener" style="position:relative; isolation:isolate; display:block;">
+      
+      <div data-wob="" style="position:absolute; inset:0; border-radius:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+      <div style="position:relative; height:100%; box-sizing:border-box; display:flex; flex-direction:column; border-radius:0; border:2px solid #3B3A55; background:#FFFCF7; overflow:hidden; transition:transform .18s cubic-bezier(.2,.8,.2,1);" style-hover="transform:translate(2px,2px);">
+        <div style="position:relative; aspect-ratio:16/10; border-bottom:2px solid #3B3A55; background-image:repeating-linear-gradient(135deg, rgba(59,58,85,.08) 0 1px, transparent 1px 9px); background-color:#EFEAE2;">
+          <img src="https://alirezbhr.site/assets/notewise-og.jpeg" alt="Notewise" onError="{{ hideImg }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding:18px 18px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">
+            <h3 style="margin:0; font-weight:600; font-size:19px; line-height:1.3; letter-spacing:-.01em;">Notewise</h3>
+          </div>
+          <p style="margin:0; font-size:15px; line-height:1.5; color:#6A6884; text-wrap:pretty;">Your personal library for books, notes, highlights and scanned pages.</p>
+          <span style="margin-top:auto; padding-top:6px; font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; line-height:1.7; color:#6A6884;">React · Hono · Typescript · Claude Code · Claude Design · PNPM · TailwindCSS</span>
+          <span style="position:relative; isolation:isolate; align-self:flex-start; display:inline-flex; margin-top:10px;"><span style="position:relative; display:flex; align-items:center; gap:10px; padding:12px 18px; border:2px solid #3B3A55; background:#FFFDF8; color:#3B3A55; font-size:15px; line-height:1.2; font-weight:500; white-space:nowrap;">Read more<span data-rarrow="e" style="display:grid; width:1em; height:1em; flex:none;"></span></span></span>
+        </div>
+      </div>
+    </a>
+    <a href="https://alirezbhr.site/blog/a-frontend-architecture" target="_blank" rel="noopener" style="position:relative; isolation:isolate; display:block;">
+      
+      <div data-wob="" style="position:absolute; inset:0; border-radius:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+      <div style="position:relative; height:100%; box-sizing:border-box; display:flex; flex-direction:column; border-radius:0; border:2px solid #3B3A55; background:#FFFCF7; overflow:hidden; transition:transform .18s cubic-bezier(.2,.8,.2,1);" style-hover="transform:translate(2px,2px);">
+        <div style="position:relative; aspect-ratio:16/10; border-bottom:2px solid #3B3A55; background-image:repeating-linear-gradient(135deg, rgba(59,58,85,.08) 0 1px, transparent 1px 9px); background-color:#EFEAE2;">
+          <img src="https://alirezbhr.site/assets/hub-showcase7.jpg" alt="Scaling a frontend platform to 18 apps" onError="{{ hideImg }}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding:18px 18px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">
+            <h3 style="margin:0; font-weight:600; font-size:19px; line-height:1.3; letter-spacing:-.01em;">Scaling a frontend platform to 18 apps</h3>
+          </div>
+          <p style="margin:0; font-size:15px; line-height:1.5; color:#6A6884; text-wrap:pretty;">Four years. One codebase. A platform that kept growing faster than the tools that managed it - and what I built to keep up.</p>
+          <span style="margin-top:auto; padding-top:6px; font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; line-height:1.7; color:#6A6884;">React · Next.js · Typescript · Turborepo · PNPM · TailwindCSS</span>
+          <span style="position:relative; isolation:isolate; align-self:flex-start; display:inline-flex; margin-top:10px;"><span style="position:relative; display:flex; align-items:center; gap:10px; padding:12px 18px; border:2px solid #3B3A55; background:#FFFDF8; color:#3B3A55; font-size:15px; line-height:1.2; font-weight:500; white-space:nowrap;">Read more<span data-rarrow="e" style="display:grid; width:1em; height:1em; flex:none;"></span></span></span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="skills" data-screen-label="Skills" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">Skills</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">my toolbox</span>
+    <span data-rule=""></span>
+  </div>
+  <div style="position:relative; isolation:isolate;">
+    <div data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+    <div style="position:relative; border:2px solid #3B3A55; background:#FFFCF7; padding:20px;">
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:20px;">
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>Core</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span style="display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px;"><span><strong data-hl="" style="font-weight:600;">React</strong><span aria-hidden="true" style="color:#5A49D6;"> · </span><strong data-hl="" style="font-weight:600;">Typescript</strong><span aria-hidden="true" style="color:#5A49D6;"> · </span><strong data-hl="" style="font-weight:600;">Next.js</strong></span><span style="display:flex; align-items:center; gap:6px; font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:22px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);"><svg aria-hidden="true" width="30" height="14" viewBox="0 0 64 30" style="flex:none;"><path d="M62 18 C50 6 28 4 6 14 M6 14 L19 4 M6 14 L21 24" fill="none" stroke="#5A49D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>daily drivers</span></span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>State &amp; Data</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>TanStack Query<span aria-hidden="true" style="color:#5A49D6;"> · </span>Zustand</span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>UI &amp; Styling</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>TailwindCSS<span aria-hidden="true" style="color:#5A49D6;"> · </span>MUI<span aria-hidden="true" style="color:#5A49D6;"> · </span>Shadcn</span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>Tooling</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>Turborepo<span aria-hidden="true" style="color:#5A49D6;"> · </span>Custom Webpack Loader<span aria-hidden="true" style="color:#5A49D6;"> · </span>JSCodeShift<span aria-hidden="true" style="color:#5A49D6;"> · </span>NPM Packages<span aria-hidden="true" style="color:#5A49D6;"> · </span>Claude Code</span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>Testing</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>Vitest<span aria-hidden="true" style="color:#5A49D6;"> · </span>Playwright</span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>Infra &amp; CI</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>Docker<span aria-hidden="true" style="color:#5A49D6;"> · </span>Kubernetes<span aria-hidden="true" style="color:#5A49D6;"> · </span>Gitlab CI</span></div>
+        </li>
+        <li style="display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px;">
+          <span style="display:flex; align-items:center; gap:8px; min-height:23px; font-family:'Geist Mono',ui-monospace,monospace; font-size:13px; line-height:1; font-weight:500; letter-spacing:.06em; text-transform:uppercase; color:#3B3A55;"><span data-rbullet="" style="flex:none; display:inline-block; width:16px; height:16px;"></span>Real-time &amp; 3D</span>
+          <div style="padding-left:24px; font-size:15px; line-height:1.55; color:#3B3A55; text-wrap:pretty;"><span>WebRTC<span aria-hidden="true" style="color:#5A49D6;"> · </span>Three.js</span></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="education" data-screen-label="Education" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">Education</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">where it started</span>
+    <span data-rule=""></span>
+  </div>
+  <div style="position:relative; isolation:isolate;">
+    <div data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #FBF6EF; transform:translate(4px,4px);"></div>
+    <div style="position:relative; display:grid; grid-template-columns:14px minmax(0,1fr); border:2px solid #3B3A55; background:#FFFCF7;">
+      <div aria-hidden="true" style="border-right:2px solid #3B3A55; background:repeating-linear-gradient(135deg, rgba(59,58,85,.35) 0 1px, transparent 1px 6px), #EFEAE2;"></div>
+      <div style="display:flex; flex-direction:column; gap:6px; min-width:0; padding:18px 20px;">
+        <h3 style="margin:0; color:#3B3A55; font-weight:700; font-size:18px; line-height:1.25; letter-spacing:-.01em; text-wrap:balance;">Shiraz University</h3>
+        <span style="font-size:15px; line-height:1.4; color:#3B3A55;">B.Sc. Computer Engineering</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Contact" style="scroll-margin-top:96px; display:flex; flex-direction:column; gap:24px;">
+  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;">
+    <h2 style="margin:0; color:#3B3A55; font-weight:800; font-size:26px; line-height:1.1; letter-spacing:-.01em; text-transform:uppercase; font-stretch:112%;">Get in Touch</h2>
+    <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:24px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">say hi!</span>
+    <span data-rule=""></span>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <p style="margin:0; max-width:52ch; color:#3B3A55; font-weight:400; font-size:17px; line-height:1.6; text-wrap:pretty;">Interested in working together? Drop me a message and I'll get back to you soon.</p>
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:18px 20px;">
+      <a href="mailto:alirezawbhr@gmail.com" style="font-weight:700; font-size:22px; line-height:1.1; letter-spacing:-.03em; text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:.14em; overflow-wrap:anywhere;">alirezawbhr@gmail.com</a>
+      <button type="button" onClick="{{ onCopy }}" style="position:relative; display:inline-flex; isolation:isolate; flex:none; padding:0; border:0; background:none; cursor:pointer; font-family:inherit;">
+        <span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #5A49D6 0 1px, transparent 1px 3px), #F5F1E6; transform:translate(5px,5px);"></span>
+        <span style="position:relative; display:flex; align-items:center; padding:12px 20px; border:2px solid #3B3A55; background:#FFFDF8; color:#3B3A55; font-size:15px; line-height:1.2; white-space:nowrap; transition:transform .15s cubic-bezier(.2,.8,.2,1);" style-hover="transform:translate(3px,3px);" style-active="transform:translate(5px,5px);"><span data-morph="" style="display:inline-grid;"><span data-ms="">{{ copyLabel }}</span><span data-mc="" aria-hidden="true">{{ copyLabel }}</span></span></span>
+      </button>
+      <span style="display:flex; align-items:center; gap:14px;">
+        <svg aria-hidden="true" width="40" height="19" viewBox="0 0 64 30" style="flex:none;"><path d="M62 18 C50 6 28 4 6 14 M6 14 L19 4 M6 14 L21 24" fill="none" stroke="#5A49D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <span style="font-family:'Caveat',cursive; user-select:none; -webkit-user-select:none; font-weight:700; font-size:20px; line-height:1; color:#5A49D6; white-space:nowrap; transform:rotate(-3deg);">fastest way to reach me</span>
+      </span>
+    </div>
+    <div style="height:2px; background:#3B3A55;"></div>
+    
+    <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding-bottom:24px;">
+      <a href="https://www.linkedin.com/in/alirezbhr" target="_blank" rel="noopener" style="position:relative; display:flex; isolation:isolate; --lift:0px; --face:transparent; --sh:0; --shd:.16s;" style-hover="--lift:-5px; --face:#FBF6EF; --sh:1; --shd:0s;" style-active="--lift:0px;"><span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #F5F1E6; opacity:var(--sh); transition:opacity 0s linear var(--shd);"></span><span style="position:relative; flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 10px; border:2px solid #3B3A55; background:var(--face); color:#3B3A55; font-size:15px; line-height:1.2; white-space:nowrap; transform:translate(var(--lift),var(--lift)); transition:transform .15s cubic-bezier(.2,.8,.2,1), background 0s linear var(--shd);"><span>LinkedIn</span><span style="line-height:1;">↗</span></span></a>
+      <a href="https://github.com/AliReza99" target="_blank" rel="noopener" style="position:relative; display:flex; isolation:isolate; --lift:0px; --face:transparent; --sh:0; --shd:.16s;" style-hover="--lift:-5px; --face:#FBF6EF; --sh:1; --shd:0s;" style-active="--lift:0px;"><span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #F5F1E6; opacity:var(--sh); transition:opacity 0s linear var(--shd);"></span><span style="position:relative; flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 10px; border:2px solid #3B3A55; background:var(--face); color:#3B3A55; font-size:15px; line-height:1.2; white-space:nowrap; transform:translate(var(--lift),var(--lift)); transition:transform .15s cubic-bezier(.2,.8,.2,1), background 0s linear var(--shd);"><span>GitHub</span><span style="line-height:1;">↗</span></span></a>
+      <a href="https://alirezbhr.site/resume/alireza-bahrani-resume.pdf" target="_blank" rel="noopener" style="position:relative; display:flex; isolation:isolate; --lift:0px; --face:transparent; --sh:0; --shd:.16s;" style-hover="--lift:-5px; --face:#FBF6EF; --sh:1; --shd:0s;" style-active="--lift:0px;"><span data-wob="" style="position:absolute; inset:0; border:2px solid #3B3A55; background:repeating-linear-gradient(135deg, #3B3A55 0 1px, transparent 1px 3px), #F5F1E6; opacity:var(--sh); transition:opacity 0s linear var(--shd);"></span><span style="position:relative; flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 10px; border:2px solid #3B3A55; background:var(--face); color:#3B3A55; font-size:15px; line-height:1.2; white-space:nowrap; transform:translate(var(--lift),var(--lift)); transition:transform .15s cubic-bezier(.2,.8,.2,1), background 0s linear var(--shd);"><span>Resume</span><span style="line-height:1;">↗</span></span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { copied: false, open: [true, false, false] };
+  componentDidMount() { this.initArrows(); this.initStatic(); }
+  initStatic() {
+    if (document.getElementById('tv-static')) return;
+    const c = document.createElement('canvas'); c.id = 'tv-static'; document.body.appendChild(c);
+    const ctx = c.getContext('2d'), S = 2, T = 160, N = 8;
+    const tiles = Array.from({ length: N }, () => {
+      const t = document.createElement('canvas'); t.width = t.height = T;
+      const tc = t.getContext('2d'), d = tc.createImageData(T, T), p = d.data;
+      for (let i = 0; i < p.length; i += 4) { const v = Math.random() * 255 | 0; p[i] = p[i+1] = p[i+2] = v; p[i+3] = 255; }
+      tc.putImageData(d, 0, 0); return ctx.createPattern(t, 'repeat');
+    });
+    const size = () => { c.width = Math.ceil(innerWidth / S); c.height = Math.ceil(innerHeight / S); };
+    size(); addEventListener('resize', size);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let last = 0, raf;
+    const draw = (now) => {
+      if (!reduce) raf = requestAnimationFrame(draw);
+      if (now - last < 1000 / 10) return; last = now;
+      const ox = Math.random() * T | 0, oy = Math.random() * T | 0;
+      ctx.setTransform(1, 0, 0, 1, -ox, -oy);
+      ctx.fillStyle = tiles[Math.random() * N | 0];
+      ctx.fillRect(0, 0, c.width + T, c.height + T);
+    };
+    if (reduce) draw(1e9); else raf = requestAnimationFrame(draw);
+    this.staticOff = () => { cancelAnimationFrame(raf); removeEventListener('resize', size); c.remove(); };
+  }
+  componentDidUpdate() { this.initArrows(); }
+  componentWillUnmount() { clearTimeout(this.cpT); clearTimeout(this.rT); (this.arrowOff || []).forEach(f => f()); this.staticOff && this.staticOff(); }
+  initArrows() {
+    if (!window.rough) { clearTimeout(this.rT); this.rT = setTimeout(() => this.initArrows(), 100); return; }
+    document.querySelectorAll('[data-rarrow]:not([data-rready])').forEach(el => this.setupArrow(el));
+    document.querySelectorAll('[data-rough]:not([data-rdone])').forEach(el => this.setupRough(el));
+    document.querySelectorAll('[data-rbullet]:not([data-rdone])').forEach(el => this.setupBullet(el));
+    this.initHl();
+  }
+  initHl() {
+    if (!this.hlIO) {
+      this.hlIO = new IntersectionObserver(es => es.forEach(e => {
+        const el = e.target;
+        if (e.isIntersecting) el.setAttribute('data-hl-on', '');
+        else { const g = el.closest('[style*="grid-template-rows"]'); if (g && g.style.gridTemplateRows === '0fr') el.removeAttribute('data-hl-on'); }
+      }), { threshold: 1 });
+      (this.arrowOff = this.arrowOff || []).push(() => this.hlIO.disconnect());
+    }
+    document.querySelectorAll('#work ul').forEach(ul => ul.querySelectorAll('[data-hl]:not([data-hl-w])').forEach((el, i) => {
+      el.setAttribute('data-hl-w', ''); el.style.transitionDelay = (220 + i * 50) + 'ms'; this.hlIO.observe(el);
+    }));
+  }
+  setupBullet(el) {
+    el.setAttribute('data-rdone', '');
+    const R = Math.random, s = 16, c = s / 2;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('viewBox', '0 0 16 16');
+    svg.style.cssText = 'width:16px;height:16px;overflow:visible;display:block;transform:rotate(' + Math.round(R() * 60 - 30) + 'deg)';
+    el.appendChild(svg);
+    const rc = rough.svg(svg);
+    const stroke = '#3B3A55';
+    const o = x => Object.assign({ stroke, strokeWidth: 1.6, roughness: 0.9 + R() * 1.2, bowing: R() * 2, seed: Math.floor(R() * 1e5) }, x);
+    const star = n => { const p = []; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n, r = i % 2 ? 3 : 7.5; p.push([c + r * Math.cos(a), c + r * Math.sin(a)]); } return p; };
+    const shapes = [
+      () => rc.polygon(star(5), o({ fill: stroke, fillStyle: 'zigzag', hachureGap: 2.2, fillWeight: 1 })),
+      () => rc.circle(c, c, 11, o({ fill: stroke, fillStyle: 'cross-hatch', hachureGap: 2.6, fillWeight: 1 })),
+      () => rc.polygon([[c, 1.5], [14.5, c], [c, 14.5], [1.5, c]], o({ fill: stroke, fillStyle: 'hachure', hachureGap: 2.4, hachureAngle: R() * 180 })),
+      () => rc.path('M8 1.5 V14.5 M1.5 8 H14.5 M3.4 3.4 L12.6 12.6 M12.6 3.4 L3.4 12.6', o({ strokeWidth: 1.5 })),
+      () => rc.path('M8 8 m0 0 c1.6 0 1.8 2.6 0 2.8 c-2.6 .2 -3.6 -3 -1.8 -4.8 c2.4 -2.4 6.6 -.6 6.6 2.6 c0 3.8 -4.4 5.8 -7.6 4', o({ strokeWidth: 1.5, roughness: 0.6 })),
+    ];
+    const g = shapes[Math.floor(R() * shapes.length)]();
+    g.querySelectorAll('path').forEach(p => { p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); });
+    svg.appendChild(g);
+  }
+  setupRough(el) {
+    el.setAttribute('data-rdone', '');
+    const type = el.dataset.rough, [px, py] = type === 'circle' ? [22, 12] : [6, 0];
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.cssText = `position:absolute;left:${-px}px;top:${-py}px;width:calc(100% + ${px * 2}px);height:calc(100% + ${py * 2}px);overflow:visible;pointer-events:none;z-index:${type === 'mark' ? -1 : 1}`;
+    el.appendChild(svg);
+    const draw = () => {
+      const { width: w, height: h } = svg.getBoundingClientRect();
+      if (!w || !h) return;
+      svg.innerHTML = '';
+      const rc = rough.svg(svg);
+      svg.appendChild(type === 'circle'
+        ? rc.ellipse(w / 2, h / 2, w, h, { stroke: '#F4916B', strokeWidth: 2.2, roughness: 1.6, bowing: 1.5, seed: 3 })
+        : rc.rectangle(0, h * .5, w, h * .42, { stroke: 'none', fill: '#C9C0FF', fillStyle: 'hachure', hachureGap: 4, fillWeight: 2.5, hachureAngle: -50, roughness: 1.4, seed: 5 }));
+    };
+    draw();
+    const ro = new ResizeObserver(draw); ro.observe(el);
+    (this.arrowOff = this.arrowOff || []).push(() => ro.disconnect());
+  }
+  setupArrow(el) {
+    el.setAttribute('data-rready', '');
+    const NS = 'http://www.w3.org/2000/svg', east = el.dataset.rarrow === 'e';
+    const mk = attr => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute(attr, ''); el.appendChild(s); return s; };
+    const crisp = mk('data-ac'), svg = mk('data-ar');
+    crisp.innerHTML = '<path d="' + (east ? 'M3 12 H20.5 M14.5 6 L20.5 12 L14.5 18' : 'M5.5 18.5 L18 6 M9 6 H18 V15') + '" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/>';
+    const D = east ? ['M2.5 12.5 Q11 11 20.5 12', 'M14.5 5.5 L20.5 12 L14.5 18.5'] : ['M4.5 19.5 Q10 13 18.5 5.5', 'M9.5 5.5 L18.5 5 L18 14'];
+    const base = Math.floor(Math.random() * 1e4) + 1;
+    let k = 0;
+    const draw = () => {
+      svg.innerHTML = '';
+      const rc = rough.svg(svg);
+      D.forEach((d, i) => {
+        const g = rc.path(d, { stroke: 'currentColor', strokeWidth: 2.6, roughness: 1.2, bowing: 2, seed: base + (k % 3) * 7 + i });
+        g.querySelectorAll('path').forEach(p => { p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); });
+        svg.appendChild(g);
+      });
+    };
+    draw();
+    const host = el.closest('a,button') || el.parentElement;
+    const stop = () => clearInterval(el._boil);
+    const enter = () => { stop(); el._boil = setInterval(() => { k++; draw(); }, 160); };
+    host.addEventListener('mouseenter', enter); host.addEventListener('mouseleave', stop);
+    (this.arrowOff = this.arrowOff || []).push(() => { stop(); host.removeEventListener('mouseenter', enter); host.removeEventListener('mouseleave', stop); });
+  }
+  renderVals() {
+    const o = this.state.open, tg = i => () => this.setState(s => { const n = s.open.slice(); n[i] = !n[i]; return { open: n }; });
+    const ex = {};
+    [0, 1, 2].forEach(i => { ex['t' + i] = tg(i); ex['exp' + i] = o[i] ? 'true' : 'false'; ex['rows' + i] = o[i] ? '1fr' : '0fr'; ex['rot' + i] = o[i] ? '90deg' : '0deg'; ex['lbl' + i] = o[i] ? 'Show less' : 'Show more'; });
+    return {
+      ...ex,
+      hideImg: e => { e.currentTarget.style.display = 'none'; },
+      copyLabel: this.state.copied ? 'Copied ✓' : 'Copy',
+      onCopy: () => {
+        navigator.clipboard?.writeText('alirezawbhr@gmail.com').catch(() => {});
+        this.setState({ copied: true }); clearTimeout(this.cpT); this.cpT = setTimeout(() => this.setState({ copied: false }), 1800);
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
