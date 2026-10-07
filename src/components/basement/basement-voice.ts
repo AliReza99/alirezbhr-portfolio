@@ -1,5 +1,5 @@
 import { prefersReducedMotion, pickIndex } from '../../lib/motion';
-import { BACKTRACK, CAT_GLARES, CAT_LEAVES, CAT_MOVES, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
+import { BACKTRACK, CAT_GLARES, CAT_LEAVES, CAT_MOVES, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, lureLinesFor, lureNudgeFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
 import { createSvg, randomSeed, roughSvg, roundCaps, type RoughOptions } from '../../lib/rough';
 
 /** Share of lines that show typing dots before the text. */
@@ -25,6 +25,15 @@ const recall = (): Memory => {
 
 /** How many times the last two drafts had been tossed before this page load. */
 export const timesThrown = (): number => recall().throws;
+
+/** They have never been in the basement, on this page load or an earlier one. */
+export const neverBeenDown = (): boolean => recall().last < 0;
+
+/** What leaks up while nobody has found the ladder; someone who has been down before gets lines that know them. */
+export const lureLines = (): string[] => lureLinesFor(recall().last >= 0, pickIndex);
+
+/** His opening line when the visitor comes back to the ladder for the `n`th time (from 0) and still has not knocked. */
+export const lureNudge = (n: number, prev?: string): string => lureNudgeFor(n, pickIndex, prev);
 
 /** First-ever knockers take four clicks to get in; anyone who has knocked before takes three. */
 export const knocksToOpen = (): number => (recall().knocks === 0 ? 4 : 3);
@@ -91,7 +100,8 @@ export class BasementVoice {
   private timers: number[] = [];
   private idleTimer?: number;
   private pumpTimer?: number;
-  private queue: string[] = [];
+  /** Lines waiting their turn, and things to do once the lines ahead of them are said. */
+  private queue: (string | (() => void))[] = [];
   private speaking = false;
   private visits = 0;
   private script: Line[] = SCENARIOS[0];
@@ -152,12 +162,21 @@ export class BasementVoice {
   say(lines: Line, interrupt = false) {
     if (!this.host.isOpen()) return;
     if (interrupt) {
+      const owed = this.queue.filter((q) => typeof q !== 'string');
       this.queue = [];
+      owed.forEach((fn) => fn());
       clearTimeout(this.pumpTimer);
       this.hideDots();
       this.speaking = false;
     }
     this.queue = this.queue.concat(lines);
+    this.pump();
+  }
+
+  /** Runs `fn` once everything queued so far has been said. An interruption runs it at once, so it is never lost. */
+  after(fn: () => void) {
+    if (!this.host.isOpen()) return;
+    this.queue.push(fn);
     this.pump();
   }
 
@@ -185,8 +204,13 @@ export class BasementVoice {
   }
 
   private pump() {
-    if (this.speaking || !this.queue.length) return;
-    const text = this.queue.shift()!;
+    if (this.speaking) return;
+    let text = this.queue.shift();
+    while (typeof text === 'function') {
+      text();
+      text = this.queue.shift();
+    }
+    if (text === undefined) return;
     this.speaking = true;
     const silent = text === HESITATE;
     // Most lines just arrive. Only some are typed first.

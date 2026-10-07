@@ -12,14 +12,16 @@ import { SleepingCat } from './sleeping-cat';
 import { Spider } from './spider';
 import { throwBox } from './throw-box';
 import { useBasementTease } from './use-basement-tease';
+import { useLadderLure } from './use-ladder-lure';
 import './basement.css';
 
 /** How long each line of a cat chat stays up before the next one; the fade in `knock-says` ends just before. */
 const CAT_TURN_MS = 2100;
 
 /**
- * Easter egg below the footer. The page pushes back when you reach the end;
- * the third try drops you into a basement full of abandoned portfolio drafts,
+ * Easter egg below the footer. The page pushes back when you reach the end, and
+ * a ladder pokes up through the floor; knocking on it enough drops you into a
+ * basement full of abandoned portfolio drafts,
  * a light you can pull, an invisible tired voice and a cat that wants out.
  */
 export const Basement = () => {
@@ -30,7 +32,7 @@ export const Basement = () => {
   /** How far along the strip from her first spot the cat sleeps, once poking has moved her. */
   const [catX, setCatX] = useState(0);
   const [escape, setEscape] = useState<{ from: number } | null>(null);
-  const [says, setSays] = useState<{ key: number; line: string; cat: boolean } | null>(null);
+  const [says, setSays] = useState<{ key: number; line: string; cat: boolean; faint: boolean } | null>(null);
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -57,10 +59,11 @@ export const Basement = () => {
   useSketch(floorRef, 'floor');
 
   // Mutable mirror of state for timers and listeners, plus in-flight flags.
-  const live = useRef({ open, dark, catUp, busy: false, catGoing: false, catRunning: false, catGone: false, flips: 0, lastFlip: 0, discos: 0, deepSaid: false });
+  const live = useRef({ open, dark, catUp, talking: !!says, busy: false, catGoing: false, catRunning: false, catGone: false, flips: 0, lastFlip: 0, discos: 0, deepSaid: false });
   live.current.open = open;
   live.current.dark = dark;
   live.current.catUp = catUp;
+  live.current.talking = !!says;
   const timers = useRef<number[]>([]);
   const catTimer = useRef<number | undefined>(undefined);
   const darkTimer = useRef<number | undefined>(undefined);
@@ -93,8 +96,18 @@ export const Basement = () => {
     [voice],
   );
 
-  /** One line on the floor strip: his by the ladder, the cat's over her head. */
-  const show = (line: string, cat = false) => setSays({ key: ++sayKey.current, line, cat });
+  /** One line on the floor strip: his by the ladder, the cat's over her head. `faint` is him overheard, not talking to them. */
+  const show = (line: string, cat = false, faint = false) => setSays({ key: ++sayKey.current, line, cat, faint });
+
+  const lure = useLadderLure({
+    ladderRef: tipsRef,
+    isQuiet: () => !live.current.open && !live.current.busy && !live.current.talking && !knockBtnRef.current?.matches(':hover'),
+    onWhisper: (line) => {
+      show(line, false, true);
+      clearTimeout(knockTimer.current);
+      knockTimer.current = window.setTimeout(() => setSays(null), 2600);
+    },
+  });
 
   const hushCat = () => {
     catTimers.current.forEach(clearTimeout);
@@ -133,24 +146,30 @@ export const Basement = () => {
 
   const throwLastDrafts = () => {
     const [before, after] = voice.throwLines();
-    voice.later(() => voice.say(before), 5000);
-    voice.later(() => voice.say(after), 8000);
     // Not always the same box first, and never quite the same rhythm.
     const order = Math.random() < 0.35 ? [...THROWN_DRAFTS].reverse() : THROWN_DRAFTS;
-    let at = 5800;
-    order.forEach((v) => {
-      timers.current.push(
-        window.setTimeout(() => {
-          const box = sectionRef.current?.querySelector<HTMLElement>(`[data-bv="${v}"]`);
-          if (box) throwBox(box);
-        }, at),
-      );
-      at += 500 + Math.random() * 400;
-    });
+    voice.later(() => {
+      voice.say(before);
+      // The boxes wait for him to finish announcing them, however long the hello before it ran.
+      voice.after(() => {
+        let at = 0;
+        order.forEach((v) => {
+          timers.current.push(
+            window.setTimeout(() => {
+              const box = sectionRef.current?.querySelector<HTMLElement>(`[data-bv="${v}"]`);
+              if (box) throwBox(box);
+            }, at),
+          );
+          at += 500 + Math.random() * 400;
+        });
+        voice.later(() => voice.say(after), 2200);
+      });
+    }, 5000);
   };
 
   const openBasement = (knocked = false, lastWordSaid = false) => {
     if (live.current.open || live.current.busy) return;
+    lure.stop();
     hushCat();
     const owed = knocked && !lastWordSaid ? knockSet.current[knockSet.current.length - 1] : undefined;
     if (owed && knockShown.current < knockSet.current.length) {
@@ -212,6 +231,7 @@ export const Basement = () => {
 
   /** The ladder was clicked and nobody is letting them in yet. */
   const knockBack = (n: number) => {
+    lure.stop();
     if (!knockSet.current.length) knockSet.current = knockLines();
     knockShown.current = n;
     const lines = knockSet.current;
@@ -226,7 +246,7 @@ export const Basement = () => {
     // `rotate` and `translate`, so the lift the tease keeps in `transform` survives.
     knockAnim.current = last
       ? // Yanked down out of sight, then it creeps back up.
-        tips.animate([{ translate: '0 64px', offset: 0.1 }, { translate: '0 64px', offset: 0.72, easing: 'cubic-bezier(.3,1.2,.5,1)' }], { duration: 2600 })
+        tips.animate([{ translate: '0 90px', offset: 0.1 }, { translate: '0 90px', offset: 0.72, easing: 'cubic-bezier(.3,1.2,.5,1)' }], { duration: 2600 })
       : tips.animate(
           [0, -1, 1.2, -0.8, 0.5, 0].map((k) => ({ rotate: `${k * n * 1.6}deg` })),
           { duration: 300 + n * 120, easing: 'ease-out' },
@@ -248,6 +268,7 @@ export const Basement = () => {
       live.current.deepSaid = true;
       voice.react('deep', ['there’s no sub-basement.', 'stop scrolling. please.'], 0);
     },
+    onStir: () => lure.hush(),
   });
 
   /** Poking the sleeping cat gets him talking through the floor, and her answering. Down in the basement he says it in person. */
@@ -408,7 +429,11 @@ export const Basement = () => {
           </div>
         </div>
         <span aria-live="polite" className="basement-strip__says">
-          {says && !says.cat && <span key={says.key}>{says.line}</span>}
+          {says && !says.cat && (
+            <span key={says.key} aria-hidden={says.faint || undefined} className={says.faint ? 'basement-strip__whisper' : undefined}>
+              {says.line}
+            </span>
+          )}
         </span>
         <span aria-live="polite" className="basement-strip__says basement-strip__says--cat">
           {says?.cat && <span key={says.key}>{says.line}</span>}

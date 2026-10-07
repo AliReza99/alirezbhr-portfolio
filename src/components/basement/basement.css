@@ -16,7 +16,8 @@
 /* Floor strip under the footer: ladder tips poke up through it. */
 .basement-strip {
   position: relative;
-  height: 84px;
+  /* Tall enough for two rungs, so the tips read as a ladder and not a letter H. */
+  height: 110px;
   pointer-events: none;
 }
 
@@ -25,7 +26,7 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 84px;
+  height: 110px;
   overflow: clip;
 }
 
@@ -54,7 +55,7 @@
 .basement-strip__says {
   position: absolute;
   z-index: 4;
-  bottom: 56px;
+  bottom: 82px;
   left: calc(var(--ladder-x) + 4px);
   pointer-events: none;
   font-family: var(--font-hand);
@@ -76,6 +77,12 @@
 .basement-strip__says > span {
   display: block;
   animation: knock-says 2.6s both;
+}
+
+/* Overheard, not said to them. */
+.basement-strip__says > .basement-strip__whisper {
+  font-size: 19px;
+  color: color-mix(in srgb, currentColor 65%, transparent);
 }
 
 @keyframes knock-says {
@@ -245,6 +252,22 @@
   cursor: pointer;
   color: var(--paper);
   transition: transform 0.3s ease;
+  /* The box spans the whole wall beside the ladder; only the ladder's top and the label take clicks. */
+  pointer-events: none;
+}
+
+.basement__ladder-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 96px;
+  height: 160px;
+  pointer-events: auto;
+}
+
+.basement__ladder-label {
+  pointer-events: auto;
 }
 
 .basement__ladder-btn:hover {

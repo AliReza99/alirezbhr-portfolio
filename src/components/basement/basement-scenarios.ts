@@ -216,7 +216,7 @@ export const helloFor = (loads: number, pick: (n: number) => number): Line => {
  */
 const THROW_LINES: [Line, Line][] = [
   ['hold on… two more.', ['huff.', 'last ones. I swear.']],
-  [['wait.', 'didn’t I already put those two up there?'], ['…someone keeps taking them down.', 'I’m watching you. figuratively.']],
+  [['wait.', 'didn’t I already put those two up there?'], ['…someone keeps taking them down.', 'I’m watching you.']],
   [['these two again.', 'I have a feeling about these two.'], ['they come back down every time.', 'is this a box thing or a me thing?']],
   [['okay, I’m starting to think this is a loop.', 'v9, v8, up. v9, v8, down.'], ['…tiny Sisyphus.', 'with a cardboard problem.']],
 ];
@@ -230,6 +230,24 @@ const THROW_REPEATS: [Line, Line][] = [
 
 export const throwLinesFor = (n: number, pick: (len: number) => number): [Line, Line] =>
   THROW_LINES[n] ?? THROW_REPEATS[pick(THROW_REPEATS.length)];
+
+/** What leaks up through the floor, in order, while he keeps walking into the ladder and nobody has come down yet. The first set is for someone who has never been in; after that he knows the footsteps. The last line of a set stands alone for visitors who get no bumping. */
+const LURES: string[][] = [
+  ['ow.', '…did they hear that?', 'ignore the ladder.'],
+  ['ow. again.', 'same rung. every time.', 'oh no. I know those footsteps.'],
+  ['*thud*', '…I moved that ladder. twice.', 'we’re closed. you know we’re closed.'],
+  ['ow.', 'who put a ladder here. me. I did.', 'you’re back. I can hear you standing there.'],
+  ['*clang*', 'nobody heard that. nobody’s there.', '…it’s you, isn’t it.'],
+];
+
+export const lureLinesFor = (beenDown: boolean, pick: (len: number) => number): string[] => LURES[beenDown ? 1 + pick(LURES.length - 1) : 0];
+
+/** What he opens with each time the visitor scrolls away and comes back to the ladder without knocking: in order, then any of them. Forbidding it is the invitation. */
+const LURE_NUDGES = ['don’t touch the ladder.', 'it’s not a button. don’t click it.', 'seriously. do not knock on it.', 'you keep coming back to the ladder.', 'one knock and I’m calling someone.'];
+
+/** `n` counts the comebacks from 0; `prev` is the line he used last time. */
+export const lureNudgeFor = (n: number, pick: (len: number, prev?: number) => number, prev?: string): string =>
+  LURE_NUDGES[n] ?? LURE_NUDGES[pick(LURE_NUDGES.length, prev === undefined ? undefined : LURE_NUDGES.indexOf(prev))];
 
 /** What comes up through the floor while the ladder is knocked on. The first time is "occupied."; later he gives in a little funnier, one click sooner. Repeat knockers see the last line on the opening click, then drop in. */
 const KNOCK_LINES: string[][] = [

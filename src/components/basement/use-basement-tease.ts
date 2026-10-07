@@ -20,14 +20,17 @@ type UseBasementTeaseOptions = {
   onKnock: (n: number) => void;
   /** Visitor keeps scrolling at the very bottom of the open basement. */
   onDeep: () => void;
+  /** Visitor pushed or pulled at the end of the page while it is still shut. */
+  onStir: () => void;
 };
 
 const OPEN = 340;
-const TRIES_TO_OPEN = 3;
-/** A pause longer than this starts the scroll tries over. Ladder clicks are kept. */
+/** How far a push into the end of the page lifts the ladder before the page pushes back. */
+const NUDGE = OPEN / 3;
+/** Wheel events closer together than this are one push. */
+const SAME_PUSH_MS = 320;
+/** A pause longer than this between touch pulls starts their count over. */
 const RESET_MS = 4000;
-/** Wheel distance pushed into the end of the page, after the first try, that counts as enough. */
-const PUSH_ENERGY = 700;
 /** Touch: pulling this far past the end of the page and letting go opens it. */
 const PULL_OPEN = 80;
 /** Touch: a shorter pull still counts as a try; two of them open it. */
@@ -39,11 +42,14 @@ const HINTS = ['nothing down here.', 'stop pulling.', 'don’t you dare let go.'
 const BELOW_CLOSED = '#181818';
 const BELOW_OPEN = '#242424';
 
+export const modalOpen = () => !!document.querySelector('[aria-modal="true"][aria-hidden="false"]');
+
 /**
  * The page ends a little early. Reaching the bottom lifts the ladder, holds,
- * then slowly pushes the visitor back up. The third try drops them into the basement.
- * Clicking the ladder tips counts as a try too; the returned function reports one.
- * Clicks do not expire, so a click after a long pause gets the voice's next line.
+ * then slowly pushes the visitor back up, every time: scrolling never opens it.
+ * The way in is the ladder: clicking its tips enough times drops the visitor in,
+ * and the returned function reports one click. Clicks do not expire, so a click
+ * after a long pause gets the voice's next line.
  * Once they have been down, it stays unlocked until the page reloads: one click on
  * the ladder, or one push at the end of the page, lets them back in.
  *
@@ -62,10 +68,8 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     let raf = 0;
     let last = 0;
     let deep = 0;
-    let tries = 0;
-    /** Clicks on the ladder; they add to `tries`, and a pause does not clear them. */
+    /** Clicks on the ladder; a pause does not clear them. */
     let knocks = 0;
-    let energy = 0;
     let pushingBack = false;
     let goal = 0;
     let wasAtBottom = false;
@@ -91,13 +95,6 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     const root = document.documentElement;
     const atBottom = () => innerHeight + scrollY >= root.scrollHeight - 4;
     const overscroll = () => innerHeight + scrollY - root.scrollHeight;
-    const modalOpen = () => !!document.querySelector('[aria-modal="true"][aria-hidden="false"]');
-
-    /** The pause ran out. Tries the voice already answered stay counted, so its lines never repeat. */
-    const settle = () => {
-      if (knocks) knocks += tries;
-      tries = 0;
-    };
 
     const apply = () => {
       const e = 1 - Math.pow(1 - Math.min(1, progress / OPEN), 2);
@@ -117,15 +114,16 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
 
     const tick = () => {
       raf = 0;
-      if (tries && performance.now() - last > RESET_MS) {
-        settle();
-        goal = 0;
-        energy = 0;
-      }
       progress += (goal - progress) * (goal > progress ? 0.16 : 0.08);
       if (Math.abs(goal - progress) < 0.5) progress = goal;
       apply();
-      if (progress !== goal || tries) raf = requestAnimationFrame(tick);
+      if (progress !== goal) raf = requestAnimationFrame(tick);
+    };
+
+    /** The ladder comes back down once nobody is pushing. */
+    const lower = () => {
+      goal = 0;
+      if (!raf) raf = requestAnimationFrame(tick);
     };
 
     const pushBack = () => {
@@ -133,7 +131,10 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       if (!wrap || o().isOpen() || o().isBusy()) return;
       const y0 = scrollY;
       const y1 = wrap.getBoundingClientRect().top + scrollY - innerHeight;
-      if (prefersReducedMotion()) return scrollTo({ top: y1, behavior: 'instant' });
+      if (prefersReducedMotion()) {
+        lower();
+        return scrollTo({ top: y1, behavior: 'instant' });
+      }
       pushingBack = true;
       const t0 = performance.now();
       const D = 1200;
@@ -143,15 +144,16 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
         const q = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
         scrollTo({ top: y0 + (y1 - y0) * q, behavior: 'instant' });
         if (k < 1) backRaf = requestAnimationFrame(step);
-        else pushingBack = false;
+        else {
+          pushingBack = false;
+          lower();
+        }
       };
       backRaf = requestAnimationFrame(step);
     };
 
     const open = (knocked = false) => {
-      tries = 0;
       knocks = 0;
-      energy = 0;
       goal = 0;
       progress = 0;
       // A pending or running push-back would fight the scroll into the basement.
@@ -162,15 +164,16 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       o().onOpen(knocked);
     };
 
+    /** A wheel or key push into the end of the page, or the scroll that reached it. */
     const push = (d: number, fresh = false) => {
       const now = performance.now();
       if (o().isBusy() || modalOpen()) return;
-      // Pushing again while being shoved back counts: stop the shove and keep trying.
-      if (pushingBack && tries) {
+      const isNew = fresh || now - last > SAME_PUSH_MS;
+      // Pushing again while being shoved back stops the shove; the hold starts over.
+      if (pushingBack && isNew) {
         cancelAnimationFrame(backRaf);
         pushingBack = false;
       } else if (!atBottom()) return;
-      const isNew = fresh || now - last > 320;
       last = now;
       if (o().isOpen()) {
         deep += d;
@@ -182,37 +185,28 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
         if (now - arrivedAt > 500) open();
         return;
       }
-      if (!isNew) {
-        // One long hard push: enough total force opens it without separate tries.
-        energy += d;
-        if (tries && energy > PUSH_ENERGY) {
-          tries = TRIES_TO_OPEN;
-        } else return;
-      } else tries++;
-      if (tries + knocks >= TRIES_TO_OPEN) return open();
-      goal = (OPEN * tries) / TRIES_TO_OPEN;
+      if (!isNew) return;
+      o().onStir();
+      goal = NUDGE;
       if (!raf) raf = requestAnimationFrame(tick);
-      clearTimeout(backTimer);
-      pushingBack = false;
       // Hold at the bottom for a beat, then push them back up to the cream floor.
+      clearTimeout(backTimer);
       backTimer = window.setTimeout(pushBack, 900);
     };
 
     knockRef.current = () => {
       if (o().isOpen() || o().isBusy() || modalOpen()) return;
-      const now = performance.now();
-      if (now - last > RESET_MS) settle();
-      last = now;
       if (unlocked) return open();
       knocks++;
-      if (tries + knocks >= o().knocksToOpen()) return open(true);
-      o().onKnock(tries + knocks);
+      if (knocks >= o().knocksToOpen()) return open(true);
+      o().onKnock(knocks);
     };
 
     const setPull = (px: number) => {
       pull = Math.max(0, px);
       if (fingerDown) peak = Math.max(peak, pull);
       if (o().isOpen() || o().isBusy() || modalOpen()) return;
+      if (pull) o().onStir();
       goal = OPEN * Math.min(1, pull / PULL_OPEN);
       // Rise with the finger, ease back down.
       if (goal > progress) progress = goal;
@@ -229,8 +223,8 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const closedColor = matchMedia('(max-width: 600px)').matches ? '' : BELOW_CLOSED;
       const color = over > -200 ? (o().isOpen() ? BELOW_OPEN : closedColor) : '';
       if (color !== below) root.style.backgroundColor = below = color;
-      // Touch visitors are not pushed back; the browser's own bounce does that.
       if (b && !wasAtBottom) arrivedAt = performance.now();
+      // Touch visitors are not pushed back; the browser's own bounce does that.
       if (b && !wasAtBottom && scrollY > lastY && !o().isOpen() && !touch && !unlocked) push(60, true);
       if (!b) deep = 0;
       wasAtBottom = b;
@@ -250,8 +244,6 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       fingerDown = true;
       peak = 0;
       anchorY = null;
-      tries = 0;
-      energy = 0;
       clearTimeout(backTimer);
     };
     const onTouchMove = (e: TouchEvent) => {
