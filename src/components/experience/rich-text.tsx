@@ -5,7 +5,7 @@ export const RichText = ({ segments }: { segments: Segment[] }) =>
     if (typeof s === 'string') return s;
     if ('hl' in s)
       return (
-        <strong key={i} data-hl="" style={{ fontWeight: 600 }}>
+        <strong key={i} style={{ fontWeight: 600 }}>
           {s.hl}
         </strong>
       );
