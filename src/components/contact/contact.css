@@ -1,17 +1,17 @@
 .contact {
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 2.6vw, 28px);
 }
 
-.contact__lead {
+.contact__title {
   margin: 0;
-  max-width: 52ch;
   color: var(--ink);
-  font-weight: 400;
-  font-size: clamp(17px, 1.6vw, 19px);
-  line-height: 1.6;
-  text-wrap: pretty;
+  font-weight: 800;
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  font-stretch: 125%;
 }
 
 .contact__email-row {
@@ -19,6 +19,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 18px 28px;
+  margin-top: clamp(36px, 5vw, 64px);
 }
 
 .contact__email {
@@ -26,9 +27,6 @@
   font-size: clamp(18px, 2vw, 26px);
   line-height: 1.1;
   letter-spacing: -0.03em;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.14em;
   overflow-wrap: anywhere;
 }
 
@@ -38,22 +36,51 @@
   gap: 14px;
 }
 
+.contact__pointer-arrow {
+  flex: none;
+}
+
 .contact__pointer-note {
   font-size: clamp(20px, 1.8vw, 24px);
   white-space: nowrap;
   transform: rotate(-3deg);
 }
 
-.contact__rule {
-  height: 2px;
-  background: var(--ink);
+.contact__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px 28px;
+  margin-top: clamp(36px, 5vw, 60px);
+  padding: 20px 0 24px;
+  border-top: 2px solid var(--ink);
 }
 
 .contact__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 16px;
-  padding-bottom: 24px;
+  gap: 10px 28px;
+}
+
+.contact__link {
+  font-size: 17px;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.15s;
+}
+
+.contact__link:hover {
+  text-decoration-color: var(--ink);
+}
+
+.contact__copyright {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 /* Copy button: presses into an ink hatch, fills with ink click by click. */
@@ -112,65 +139,52 @@
   transition: --lv 0.7s cubic-bezier(0.3, 1.35, 0.5, 1);
 }
 
-/* Social links: flat at rest, lift out on hover. */
-.lift-link {
-  position: relative;
-  display: inline-flex;
-  isolation: isolate;
-  flex: none;
-  --lift: 0px;
-  --face: transparent;
-  --sh: 0;
-  --shd: 0.16s;
-}
-
-.lift-link:hover {
-  --lift: -5px;
-  --face: #fbf6ef;
-  --sh: 1;
-  --shd: 0s;
-}
-
-.lift-link__shadow {
-  opacity: var(--sh);
-  transition: opacity 0s linear var(--shd);
-}
-
-.lift-link__face {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 9px 16px;
-  border: 2px solid var(--ink);
-  background: var(--face);
-  color: var(--ink);
-  font-size: 15px;
-  line-height: 1.2;
-  white-space: nowrap;
-  transform: translate(var(--lift), var(--lift));
-  transition: transform 0.15s var(--ease-press), background 0s linear var(--shd);
-}
-
-/* Phones: the pointer note is hidden. */
+/* Phones: email and note share one row; the note wraps onto two lines when the row runs out. */
 @media (max-width: 600px) {
+  .contact__title {
+    font-size: clamp(17px, 5.9vw, 28px);
+    font-stretch: 112%;
+  }
+
+  .contact__email-row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .contact__email {
+    flex: none;
+    font-size: clamp(15px, 4.7vw, 22px);
+  }
+
   .contact__pointer {
-    display: none;
+    min-width: 0;
+    gap: 4px;
   }
 
-  /* All three links share one row and fill it. */
+  .contact__pointer-arrow {
+    width: clamp(22px, 7.5vw, 40px);
+  }
+
+  .contact__pointer-note {
+    font-size: clamp(16px, 5vw, 22px);
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .contact__foot {
+    padding-top: 16px;
+  }
+
   .contact__links {
-    gap: 12px 10px;
+    gap: 10px 22px;
   }
 
-  .lift-link {
-    flex: 1 1 auto;
+  .contact__link {
+    font-size: 16px;
   }
 
-  .lift-link__face {
-    flex: 1;
-    justify-content: space-between;
-    gap: 6px;
-    padding-inline: 10px;
+  /* The copyright only shows on larger screens. */
+  .contact__copyright {
+    display: none;
   }
 }
