@@ -4,6 +4,8 @@ import { WalkingCat, catWalkCycle, type WalkingCatHandle } from './walking-cat';
 type EscapingCatProps = {
   /** Where her eyes were when the light came on, in px from the basement's left edge. */
   from: number;
+  /** Lights out again mid-run: only her eyes show. */
+  dark: boolean;
   onOut: () => void;
 };
 
@@ -23,7 +25,7 @@ const STARTLE = 18;
  * The light came back on before she was out. She is caught on the basement floor, freezes,
  * then bolts off the left side of the room.
  */
-export const EscapingCat = ({ from, onOut }: EscapingCatProps) => {
+export const EscapingCat = ({ from, dark, onOut }: EscapingCatProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const handle = useRef<WalkingCatHandle | null>(null);
   const out = useRef(onOut);
@@ -63,8 +65,12 @@ export const EscapingCat = ({ from, onOut }: EscapingCatProps) => {
   }, [from]);
 
   return (
-    <div ref={rootRef} aria-hidden="true" className="basement__runaway">
+    <div ref={rootRef} aria-hidden="true" className={dark ? 'basement__runaway basement__runaway--dark' : 'basement__runaway'}>
       <WalkingCat handle={handle} />
+      <span className="basement__runaway-eyes">
+        <span data-beye="" />
+        <span data-beye="" />
+      </span>
     </div>
   );
 };

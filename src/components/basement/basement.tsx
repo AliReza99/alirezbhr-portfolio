@@ -483,7 +483,7 @@ export const Basement = () => {
               </span>
             </div>
           </div>
-          {escape && <EscapingCat {...escape} onOut={catArrives} />}
+          {escape && <EscapingCat {...escape} dark={dark} onOut={catArrives} />}
           <div ref={floorRef} aria-hidden="true" className="basement__floor" />
           <div
             ref={darkOverlayRef}

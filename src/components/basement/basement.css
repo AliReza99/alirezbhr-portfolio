@@ -423,7 +423,7 @@
   overflow: hidden;
 }
 
-/* The cat caught in the light, on the floor line. Under the dark overlay, so switching off again hides her. */
+/* The cat caught in the light, on the floor line. Under the dark overlay, so switching off again hides all but her eyes. */
 .basement__runaway {
   position: absolute;
   z-index: 3;
@@ -444,7 +444,31 @@
   transition: opacity 0.25s ease;
 }
 
-.basement__eyes > span {
+.basement__runaway--dark {
+  z-index: 6;
+}
+
+.basement__runaway--dark > .walking-cat {
+  opacity: 0;
+}
+
+/* Over the eyes of the sketch: she faces left, so her head is at the left of the box. */
+.basement__runaway-eyes {
+  position: absolute;
+  left: 28px;
+  top: 27px;
+  translate: -50% -50%;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+}
+
+.basement__runaway--dark > .basement__runaway-eyes {
+  opacity: 1;
+}
+
+.basement__eyes > span,
+.basement__runaway-eyes > span {
   width: 8px;
   height: 11px;
   border-radius: 50%;
@@ -637,7 +661,7 @@
   position: absolute;
   z-index: 7;
   top: 150px;
-  bottom: calc(var(--floor-h) + 38px);
+  bottom: calc(var(--floor-h) + 200px);
   right: 30px;
   width: min(320px, calc(100% - 60px));
   display: flex;
@@ -648,7 +672,7 @@
 
 .basement__talk {
   position: sticky;
-  bottom: calc(var(--floor-h) + 38px);
+  bottom: calc(var(--floor-h) + 200px);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
