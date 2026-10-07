@@ -1,5 +1,6 @@
 import { useRef, type CSSProperties, type MouseEvent, type SyntheticEvent } from 'react';
 import type { Project } from '../../data/projects';
+import { useSketchInView } from '../../hooks/use-sketch-in-view';
 import { RoughArrow } from '../ui/rough-arrow';
 import { RoughFrame } from './rough-frame';
 
@@ -25,8 +26,8 @@ const hideBrokenImage = (e: SyntheticEvent<HTMLImageElement>) => {
 };
 
 /**
- * On phones a tap on the card only puts it in sketch mode (touch browsers keep
- * it hovered); the link opens from the "Read more" button alone. Keyboard
+ * On phones the card sketches itself while fully in view, so a tap on it does
+ * nothing; the link opens from the "Read more" button alone. Keyboard
  * activation reports no pointer detail and always opens.
  */
 const openOnlyFromButton = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -37,14 +38,15 @@ const openOnlyFromButton = (e: MouseEvent<HTMLAnchorElement>) => {
 export const ProjectCard = ({ project }: { project: Project }) => {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const sketched = useSketchInView(cardRef);
 
   return (
-    <a ref={cardRef} href={project.href} target="_blank" rel="noopener" data-pcard="" onClick={openOnlyFromButton} className="project">
+    <a ref={cardRef} href={project.href} target="_blank" rel="noopener" data-pcard="" data-sketch={sketched ? '' : undefined} onClick={openOnlyFromButton} className="project">
       <span data-ext="" aria-hidden="true" />
       <div data-pface="" className="project__face">
         <div ref={imageRef} data-pimg="" className="project__image">
-          <img src={project.image} alt={project.imageAlt} onError={hideBrokenImage} className="project__img" />
-          <img data-sk="" src={project.sketch} alt="" aria-hidden="true" className="project__img" />
+          <img src={project.image} alt={project.imageAlt} onError={hideBrokenImage} draggable={false} className="project__img" />
+          <img data-sk="" src={project.sketch} alt="" aria-hidden="true" draggable={false} className="project__img" />
         </div>
         <div className="project__body">
           <h3 className="project__title">
@@ -71,7 +73,7 @@ export const ProjectCard = ({ project }: { project: Project }) => {
           </span>
         </div>
       </div>
-      <RoughFrame hostRef={cardRef} imageRef={imageRef} />
+      <RoughFrame hostRef={cardRef} active={sketched} imageRef={imageRef} />
     </a>
   );
 };

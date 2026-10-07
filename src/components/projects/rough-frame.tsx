@@ -5,6 +5,8 @@ import { createGroup, createSvg, randomSeed, roughSvg, roundCaps } from '../../l
 type RoughFrameProps = {
   /** The hovered card (an anchor) that starts and stops the boil. */
   hostRef: RefObject<HTMLElement | null>;
+  /** The card is in sketch mode without being hovered (phones, while fully in view). */
+  active: boolean;
   /** The image box; a sketchy divider is drawn along its bottom edge. */
   imageRef: RefObject<HTMLElement | null>;
 };
@@ -13,8 +15,9 @@ type RoughFrameProps = {
 const D = 10;
 
 /** Hand-drawn border plus image divider that boils between three frames while the card is hovered. */
-export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
+export const RoughFrame = ({ hostRef, active, imageRef }: RoughFrameProps) => {
   const ref = useRef<HTMLSpanElement>(null);
+  const startRef = useRef<() => void>(undefined);
 
   useEffect(() => {
     const el = ref.current;
@@ -61,9 +64,10 @@ export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
       clearInterval(boil);
       boil = undefined;
     };
-    // The frame is visible exactly while the card is hovered or focused, so the boil follows that
-    // state instead of leave events: a tap on a touch screen keeps the card hovered without them.
-    const shown = () => host.matches(':hover') || host.matches(':focus-visible');
+    // The frame is visible exactly while the card is in sketch mode, so the boil follows that state
+    // instead of leave events. Hover only counts on wider screens, matching the CSS.
+    const shown = () =>
+      host.matches('[data-sketch], :focus-visible') || (host.matches(':hover') && matchMedia('(min-width: 601px)').matches);
     const enter = () => {
       build();
       if (reduce || boil !== undefined) return;
@@ -74,15 +78,21 @@ export const RoughFrame = ({ hostRef, imageRef }: RoughFrameProps) => {
       }, 160);
     };
 
-    const START = ['mouseenter', 'focus', 'touchend', 'click'] as const;
+    const START = ['mouseenter', 'focus'] as const;
     START.forEach((type) => host.addEventListener(type, enter));
+    startRef.current = enter;
     build();
     return () => {
       stop();
+      startRef.current = undefined;
       START.forEach((type) => host.removeEventListener(type, enter));
       svg.remove();
     };
   }, [hostRef, imageRef]);
+
+  useEffect(() => {
+    if (active) startRef.current?.();
+  }, [active]);
 
   return <span ref={ref} data-rbox="" aria-hidden="true" style={{ transform: 'translate(var(--p),var(--p))' }} />;
 };
