@@ -1,5 +1,5 @@
 import { prefersReducedMotion, pickIndex } from '../../lib/motion';
-import { BACKTRACK, CAT_GLARES, CAT_LEAVES, CAT_MOVES, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, lureLinesFor, lureNudgeFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
+import { BACKTRACK, BRISK, CAT_GLARES, CAT_LEAVES, CAT_MOVES, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, lureLinesFor, lureNudgeFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
 import { createSvg, randomSeed, roughSvg, roundCaps, type RoughOptions } from '../../lib/rough';
 
 /** Share of lines that show typing dots before the text. */
@@ -236,8 +236,9 @@ export class BasementVoice {
 
   private speak(text: string, typed: boolean) {
     this.bubble(text, typed);
-    this.resetIdle();
-    this.pumpTimer = window.setTimeout(() => this.next(), 1600 + text.length * 70);
+    const hold = 1600 + text.length * 70;
+    this.resetIdle(hold);
+    this.pumpTimer = window.setTimeout(() => this.next(), hold);
   }
 
   private next() {
@@ -300,9 +301,12 @@ export class BasementVoice {
     return Math.min(3, Math.floor((this.spoken + extra) / 5));
   }
 
-  private resetIdle() {
+  /** `hold` is how long the line just said keeps him busy. A brisk scenario says its next line soon after that. */
+  private resetIdle(hold = 0) {
     clearTimeout(this.idleTimer);
-    this.idleTimer = window.setTimeout(() => this.idle(), (this.scriptIndex < this.script.length ? 9000 : 20000) + Math.random() * 3000);
+    const scripted = this.scriptIndex < this.script.length;
+    const wait = !scripted ? 20000 + Math.random() * 3000 : BRISK.has(this.script) ? hold + 900 + Math.random() * 900 : 9000 + Math.random() * 3000;
+    this.idleTimer = window.setTimeout(() => this.idle(), wait);
   }
 
   private idle() {

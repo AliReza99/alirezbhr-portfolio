@@ -7,6 +7,29 @@ export const HESITATE = '\u0000hesitate';
 /** What he says after typing a long message and deleting it. */
 export const BACKTRACK = ['…never mind.', 'no. forget it.', 'it wasn’t important.', 'I had something. it’s gone.', 'I’ll say it later.'];
 
+/** Mom calls. */
+const MOM_CALLS: Line[] = [
+  ['…hello?', 'oh. hi, mom.'],
+  'no, I’m eating fine. yes, I’m wearing a jacket.',
+  'no, I don’t have a job yet. I have a portfolio.',
+  ['…she says the neighbor’s son got hired at a bank.', 'great. wonderful for him.'],
+  'no, I’m not coming home this week. maybe. okay, yes.',
+  ['…she asks who I’m talking to.', 'no one, mom. a visitor.'],
+  ['…she says hi to the visitor.', 'don’t ask how she knows. she always knows.'],
+  ['okay, mom. bye, mom. love you, mom.', 'bye. bye. bye.'],
+  '…she’s still on the line.',
+  ['okay. now she hung up.', 'sorry. where were we? nothing. nothing was happening.'],
+  '…she called back.',
+  ['yes, mom. still here. still a basement.', 'no, I haven’t called uncle.'],
+  ['…she wants to know if the visitor has eaten.', 'have you eaten? she’s asking.'],
+  ['…she says there’s tea. refuse it three times.', 'she means it as a test.'],
+  HESITATE,
+  ['I refused. she’s sending it anyway.', 'to a basement. with no address.'],
+  ['…she says good luck at the interview.', 'what interview? mom? …mom?'],
+  ['she hung up again.', 'I think she knows something.'],
+  ['I’ll update my calendar.', 'it’s empty. but now optimistic.'],
+];
+
 /**
  * What he says when he is left alone. One scenario plays per page load, never
  * the same one twice in a row. Each is a short story, so it reads in order.
@@ -115,28 +138,7 @@ export const SCENARIOS: Line[][] = [
     ['one more thing.', 'if the light goes out when you leave, that’s Gary saying goodbye. or the bill.'],
   ],
 
-  // Mom calls.
-  [
-    ['…hello?', 'oh. hi, mom.'],
-    'no, I’m eating fine. yes, I’m wearing a jacket.',
-    'no, I don’t have a job yet. I have a portfolio.',
-    ['…she says the neighbor’s son got hired at a bank.', 'great. wonderful for him.'],
-    'no, I’m not coming home this week. maybe. okay, yes.',
-    ['…she asks who I’m talking to.', 'no one, mom. a visitor.'],
-    ['…she says hi to the visitor.', 'don’t ask how she knows. she always knows.'],
-    ['okay, mom. bye, mom. love you, mom.', 'bye. bye. bye.'],
-    '…she’s still on the line.',
-    ['okay. now she hung up.', 'sorry. where were we? nothing. nothing was happening.'],
-    '…she called back.',
-    ['yes, mom. still here. still a basement.', 'no, I haven’t called uncle.'],
-    ['…she wants to know if the visitor has eaten.', 'have you eaten? she’s asking.'],
-    ['…she says there’s tea. refuse it three times.', 'she means it as a test.'],
-    HESITATE,
-    ['I refused. she’s sending it anyway.', 'to a basement. with no address.'],
-    ['…she says good luck at the interview.', 'what interview? mom? …mom?'],
-    ['she hung up again.', 'I think she knows something.'],
-    ['I’ll update my calendar.', 'it’s empty. but now optimistic.'],
-  ],
+  MOM_CALLS,
 
   // Coaching you to send a message.
   [
@@ -483,3 +485,6 @@ export const CAT_POKES: Line[] = [
 
 export const knockHelloFor =(n: number, pick: (len: number) => number): Line =>
   KNOCK_HELLOS[n] ?? KNOCK_HELLOS[1 + pick(KNOCK_HELLOS.length - 1)];
+
+/** Scenarios whose next line comes right after the last one, with no long pause. A phone call is one. */
+export const BRISK = new Set<Line[]>([MOM_CALLS]);
