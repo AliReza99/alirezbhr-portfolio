@@ -147,9 +147,9 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 
 /* Fāl corner. */
 @keyframes fal-peek{0%,100%{scale:1}40%{scale:1.22}60%{scale:1.16}}
-[data-falcard]:hover [data-falfold]{animation:fal-peek 1.6s cubic-bezier(.4,0,.3,1) infinite}
-[data-falcard] button:hover [data-falfold]{animation:none}
-@media (hover:none){[data-falhint]{opacity:1!important;transform:rotate(-4deg)!important}}
+@media (hover:hover){[data-falcard]:hover [data-falfold]{animation:fal-peek 1.6s cubic-bezier(.4,0,.3,1) infinite}
+[data-falcard] button:hover [data-falfold]{animation:none}}
+@media (hover:none){[data-falcard][data-peek] [data-falfold]{animation:fal-peek 1.6s cubic-bezier(.4,0,.3,1) .4s 2}}
 @media (prefers-reduced-motion:reduce){[data-falfold]{animation:none!important}}
 
 @property --p{syntax:'<length>';inherits:true;initial-value:0px}

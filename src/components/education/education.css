@@ -91,6 +91,34 @@
   transition: transform 0.4s var(--ease-spring);
 }
 
+/* Touch screens: the hint stays under the fold until a tap opens the corner, and the corner closes over it again. */
+@media (hover: none) {
+  /* A tap leaves :hover stuck on, so the hint follows data-hint instead. */
+  .education__card,
+  .education__card:hover {
+    --lo: 0;
+    --ls: 0.2;
+    --ly: -28px;
+  }
+
+  .education__card[data-hint] {
+    --lo: 1;
+    --ls: 1;
+    --ly: var(--ly-open, -10px);
+  }
+
+  /* The corner unfolds most of the way, which frees the room the hint needs. */
+  .education__card[data-hint] .education__corner {
+    --fs: 0.55;
+  }
+
+  .education__hint {
+    transform-origin: 100% 0;
+    transform: translateY(var(--ly)) scale(var(--ls)) rotate(-4deg);
+    transition: opacity 0.25s, transform 0.45s var(--ease-spring);
+  }
+}
+
 /* Fāl dialog */
 .fal {
   position: fixed;
@@ -196,9 +224,12 @@
 /* Phones: no room beside the school name, so the hint wraps into the free corner under the fold. */
 @media (max-width: 600px) {
   .education__hint {
-    top: calc(100% + 4px);
-    right: 8px;
+    top: 100%;
+    right: 6px;
+    box-sizing: content-box;
     width: 104px;
+    /* Caveat's "?" leans past its own box, and some browsers cut whatever leaves the hint's box. */
+    padding: 4px 10px 6px 6px;
     margin-right: 0;
     justify-content: flex-end;
     font-size: 19px;
@@ -222,12 +253,16 @@
 
 /* Narrowest phones: the degree reaches the corner, so the hint gets its own strip below it. */
 @media (max-width: 380px) {
+  .education__card {
+    --ly-open: 0px;
+  }
+
   .education__text {
     padding-bottom: 46px;
   }
 
   .education__hint {
-    top: calc(100% + 26px);
+    top: calc(100% + 22px);
     width: 180px;
   }
 }
