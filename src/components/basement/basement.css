@@ -101,7 +101,7 @@
   }
 }
 
-/* Someone below pulls the ladder in and covers the light. */
+/* Someone below pulls the ladder in. */
 @media (hover: hover) {
   .basement-strip__ladder {
     transition: translate 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
@@ -110,14 +110,6 @@
   .basement-strip:has(.basement-strip__knock:hover) .basement-strip__ladder {
     translate: 0 10px;
     transition-duration: 0.18s;
-  }
-
-  .basement__glow {
-    transition: filter 0.3s;
-  }
-
-  .basement-strip:has(.basement-strip__knock:hover) + .basement-wrap .basement__glow {
-    filter: opacity(0.3);
   }
 }
 
@@ -179,10 +171,10 @@
   position: absolute;
 }
 
-/* The basement itself. Clipped to a peek until it opens: just the ladder. */
+/* The basement itself. Nothing of it shows until it opens. */
 .basement-wrap {
   position: relative;
-  height: 120px;
+  height: 0;
   overflow: clip;
 }
 
@@ -685,11 +677,6 @@
  * labels are gone, and the voice gets its own band between the lamp and the pile.
  */
 @media (max-width: 600px) {
-  /* Nothing of the basement shows until it opens. */
-  .basement-wrap {
-    height: 0;
-  }
-
   .basement__pull-hint {
     top: 16px;
     font-size: 22px;
