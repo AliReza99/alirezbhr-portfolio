@@ -64,10 +64,11 @@
 }
 
 .contact__link {
+  font-weight: 600;
   font-size: 17px;
   line-height: 1.2;
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-decoration-color: transparent;
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.22em;
   transition: text-decoration-color 0.15s;
@@ -122,10 +123,6 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   transform: rotate(-4deg);
-}
-
-.copy-btn__scribble {
-  stroke-width: 1.3;
 }
 
 /* Hover boils the lines, like the project cards. */
@@ -194,10 +191,6 @@
 
   .contact__links {
     gap: 10px 22px;
-  }
-
-  .contact__link {
-    font-size: 16px;
   }
 
   /* The copyright only shows on larger screens. */

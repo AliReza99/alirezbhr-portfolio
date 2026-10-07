@@ -1,5 +1,6 @@
-import { useRef, type PointerEvent } from 'react';
-import { EMAIL, RESUME_URL } from '../../data/profile';
+import { useCallback, useRef, useState, type PointerEvent } from 'react';
+import { RESUME_URL } from '../../data/profile';
+import { ContactDialog } from '../contact/contact-dialog';
 import { MorphLabel } from '../ui/morph-label';
 import { RoughArrow } from '../ui/rough-arrow';
 import { useToast } from '../toast/toast-context';
@@ -10,6 +11,8 @@ const HOVERS_TO_TEASE = 5;
 export const Hero = () => {
   const { showToast } = useToast();
   const hovers = useRef(0);
+  const [contactOpen, setContactOpen] = useState(false);
+  const closeContact = useCallback(() => setContactOpen(false), []);
 
   const onHover = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse') return;
@@ -24,13 +27,12 @@ export const Hero = () => {
         <h1 className="hero__title">Frontend engineer who loves building fast, scalable applications.</h1>
       </div>
       <div className="hero__actions">
-        <a href={`mailto:${EMAIL}`} className="press-btn" onPointerEnter={onHover}>
+        <button type="button" className="press-btn" onClick={() => setContactOpen(true)} onPointerEnter={onHover}>
           <span data-wob="" className="btn-shadow press-btn__shadow" />
           <span className="press-btn__face press-btn__face--primary">
             <MorphLabel>Get in touch</MorphLabel>
-            <RoughArrow dir="e" style={{ width: '1.1em' }} />
           </span>
-        </a>
+        </button>
         <a href={RESUME_URL} target="_blank" rel="noopener" className="press-btn">
           <span data-wob="" className="btn-shadow press-btn__shadow" />
           <span className="press-btn__face">
@@ -39,6 +41,7 @@ export const Hero = () => {
           </span>
         </a>
       </div>
+      <ContactDialog open={contactOpen} onClose={closeContact} />
     </section>
   );
 };

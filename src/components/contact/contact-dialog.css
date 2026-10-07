@@ -1,0 +1,181 @@
+.contact-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+
+.contact-dialog[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.contact-dialog__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(251, 246, 239, 0.84);
+  backdrop-filter: blur(5px) grayscale(0.5);
+  -webkit-backdrop-filter: blur(5px) grayscale(0.5);
+  cursor: pointer;
+}
+
+.contact-dialog__card {
+  position: relative;
+  isolation: isolate;
+  --d: 7px;
+  width: min(100%, 490px);
+  max-height: 100%;
+  transform: translateY(16px) rotate(-1.5deg) scale(0.96);
+  transition: transform 0.25s var(--ease-press);
+}
+
+.contact-dialog[data-open] .contact-dialog__card {
+  transform: none;
+  transition: transform 0.45s var(--ease-spring);
+}
+
+.contact-dialog__face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--ink);
+  padding: 30px 34px 28px;
+  background: var(--card);
+}
+
+.contact-dialog__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+}
+
+.contact-dialog__close > span {
+  left: 7px;
+  right: 7px;
+}
+
+.contact-dialog__title {
+  margin: 0;
+  padding-right: 44px;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: clamp(24px, 3vw, 28px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  font-stretch: 125%;
+}
+
+.contact-dialog__text {
+  margin: 12px 0 0;
+  max-width: 22em;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.contact-dialog__email-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.contact-dialog__email {
+  font-weight: 700;
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+/* The margin leaves room for the hatched shadow, so it lines up with the dashed rule below. */
+.contact-dialog__send {
+  display: flex;
+  margin: 26px 4px 4px 0;
+}
+
+.contact-dialog__send .press-btn__face {
+  flex: 1;
+  justify-content: center;
+  padding-block: 14px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.contact-dialog__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+.contact-dialog__link {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.15s;
+}
+
+.contact-dialog__link:hover {
+  text-decoration-color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-dialog__card {
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-dialog {
+    padding: 16px;
+  }
+
+  .contact-dialog__card {
+    --d: 6px;
+  }
+
+  .contact-dialog__face {
+    padding: 26px 22px 24px;
+  }
+
+  .contact-dialog__email-wrap {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .contact-dialog__email {
+    font-size: clamp(15px, 4.7vw, 22px);
+  }
+
+  .contact-dialog__send {
+    margin-top: 24px;
+  }
+
+  .contact-dialog__links {
+    gap: 10px 22px;
+    margin-top: 24px;
+    padding-top: 18px;
+  }
+}
