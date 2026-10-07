@@ -1,49 +1,53 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react';
 import { canAnimate, prefersReducedMotion } from '../../lib/motion';
 import { createGroup, randomSeed, roughSvg, roundCaps } from '../../lib/rough';
-import { createCut, PULL, type Cut } from './cut';
+import { createTear, PULL, type Tear } from './tear';
 import { Sheet } from './sheet';
 import './pull-ring.css';
 
 const INK = '#3B3A55';
-const LILAC = '#A89AFE';
-const CREAM = '#FBF6EF';
-const CORAL = '#F4916B';
+const TAB = '#FFFCF7';
+const HOLE = '#FBF6EF';
 
 /** A drag shorter than this counts as a click. */
 const CLICK_SLACK = 5;
-/** How far the scissors must travel from where the drag began to carry on by themselves. */
+/** How far the tab must travel from where the drag began to carry on by itself. */
 const COMMIT = 80;
-/** Across the box, where the pivot screw sits. */
-const PIVOT_X = PULL.width / 2;
 
-/**
- * One half of the scissors, drawn with its finger loop on the left and its blade leaning right.
- * The other half is the same drawing mirrored. They are separate drawings so each can turn on the pivot.
- */
-const drawHalf = (svg: SVGSVGElement, blade: string, mirrored: boolean) => {
+/** Across the box, the middle of the tab. */
+const MID = PULL.width / 2;
+/** Half the tab's width. */
+const HALF = 15;
+/** Top of the tab, past the top of the box so it comes out of the page edge. */
+const TOP = -6;
+/** Bottom of the tab, round. */
+const BOTTOM = 80;
+
+/** The tongue of the tab as a path, `dx` and `dy` to the side. The hard shadow is the same shape. */
+const tongue = (dx = 0, dy = 0) => {
+  const l = MID - HALF + dx;
+  const r = MID + HALF + dx;
+  const b = BOTTOM + dy;
+  return `M${l} ${TOP + dy} L${l} ${b - 18} Q${l} ${b} ${MID + dx} ${b} Q${r} ${b} ${r} ${b - 18} L${r} ${TOP + dy} Z`;
+};
+
+/** The pull tab, like the one on a parcel's tear strip: a tongue of paper with a finger hole, on a hard hatched shadow. */
+const drawTab = (svg: SVGSVGElement) => {
   const seed = randomSeed();
   const line = { stroke: INK, strokeWidth: 2, roughness: 0.7, bowing: 0.6, disableMultiStroke: true };
-  const solid = (fill: string) => ({ ...line, fill, fillStyle: 'solid' });
   const rc = roughSvg(svg);
   const g = createGroup();
-  if (mirrored) g.setAttribute('transform', `matrix(-1 0 0 1 ${PULL.width} 0)`);
-  // The handle: a coral shank from the loop down to the pivot.
-  g.appendChild(rc.path(`M8.5 27 L15 27 L26 ${PULL.apex - 1} L18 ${PULL.apex + 3} Z`, { ...solid(CORAL), seed }));
-  // The blade, from the pivot out to the tip. The tip leans past the centre line so the two blades cross.
-  g.appendChild(rc.path(`M15.5 ${PULL.apex - 3} L28.5 ${PULL.apex - 5} L26 97 Q25.3 101 24 98 Q17 80 15.5 ${PULL.apex + 8} Z`, { ...solid(blade), seed: seed + 1 }));
-  // The finger loop is a ring: coral outside, the page showing through the hole.
-  g.appendChild(rc.circle(12, 17, 20, { ...solid(CORAL), strokeWidth: 2.6, seed: seed + 2 }));
-  g.appendChild(rc.circle(12, 17, 8.5, { ...solid(CREAM), strokeWidth: 1.6, seed: seed + 3 }));
+  g.appendChild(rc.path(tongue(3, 3), { ...line, strokeWidth: 1, fill: INK, fillStyle: 'hachure', hachureGap: 3, hachureAngle: -45, fillWeight: 1, seed }));
+  g.appendChild(rc.path(tongue(), { ...line, fill: TAB, fillStyle: 'solid', seed: seed + 1 }));
+  g.appendChild(rc.circle(MID, BOTTOM - 17, 13, { ...line, strokeWidth: 1.8, fill: HOLE, fillStyle: 'solid', seed: seed + 2 }));
   svg.appendChild(roundCaps(g));
 };
 
 /**
- * A pair of scissors hanging from the top of the window. Pulling them down cuts the page open
- * along a dashed line: the blades snip as they travel, the halves of the page curl back from
- * the cut and the page underneath shows through, with the site's links on it. The scissors
- * ride the cut down and back up, closing it again. They leave once the page above the
- * basement has scrolled out.
+ * A paper pull tab hanging from the top of the window. Pulling it down tears the page open
+ * along a perforation: the torn edges are ragged and rimmed in white, and the page underneath
+ * shows through, with the site's links on it. The tab rides the tear down and back up,
+ * closing it again. It leaves once the page above the basement has scrolled out.
  */
 export const PullRing = () => {
   const [active, setActive] = useState(false);
@@ -53,29 +57,18 @@ export const PullRing = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const hangRef = useRef<HTMLSpanElement>(null);
-  const bladeARef = useRef<SVGSVGElement>(null);
-  const bladeBRef = useRef<SVGSVGElement>(null);
-  const cut = useRef<Cut | null>(null);
+  const tabRef = useRef<SVGSVGElement>(null);
+  const tear = useRef<Tear | null>(null);
   const gesture = useRef<{ y: number; base: number; from: number; moved: boolean } | null>(null);
   const skipClick = useRef(false);
-  /** Which end a click should send the scissors to next. */
+  /** Which end a click should send the tab to next. */
   const want = useRef(false);
 
-  // The scissors: two halves in two drawings of the same box, so each turns on the pivot by itself. The screw sits on top.
   useEffect(() => {
-    const a = bladeARef.current;
-    const b = bladeBRef.current;
-    if (!a || !b) return;
-    drawHalf(a, CREAM, false);
-    drawHalf(b, LILAC, true);
-    const rc = roughSvg(b);
-    const screw = createGroup();
-    screw.appendChild(rc.circle(PIVOT_X, PULL.apex, 8, { stroke: INK, strokeWidth: 2, roughness: 0.5, disableMultiStroke: true, fill: INK, fillStyle: 'solid', seed: randomSeed() }));
-    b.appendChild(roundCaps(screw));
-    return () => {
-      a.replaceChildren();
-      b.replaceChildren();
-    };
+    const svg = tabRef.current;
+    if (!svg) return;
+    drawTab(svg);
+    return () => svg.replaceChildren();
   }, []);
 
   useEffect(() => {
@@ -83,7 +76,7 @@ export const PullRing = () => {
     const sheet = sheetRef.current;
     const handle = handleRef.current;
     if (!canvas || !sheet || !handle) return;
-    const c = createCut(
+    const c = createTear(
       { canvas, sheet, handle },
       {
         onActive: (on) => {
@@ -92,17 +85,17 @@ export const PullRing = () => {
           const root = document.documentElement;
           const gutter = innerWidth - root.clientWidth;
           if (on) {
-            root.style.setProperty('--cut-gutter', `${gutter}px`);
-            root.setAttribute('data-cut', gutter > 0 ? 'gutter' : '');
+            root.style.setProperty('--tear-gutter', `${gutter}px`);
+            root.setAttribute('data-torn', gutter > 0 ? 'gutter' : '');
           } else {
-            root.removeAttribute('data-cut');
-            root.style.removeProperty('--cut-gutter');
+            root.removeAttribute('data-torn');
+            root.style.removeProperty('--tear-gutter');
           }
         },
         onRest: (isOpen) => {
           want.current = isOpen;
           setOpen(isOpen);
-          // A touch drag leaves focus on the page; it belongs on the scissors while the links are open.
+          // A touch drag leaves focus on the page; it belongs on the tab while the links are open.
           if (isOpen && !handle.parentElement?.contains(document.activeElement)) handle.focus({ preventScroll: true });
         },
         onBump: () => {
@@ -110,12 +103,12 @@ export const PullRing = () => {
         },
       },
     );
-    cut.current = c;
+    tear.current = c;
     return () => {
       c.destroy();
-      cut.current = null;
-      document.documentElement.removeAttribute('data-cut');
-      document.documentElement.style.removeProperty('--cut-gutter');
+      tear.current = null;
+      document.documentElement.removeAttribute('data-torn');
+      document.documentElement.style.removeProperty('--tear-gutter');
     };
   }, []);
 
@@ -140,11 +133,11 @@ export const PullRing = () => {
   }, []);
 
   const send = useCallback((to: boolean) => {
-    const z = cut.current;
+    const z = tear.current;
     if (!z) return;
     want.current = to;
     if (prefersReducedMotion()) z.jump(to ? 1 : 0);
-    else z.cutTo(to ? 1 : 0);
+    else z.tearTo(to ? 1 : 0);
   }, []);
 
   const close = useCallback(() => {
@@ -159,7 +152,7 @@ export const PullRing = () => {
     return () => removeEventListener('keydown', onKey);
   }, [active, close]);
 
-  // While open, Tab stays among the links and the scissors.
+  // While open, Tab stays among the links and the tab.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -175,7 +168,7 @@ export const PullRing = () => {
   }, [open]);
 
   const onPointerDown = (e: PointerEvent<HTMLButtonElement>) => {
-    const z = cut.current;
+    const z = tear.current;
     if (!z || e.button > 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     z.grab();
@@ -184,7 +177,7 @@ export const PullRing = () => {
 
   const onPointerMove = (e: PointerEvent<HTMLButtonElement>) => {
     const g = gesture.current;
-    const z = cut.current;
+    const z = tear.current;
     if (!g || !z) return;
     const dy = e.clientY - g.y;
     if (Math.abs(dy) > CLICK_SLACK) g.moved = true;
@@ -194,7 +187,7 @@ export const PullRing = () => {
 
   const onPointerUp = (e: PointerEvent<HTMLButtonElement>) => {
     const g = gesture.current;
-    const z = cut.current;
+    const z = tear.current;
     gesture.current = null;
     if (!g || !z) return;
     if (!g.moved) {
@@ -230,14 +223,14 @@ export const PullRing = () => {
   return (
     <div className="pull-ring" data-pulled={active || undefined} data-open={open || undefined}>
       <Sheet ref={sheetRef} active={active} open={open} onHome={goHome} />
-      <canvas ref={canvasRef} aria-hidden="true" className="pull-ring__cut" />
+      <canvas ref={canvasRef} aria-hidden="true" className="pull-ring__tear" />
 
       <button
         ref={handleRef}
         type="button"
         className="pull-ring__handle"
         data-hidden={(hidden && !active) || undefined}
-        aria-label={open ? 'Close the site links' : 'Cut the page open to see the site links'}
+        aria-label={open ? 'Close the site links' : 'Tear the page open to see the site links'}
         aria-expanded={open}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -246,9 +239,10 @@ export const PullRing = () => {
         onClick={onClick}
       >
         <span ref={hangRef} className="pull-ring__hang">
-          <svg ref={bladeARef} aria-hidden="true" className="pull-ring__half pull-ring__half--a" width={PULL.width} height={PULL.height} viewBox={`0 0 ${PULL.width} ${PULL.height}`} />
-          <svg ref={bladeBRef} aria-hidden="true" className="pull-ring__half pull-ring__half--b" width={PULL.width} height={PULL.height} viewBox={`0 0 ${PULL.width} ${PULL.height}`} />
-          <span aria-hidden="true" className="pull-ring__stub" />
+          <svg ref={tabRef} aria-hidden="true" width={PULL.width} height={PULL.height} viewBox={`0 0 ${PULL.width} ${PULL.height}`} />
+          <span aria-hidden="true" className="hand pull-ring__tab-label">
+            pull
+          </span>
         </span>
       </button>
     </div>

@@ -20,16 +20,16 @@ const LINKS: readonly Link[] = [
 ];
 
 type SheetProps = {
-  /** The clipped element: the cut is its clip-path. */
+  /** The clipped element: the tear is its clip-path. */
   ref: Ref<HTMLDivElement>;
-  /** The scissors have left the top stop. */
+  /** The tab has left the top stop. */
   active: boolean;
-  /** They are all the way down and the links can be used. */
+  /** It is all the way down and the links can be used. */
   open: boolean;
   onHome: (e: MouseEvent) => void;
 };
 
-/** The page underneath, shown through the cut: the site's links as cards on dot-grid paper. */
+/** The page underneath, shown through the tear: the site's links as cards on dot-grid paper. */
 export const Sheet = ({ ref, active, open, onHome }: SheetProps) => (
   <div className="pull-ring__sheet" role="dialog" aria-modal="true" aria-label="Site links" aria-hidden={!active} inert={!open} data-open={open || undefined}>
     <div ref={ref} className="pull-ring__page">
