@@ -38,21 +38,21 @@ const MOM_CALLS: Line[] = [
  * v6 half mobile, v7 lost in a merge, v8 too many toasts, v9 so close.
  */
 export const SCENARIOS: Line[][] = [
-  // The infomercial: he sells the projects upstairs. Kept first: it is what a new visitor hears.
+  // The infomercial: he sells himself. Kept first: it is what a new visitor hears.
   [
     ['are you tired of portfolios with no basement?', 'of course you are.'],
-    ['hi. I’m Alireza.', 'and I’m here to tell you about a limited-time offer.'],
-    ['introducing: my projects. they’re upstairs.', 'batteries not included.'],
-    ['first up: Notewise.', 'a library for your books, notes, highlights and scanned pages.'],
-    ['I built it so I’d stop losing notes.', 'then I lost the notes about building it.'],
-    ['but wait. there’s more.', 'eighteen apps. one codebase. four years.'],
-    ['that one is a true story.', 'I kept it from falling over. now I live in a basement. unrelated.'],
+    ['hi. I’m Alireza.', 'and I’m here with a limited-time offer.'],
+    ['the limit is: until someone hires me.', 'it’s been running since v1.'],
+    ['introducing: one frontend engineer.', 'lightly used. stored in a cool, dark place.'],
+    ['but wait. there’s more.', 'no, there isn’t. I just like saying it.'],
+    ['hire in the next ten minutes', 'and nothing changes. same price. I checked.'],
     HESITATE,
     ['order now and I’ll throw in a cat.', '…the cat is not mine to throw in.'],
-    ['side effects may include:', 'opening a second tab. reading the whole thing. emailing me.'],
+    ['not sold in stores.', 'not sold anywhere, so far. that’s the pitch.'],
+    ['satisfaction guaranteed.', 'mine, not yours. I’d be very satisfied.'],
     ['operators are standing by.', 'it’s me. I’m the operator. I’m also the product.'],
     ['this offer never expires.', 'that’s the problem, honestly.'],
-    ['go upstairs. look at them.', 'then tell me what you thought. by email. I can’t hear you from here.'],
+    ['the projects are upstairs. so is the email.', 'call now. by email. I can’t hear you from here.'],
   ],
 
   // The confession.
