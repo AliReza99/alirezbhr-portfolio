@@ -75,9 +75,15 @@
   font-size: 21px;
   white-space: nowrap;
   pointer-events: none;
+  cursor: pointer;
   opacity: var(--lo);
   transform: translateX(var(--lx)) rotate(-4deg);
   transition: opacity 0.2s, transform 0.35s var(--ease-spring);
+}
+
+/* Clickable only while visible, so the hidden hint never catches clicks. */
+.education__card:hover .education__hint {
+  pointer-events: auto;
 }
 
 .education__fold {
@@ -99,6 +105,14 @@
     --lo: 0;
     --ls: 0.2;
     --ly: -28px;
+  }
+
+  .education__card:hover .education__hint {
+    pointer-events: none;
+  }
+
+  .education__card[data-hint] .education__hint {
+    pointer-events: auto;
   }
 
   .education__card[data-hint] {
@@ -149,7 +163,6 @@
   position: relative;
   isolation: isolate;
   --d: 7px;
-  transform: rotate(-1.5deg);
 }
 
 .fal__sheet {

@@ -15,7 +15,7 @@ const fromOrigin = (origin: HTMLElement | null, el: HTMLElement) => {
   const b = origin?.getBoundingClientRect();
   const r = el.getBoundingClientRect();
   if (!b) return 'translate(0,-40px) scale(.5)';
-  return `translate(${b.left + b.width / 2 - r.left - r.width / 2}px,${b.top + b.height / 2 - r.top - r.height / 2}px) rotate(12deg) scale(.12)`;
+  return `translate(${b.left + b.width / 2 - r.left - r.width / 2}px,${b.top + b.height / 2 - r.top - r.height / 2}px) scale(.12)`;
 };
 
 export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogProps) => {
@@ -71,7 +71,6 @@ export const FalDialog = ({ open, fal, number, originRef, onClose }: FalDialogPr
       <div ref={slipRef} className="fal__slip">
         <div className="fal__paper">
           <span data-ext="" aria-hidden="true" />
-          <span data-tape="" aria-hidden="true" style={{ '--tw': '110px', '--tr': '3deg', '--ta': '80deg' }} />
           <div className="fal__sheet">
             <button ref={closeRef} type="button" onClick={onClose} aria-label="Close" className="close-x fal__close">
               <span />
