@@ -24,7 +24,7 @@ type UseBasementTeaseOptions = {
 
 const OPEN = 340;
 const TRIES_TO_OPEN = 3;
-/** A pause longer than this starts the count over. */
+/** A pause longer than this starts the scroll tries over. Ladder clicks are kept. */
 const RESET_MS = 4000;
 /** Wheel distance pushed into the end of the page, after the first try, that counts as enough. */
 const PUSH_ENERGY = 700;
@@ -43,6 +43,7 @@ const BELOW_OPEN = '#242424';
  * The page ends a little early. Reaching the bottom lifts the ladder, holds,
  * then slowly pushes the visitor back up. The third try drops them into the basement.
  * Clicking the ladder tips counts as a try too; the returned function reports one.
+ * Clicks do not expire, so a click after a long pause gets the voice's next line.
  * Once they have been down, it stays unlocked until the page reloads: one click on
  * the ladder, or one push at the end of the page, lets them back in.
  *
@@ -62,7 +63,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     let last = 0;
     let deep = 0;
     let tries = 0;
-    /** Clicks on the ladder; they add to `tries`. */
+    /** Clicks on the ladder; they add to `tries`, and a pause does not clear them. */
     let knocks = 0;
     let energy = 0;
     let pushingBack = false;
@@ -92,6 +93,12 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     const overscroll = () => innerHeight + scrollY - root.scrollHeight;
     const modalOpen = () => !!document.querySelector('[aria-modal="true"][aria-hidden="false"]');
 
+    /** The pause ran out. Tries the voice already answered stay counted, so its lines never repeat. */
+    const settle = () => {
+      if (knocks) knocks += tries;
+      tries = 0;
+    };
+
     const apply = () => {
       const e = 1 - Math.pow(1 - Math.min(1, progress / OPEN), 2);
       const lad = o().ladderRef.current;
@@ -111,8 +118,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     const tick = () => {
       raf = 0;
       if (tries && performance.now() - last > RESET_MS) {
-        tries = 0;
-        knocks = 0;
+        settle();
         goal = 0;
         energy = 0;
       }
@@ -165,7 +171,6 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
         pushingBack = false;
       } else if (!atBottom()) return;
       const isNew = fresh || now - last > 320;
-      if (now - last > RESET_MS) knocks = 0;
       last = now;
       if (o().isOpen()) {
         deep += d;
@@ -196,7 +201,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     knockRef.current = () => {
       if (o().isOpen() || o().isBusy() || modalOpen()) return;
       const now = performance.now();
-      if (now - last > RESET_MS) tries = knocks = 0;
+      if (now - last > RESET_MS) settle();
       last = now;
       if (unlocked) return open();
       knocks++;

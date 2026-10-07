@@ -3,7 +3,8 @@ import { flushSync } from 'react-dom';
 import { useSketch } from '../../hooks/use-sketch';
 import { canAnimate, prefersReducedMotion } from '../../lib/motion';
 import { useBasement } from './basement-context';
-import { BasementVoice, catTalk, knockLines, knocksToOpen } from './basement-voice';
+import { CAT_LEFT } from './basement-scenarios';
+import { BasementVoice, catTalk, knockLines, knocksToOpen, type CatPoke } from './basement-voice';
 import { DRAFT_ROWS, DraftBox, THROWN_DRAFTS } from './draft-box';
 import { EscapingCat } from './escaping-cat';
 import { Lamp } from './lamp';
@@ -26,6 +27,8 @@ export const Basement = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const [catGone, setCatGone] = useState(false);
+  /** How far along the strip from her first spot the cat sleeps, once poking has moved her. */
+  const [catX, setCatX] = useState(0);
   const [escape, setEscape] = useState<{ from: number } | null>(null);
   const [says, setSays] = useState<{ key: number; line: string; cat: boolean } | null>(null);
 
@@ -209,7 +212,7 @@ export const Basement = () => {
 
   /** The ladder was clicked and nobody is letting them in yet. */
   const knockBack = (n: number) => {
-    if (n === 1) knockSet.current = knockLines();
+    if (!knockSet.current.length) knockSet.current = knockLines();
     knockShown.current = n;
     const lines = knockSet.current;
     const last = n >= lines.length;
@@ -248,14 +251,24 @@ export const Basement = () => {
   });
 
   /** Poking the sleeping cat gets him talking through the floor, and her answering. Down in the basement he says it in person. */
-  const pokeCat = () => {
+  const pokeCat = (poke: CatPoke) => {
     if (live.current.busy) return;
-    if (live.current.open) return voice.catPoked();
+    if (live.current.open) return poke === 'leave' ? voice.react('catleft', CAT_LEFT, 0) : voice.catPoked();
+    // The second and third poke only get an eye from her: the chat already going carries on.
+    if (poke === 'peek' && catTimers.current.length) return;
     clearTimeout(knockTimer.current);
     hushCat();
-    const talk = catTalk();
+    const talk = catTalk(poke);
     talk.forEach(([who, line], i) => catTimers.current.push(window.setTimeout(() => show(line, who === 'cat'), i * CAT_TURN_MS)));
-    catTimers.current.push(window.setTimeout(() => setSays(null), (talk.length - 1) * CAT_TURN_MS + 2600));
+    catTimers.current.push(
+      window.setTimeout(
+        () => {
+          catTimers.current = [];
+          setSays(null);
+        },
+        (talk.length - 1) * CAT_TURN_MS + 2600,
+      ),
+    );
   };
 
   const goUpstairs = () => {
@@ -387,7 +400,7 @@ export const Basement = () => {
 
   return (
     <>
-      <div className="basement-strip">
+      <div className="basement-strip" style={{ '--cat-x': `${catX}px` }}>
         {!open && <button ref={knockBtnRef} type="button" onClick={knockLadder} aria-label="Basement ladder" className="basement-strip__knock" />}
         <div aria-hidden="true" className="basement-strip__clip">
           <div ref={tipsRef} data-blad="" className="basement-strip__ladder">
@@ -400,7 +413,7 @@ export const Basement = () => {
         <span aria-live="polite" className="basement-strip__says basement-strip__says--cat">
           {says?.cat && <span key={says.key}>{says.line}</span>}
         </span>
-        {catUp && <SleepingCat basementOpen={open} onClick={pokeCat} />}
+        {catUp && <SleepingCat basementOpen={open} rest={catX} onRest={setCatX} onPoke={pokeCat} />}
       </div>
       <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
         <section ref={sectionRef} data-screen-label="Basement" aria-label="The basement" className="basement">

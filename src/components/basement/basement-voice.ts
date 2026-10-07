@@ -1,5 +1,5 @@
 import { prefersReducedMotion, pickIndex } from '../../lib/motion';
-import { BACKTRACK, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
+import { BACKTRACK, CAT_GLARES, CAT_LEAVES, CAT_MOVES, CAT_POKES, CAT_TALKS, HESITATE, SCENARIOS, helloFor, knockHelloFor, knockLinesFor, throwLinesFor, type CatTurn, type Line } from './basement-scenarios';
 import { createSvg, randomSeed, roughSvg, roundCaps, type RoughOptions } from '../../lib/rough';
 
 /** Share of lines that show typing dots before the text. */
@@ -32,10 +32,17 @@ export const knocksToOpen = (): number => (recall().knocks === 0 ? 4 : 3);
 /** What comes up through the floor on each knock; the first-ever knocker gets the original lines. */
 export const knockLines = (): string[] => knockLinesFor(recall().knocks, pickIndex);
 
-let lastCatTalk: number | undefined;
+/** How she takes a poke. Each one in a row is a step up: a twitch, an eye, a glare, a move, and then she is gone. */
+export type CatPoke = 'twitch' | 'peek' | 'glare' | 'move' | 'leave';
+
+const CAT_CHATS: Record<CatPoke, CatTurn[][]> = { twitch: CAT_TALKS, peek: CAT_TALKS, glare: CAT_GLARES, move: CAT_MOVES, leave: CAT_LEAVES };
+const lastCatTalk: Partial<Record<CatPoke, number>> = {};
 
 /** The chat that poking the sleeping cat starts on the floor strip; never the same one twice in a row. */
-export const catTalk = (): CatTurn[] => CAT_TALKS[(lastCatTalk = pickIndex(CAT_TALKS.length, lastCatTalk))];
+export const catTalk = (poke: CatPoke): CatTurn[] => {
+  const chats = CAT_CHATS[poke];
+  return chats[(lastCatTalk[poke] = pickIndex(chats.length, lastCatTalk[poke]))];
+};
 
 const remember = () => {
   try {

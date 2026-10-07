@@ -14,7 +14,7 @@ export type SketchContext = {
 
 export type SketchFn = (rc: RoughSVG, w: number, h: number, o: (x?: RoughOptions) => RoughOptions, ctx: SketchContext) => SVGElement[];
 
-export type SketchType = 'wall' | 'floor' | 'ladder' | 'ladink' | 'box' | 'paper' | 'sign' | 'cat' | 'catstep' | 'catstride' | 'cord' | 'socket' | 'bulb';
+export type SketchType = 'wall' | 'floor' | 'ladder' | 'ladink' | 'box' | 'paper' | 'sign' | 'cat' | 'catpeek' | 'catup' | 'catstep' | 'catstride' | 'cord' | 'socket' | 'bulb';
 
 /** Sketches that sit behind their element's own content. */
 export const BACK_SKETCHES: readonly SketchType[] = ['box', 'paper', 'sign', 'socket', 'bulb'];
@@ -74,6 +74,50 @@ const standingCat = (rc: RoughSVG, w: number, o: (x?: RoughOptions) => RoughOpti
     rc.line(14, 32, 4, 30, thin),
     rc.line(14, 35, 5, 37, thin),
     rc.line(42, 32, 52, 30, thin),
+  ].forEach((p) => g.appendChild(p));
+  return [g];
+};
+
+/**
+ * The cat curled up, facing right. Her tail hangs through the hatch while the basement is open.
+ * `peek` opens one eye. `up` lifts her head off the floor, both eyes open and not pleased.
+ */
+const curledCat = (rc: RoughSVG, w: number, o: (x?: RoughOptions) => RoughOptions, open: boolean, pose: 'asleep' | 'peek' | 'up'): SVGElement[] => {
+  const g = createGroup();
+  const k = w / 124;
+  g.setAttribute('transform', `translate(${w},0) scale(${-k},${k})`);
+  const fill = o({ fill: FUR, fillStyle: 'solid', stroke: INK, strokeWidth: 2.2, roughness: 0.9 });
+  const line = o({ stroke: INK, strokeWidth: 2, roughness: 0.8 });
+  const thin = o({ stroke: INK, strokeWidth: 1.6, roughness: 0.6 });
+  // One curve each: rough.js jitters every segment's ends, so a two-segment tail comes apart at the joint.
+  const d = open ? 'M104 60 C122 72 102 102 119 118' : 'M108 62 C100 73 56 73 44 61';
+  const shut = (x: number) => rc.path(`M${x - 3.5} 49 Q${x} 52.5 ${x + 3.5} 49`, line);
+  const eye = (x: number) => rc.circle(x, 49.5, 3.4, o({ stroke: INK, fill: INK, fillStyle: 'solid', strokeWidth: 1, roughness: 0.4 }));
+  const eyes = {
+    asleep: () => [shut(25.5), shut(38.5)],
+    peek: () => [shut(25.5), eye(38.5)],
+    up: () => [eye(25.5), eye(38.5), rc.line(21, 44, 28.5, 46.5, thin), rc.line(43, 44, 35.5, 46.5, thin)],
+  }[pose]();
+  const head = createGroup();
+  if (pose === 'up') head.setAttribute('transform', 'translate(-3,-12)');
+  [
+    rc.path('M16 42 L18 26 L29 35 Z', fill),
+    rc.path('M34 33 L44 24 L46 40 Z', fill),
+    rc.ellipse(32, 50, 34, 30, fill),
+    ...eyes,
+    rc.path('M31 55 L32 56.5 L33 55', thin),
+    rc.line(18, 54, 8, 52, thin),
+    rc.line(18, 57, 9, 59, thin),
+    rc.line(46, 54, 56, 52, thin),
+  ].forEach((p) => head.appendChild(p));
+  [
+    rc.path('M16 66 C10 42 32 24 62 24 C92 24 112 40 112 66 Z', fill),
+    rc.path(d, o({ stroke: INK, strokeWidth: 5.5, roughness: 0.5 })),
+    rc.path(d, o({ stroke: FUR, strokeWidth: 2, roughness: 0.5 })),
+    rc.path('M70 29 Q75 35 73 42', thin),
+    rc.path('M84 31 Q88 37 86 43', thin),
+    rc.path('M97 37 Q100 42 98 48', thin),
+    head,
   ].forEach((p) => g.appendChild(p));
   return [g];
 };
@@ -148,38 +192,9 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
     rc.circle(w - 10, 10, 6, o({ stroke: INK_DEEP, fill: INK_DEEP, fillStyle: 'solid' })),
   ],
 
-  /** Curled-up sleeping cat, facing right. Her tail hangs through the hatch while the basement is open. */
-  cat: (rc, w, _h, o, { open }) => {
-    const F = FUR;
-    const g = createGroup();
-    const k = w / 124;
-    g.setAttribute('transform', `translate(${w},0) scale(${-k},${k})`);
-    const fill = o({ fill: F, fillStyle: 'solid', stroke: INK, strokeWidth: 2.2, roughness: 0.9 });
-    const line = o({ stroke: INK, strokeWidth: 2, roughness: 0.8 });
-    const thin = o({ stroke: INK, strokeWidth: 1.6, roughness: 0.6 });
-    // One curve each: rough.js jitters every segment's ends, so a two-segment tail comes apart at the joint.
-    const d = open ? 'M104 60 C122 72 102 102 119 118' : 'M108 62 C100 73 56 73 44 61';
-    const tail = rc.path(d, o({ stroke: INK, strokeWidth: 5.5, roughness: 0.5 }));
-    const tailIn = rc.path(d, o({ stroke: F, strokeWidth: 2, roughness: 0.5 }));
-    [
-      rc.path('M16 66 C10 42 32 24 62 24 C92 24 112 40 112 66 Z', fill),
-      tail,
-      tailIn,
-      rc.path('M70 29 Q75 35 73 42', thin),
-      rc.path('M84 31 Q88 37 86 43', thin),
-      rc.path('M97 37 Q100 42 98 48', thin),
-      rc.path('M16 42 L18 26 L29 35 Z', fill),
-      rc.path('M34 33 L44 24 L46 40 Z', fill),
-      rc.ellipse(32, 50, 34, 30, fill),
-      rc.path('M22 49 Q25.5 52.5 29 49', line),
-      rc.path('M35 49 Q38.5 52.5 42 49', line),
-      rc.path('M31 55 L32 56.5 L33 55', thin),
-      rc.line(18, 54, 8, 52, thin),
-      rc.line(18, 57, 9, 59, thin),
-      rc.line(46, 54, 56, 52, thin),
-    ].forEach((p) => g.appendChild(p));
-    return [g];
-  },
+  cat: (rc, w, _h, o, { open }) => curledCat(rc, w, o, open, 'asleep'),
+  catpeek: (rc, w, _h, o, { open }) => curledCat(rc, w, o, open, 'peek'),
+  catup: (rc, w, _h, o, { open }) => curledCat(rc, w, o, open, 'up'),
 
   /** The cat walking: legs together, then mid-step. Swapping the two is her walk. */
   catstep: (rc, w, _h, o) => standingCat(rc, w, o, 0),

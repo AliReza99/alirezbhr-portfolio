@@ -396,6 +396,57 @@ export const CAT_TALKS: CatTurn[][] = [
   ],
 ];
 
+/** The fourth poke in a row: she lifts her head, and he apologises for a visitor he cannot see. */
+export const CAT_GLARES: CatTurn[][] = [
+  [
+    ['cat', 'what.'],
+    ['him', 'sorry. that’s the visitor, not me.'],
+  ],
+  [
+    ['cat', 'really.'],
+    ['him', 'I’d stop. she keeps a list.'],
+  ],
+  [
+    ['cat', 'no.'],
+    ['him', 'that was her polite one.'],
+  ],
+];
+
+/** The fifth: she gets up and goes to sleep somewhere else. */
+export const CAT_MOVES: CatTurn[][] = [
+  [
+    ['cat', 'fine.'],
+    ['him', 'she’s moving desks. because of you.'],
+  ],
+  [
+    ['cat', 'ugh.'],
+    ['him', 'that’s a relocation. you’re paying it.'],
+  ],
+  [
+    ['cat', 'mrrgh.'],
+    ['him', 'six more steps. she’ll invoice those.'],
+  ],
+];
+
+/** Poked there too: she walks out. */
+export const CAT_LEAVES: CatTurn[][] = [
+  [
+    ['cat', 'bye.'],
+    ['him', 'you did that.'],
+  ],
+  [
+    ['cat', 'I quit.'],
+    ['him', 'you did that. not me.'],
+  ],
+  [
+    ['cat', 'done.'],
+    ['him', 'she’ll be back. she left her spot.'],
+  ],
+];
+
+/** Her leaving, heard from the basement. */
+export const CAT_LEFT: Line = ['that was Vega walking out.', 'you did that.'];
+
 /** The same poke with the basement open: he is right there, and she is out of earshot. */
 export const CAT_POKES: Line[] = [
   ['hands off Vega.', 'she’s the only one here with a schedule.'],

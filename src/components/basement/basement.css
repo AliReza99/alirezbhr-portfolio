@@ -68,7 +68,7 @@
 /* The cat answers from over her own head, left of her z's. */
 .basement-strip__says--cat {
   bottom: 70px;
-  left: calc(var(--ladder-x) + 88px);
+  left: calc(var(--ladder-x) + 88px + var(--cat-x, 0px));
   font-size: 20px;
   rotate: 3deg;
 }
@@ -133,11 +133,18 @@
   position: absolute;
   z-index: 3;
   bottom: 0;
-  left: calc(var(--ladder-x) + 76px);
+  left: calc(var(--ladder-x) + 76px + var(--cat-x, 0px));
   pointer-events: auto;
   width: 124px;
   height: 68px;
   cursor: pointer;
+  /* A long press pets her; it should not select text or open the callout. */
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.sleeping-cat--away {
+  pointer-events: none;
 }
 
 .sleeping-cat__body {
@@ -146,6 +153,11 @@
   transform-origin: 50% 100%;
 }
 
+.sleeping-cat__body.sleeping-cat__body--purring {
+  animation-duration: 1.3s;
+}
+
+.sleeping-cat__pose,
 .sleeping-cat__walker,
 .walking-cat {
   position: absolute;
