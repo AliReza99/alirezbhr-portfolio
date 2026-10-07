@@ -69,7 +69,8 @@ export const Education = () => {
   }, []);
 
   const openFal = () => {
-    setFalIdx((cur) => pickIndex(FALS.length, cur));
+    const first = draws.current === 0;
+    setFalIdx((cur) => (first ? 0 : pickIndex(FALS.length, cur)));
     draws.current++;
     if (draws.current === 6) setTimeout(() => showToast('fal'), 2600);
     setOpen(true);

@@ -11,7 +11,7 @@ pnpm preview    # serve the production build
 
 - `src/components/*` - one folder per section (hero, about, experience, projects, skills, education, contact, basement), each with its own CSS.
 - `src/styles/global.css` - design tokens and the `data-*` animation rules ported verbatim from the design. Many animations hang off those attributes, so keep them.
-- `src/data/*` - copy: roles, projects, skills, toasts, 48 fāl fortunes, doodles.
+- `src/data/*` - copy: roles, projects, skills, toasts, 39 fāl fortunes, doodles.
 - `project/` and `chats/` - the original Claude Design handoff bundle, kept for reference.
 
 ---
