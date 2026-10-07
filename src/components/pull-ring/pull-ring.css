@@ -1,24 +1,60 @@
+/* How far a label's corner is lifted. Registered so it can be animated. */
+@property --zip-lift {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+/* The page cannot scroll behind the opening. Keeping the gutter of a classic scrollbar means nothing shifts when it goes. */
+html[data-unzipped] {
+  overflow: hidden;
+}
+
+html[data-unzipped='gutter'] {
+  scrollbar-gutter: stable;
+}
+
+/* With the scrollbar gone, fixed elements measure from the full window. The toast is centred, so it gets half the difference back. */
+html[data-unzipped='gutter'] .toast {
+  margin-left: calc(var(--zip-gutter) / -2);
+}
+
 .pull-ring__handle {
   position: fixed;
-  /* 12px of the cord hangs above the edge, which leaves it slack to drop on hover. */
+  /* The slider hangs a little above the edge, which leaves it slack to drop on hover. */
   top: -12px;
-  /* Beside the 960px column where the window is wide enough, else near the edge. */
-  right: max(12px, calc(50vw - 496px));
-  z-index: 46;
+  /* Beside the 960px column where the window is wide enough, else near the edge. The gutter keeps it there while scrolling is locked. */
+  right: calc(max(12px, 50vw - 496px) + var(--zip-gutter, 0px));
+  z-index: 47;
   display: block;
   padding: 0;
   border: 0;
   background: none;
   cursor: grab;
   touch-action: none;
-  transform: translateY(var(--handle-off));
-  transition:
-    transform 0.45s var(--ease-press),
-    visibility 0s;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pull-ring__handle:active {
   cursor: grabbing;
+}
+
+.pull-ring__handle:focus-visible {
+  outline: 2px dashed var(--purple);
+  outline-offset: 2px;
+}
+
+.pull-ring[data-pulled] .pull-ring__handle:focus-visible {
+  outline-color: var(--lilac);
+}
+
+/* The zipper engine writes the transform while the pull is down, so it only eases when it is up. */
+.pull-ring:not([data-pulled]) .pull-ring__handle {
+  transition:
+    transform 0.3s var(--ease-press),
+    visibility 0s;
 }
 
 .pull-ring__handle[data-hidden] {
@@ -30,13 +66,29 @@
 }
 
 .pull-ring__hang {
+  position: relative;
   display: block;
+  width: 44px;
+  height: 98px;
   transition: transform 0.3s var(--ease-press);
 }
 
 .pull-ring__hang svg {
   display: block;
   overflow: visible;
+}
+
+/* Tab and ring swing from where the tab passes through the slider. */
+.pull-ring__dangle {
+  position: absolute;
+  inset: 0;
+  transform-origin: 22px 25px;
+  rotate: var(--zip-lean, 0deg);
+}
+
+.pull-ring__slider {
+  position: absolute;
+  inset: 0;
 }
 
 @media (hover: hover) {
@@ -46,61 +98,24 @@
   }
 }
 
-.pull-ring__sheet {
+/* Tape, teeth and shadows along the opening, painted by zipper-seam.ts. */
+.pull-ring__seam {
   position: fixed;
   inset: 0;
-  z-index: 45;
-  height: 100dvh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  background: var(--card);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  transform: translateY(calc(var(--off) - 100%));
-  transition:
-    transform 0.45s var(--ease-press),
-    visibility 0s;
-}
-
-.pull-ring:not([data-pulled]) .pull-ring__sheet {
+  z-index: 46;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   visibility: hidden;
-  transition:
-    transform 0.45s var(--ease-press),
-    visibility 0s linear 0.45s;
 }
 
-.pull-ring[data-dragging] .pull-ring__sheet,
-.pull-ring[data-dragging] .pull-ring__handle {
-  transition: none;
-}
-
-/* Placeholder contents: each concept replaces this. */
-.pull-ring__links {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: clamp(56px, 12vh, 120px) clamp(16px, 4vw, 48px);
-  box-sizing: border-box;
-  list-style: none;
-}
-
-.pull-ring__link {
-  display: inline-block;
-  padding: 6px 0;
-  font-weight: 700;
-  font-stretch: 80%;
-  font-size: clamp(28px, 5vw, 56px);
-  line-height: 1.15;
-}
-
-.pull-ring__link:hover,
-.pull-ring__link:focus-visible {
-  color: var(--purple);
+.pull-ring[data-pulled] .pull-ring__seam {
+  visibility: visible;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .pull-ring__handle,
-  .pull-ring__hang,
-  .pull-ring__sheet {
+  .pull-ring__hang {
     transition: none !important;
   }
 }
