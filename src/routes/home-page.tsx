@@ -6,15 +6,11 @@ import { Experience } from '../components/experience/experience';
 import { Hero } from '../components/hero/hero';
 import { Projects } from '../components/projects/projects';
 import { Skills } from '../components/skills/skills';
-import { useToast } from '../components/toast/toast-context';
-import { usePencilTrail } from '../hooks/use-pencil-trail';
 import { useTvStatic } from '../hooks/use-tv-static';
 import './home-page.css';
 
 export const HomePage = () => {
-  const { showToast } = useToast();
   useTvStatic();
-  usePencilTrail(() => showToast('draw'));
 
   return (
     <>

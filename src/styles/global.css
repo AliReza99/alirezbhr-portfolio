@@ -28,7 +28,8 @@
 }
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100% }
-body { margin: 0; -webkit-tap-highlight-color: transparent; background: #FBF6EF; color: #3B3A55; -webkit-font-smoothing: antialiased }
+/* Isolated so #tv-static (z-index -1) stays above the body's own background once the basement tease colours <html>. */
+body { margin: 0; isolation: isolate; -webkit-tap-highlight-color: transparent; background: #FBF6EF; color: #3B3A55; -webkit-font-smoothing: antialiased }
 a { color: inherit; text-decoration: none }
 a:hover { color: inherit }
 ::selection { background: #3B3A55; color: #FBF6EF }
@@ -208,7 +209,7 @@ li:nth-child(4n+0) [data-tick]{transform:rotate(20deg);background:url("data:imag
 @media (prefers-reduced-motion:reduce){[data-pcard] [data-sk]{animation:none!important}[data-ts],[data-th],[data-bsh],[data-pcard]{transition:none!important}}
 
 /* Skills category labels. */
-[data-rcat]{transition:color .2s}[data-rcat]:hover{color:#5A49D6!important}[data-rcat]:hover [data-rbullet]{transform:scale(1.15) rotate(10deg)}
+[data-rcat]{transition:color .2s}[data-rcat]:hover{color:#3B3A55!important}[data-rcat]:hover [data-rbullet]{transform:scale(1.15) rotate(10deg)}
 
 /* Sleeping cat. */
 @keyframes cat-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.045)}}

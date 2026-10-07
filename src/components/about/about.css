@@ -1,9 +1,9 @@
 .about__text {
   margin: 0;
-  max-width: 64ch;
+  max-width: none;
   font-size: clamp(16px, 1.4vw, 19px);
-  line-height: 1.7;
-  color: var(--muted);
+  line-height: 2;
+  color: var(--ink);
   letter-spacing: -0.015em;
   text-wrap: pretty;
 }

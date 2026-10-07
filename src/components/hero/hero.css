@@ -14,7 +14,7 @@
 
 .hero__greeting {
   align-self: flex-start;
-  font-size: clamp(26px, 2.6vw, 34px);
+  font-size: clamp(28px, 2.8vw, 37px);
   transform: rotate(-3deg);
 }
 

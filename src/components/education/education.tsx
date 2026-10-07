@@ -83,7 +83,7 @@ export const Education = () => {
 
   return (
     <section id="education" data-screen-label="Education" className="section">
-      <SectionHeader title="Education" note="where it started" />
+      <SectionHeader title="Education" />
       <div className="education">
         <div
           ref={cardRef}

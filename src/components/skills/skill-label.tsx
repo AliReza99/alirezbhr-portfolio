@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { canAnimate } from '../../lib/motion';
 import { roughSvg, roundCaps, type RoughOptions, type RoughSVG } from '../../lib/rough';
 
-const INK = '#5A49D6';
+const INK = '#3B3A55';
 const C = 8;
 
 const star = (n: number): [number, number][] =>

@@ -1,4 +1,4 @@
-export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'deeper' | 'draw' | 'touch';
+export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'deeper' | 'touch';
 
 /** [title, body]. Bodies may contain {s} / {c} / {v} placeholders. */
 export type ToastMessage = readonly [title: string, body: string];
@@ -47,13 +47,6 @@ export const TOASTS: Record<ToastKind, readonly ToastMessage[]> = {
   deeper: [
     ['That’s it.', 'There is no sub-basement. I checked.'],
     ['Still scrolling?', 'This is the bottom. Even the drafts stop here.'],
-  ],
-  draw: [
-    ['Hey, I just cleaned this!', 'Nice art though. I’ll put it on the fridge.'],
-    ['Wow, what a mess.', 'You made quite a mess on my portfolio.'],
-    ['Picasso, is that you?', 'Please don’t sign it. Recruiters will see this.'],
-    ['This is not a notebook.', 'It’s my portfolio. But okay, keep going.'],
-    ['Beautiful.', 'I will frame it. Then I will refresh the page.'],
   ],
   touch: [
     ['The animation is cool, right?', 'Hover on, hover off. I can do this all day too.'],

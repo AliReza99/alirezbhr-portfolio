@@ -28,7 +28,7 @@ export const About = () => {
 
   return (
     <section id="about" data-screen-label="About" className="section">
-      <SectionHeader title="About" note="the short version" />
+      <SectionHeader title="About" />
       <p ref={paraRef} className="about__text">
         I've spent 6 years building enterprise apps and automating myself out of <DoodleWord doodle={boring} />. Scaled small
         applications to super-application, achieved 12x performance improvements, built refactoring tools that save weeks.

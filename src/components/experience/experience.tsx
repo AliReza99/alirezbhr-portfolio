@@ -19,7 +19,7 @@ export const Experience = () => {
 
   return (
     <section id="work" data-screen-label="Experience" className="section">
-      <SectionHeader title="Experience" note="where I've worked" />
+      <SectionHeader title="Experience" />
       <div className="experience__list">
         {ROLES.map((role, i) => (
           <ExperienceCard key={`${role.company}-${i}`} role={role} index={i} defaultOpen={i === 0 && !startCollapsed} onOpen={handleOpen} />

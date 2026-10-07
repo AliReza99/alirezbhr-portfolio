@@ -71,7 +71,7 @@ export const Skills = () => {
 
   return (
     <section id="skills" data-screen-label="Skills" className="section">
-      <SectionHeader title="Skills" note="my toolbox" />
+      <SectionHeader title="Skills" />
       <div className="boxed">
         <span data-ext="" aria-hidden="true" />
         <div className="boxed__face skills__card">
