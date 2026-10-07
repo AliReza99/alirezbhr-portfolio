@@ -1,0 +1,8 @@
+.logo-mark {
+  width: 52px;
+  height: auto;
+  overflow: visible;
+  rotate: -3deg;
+  /* Italic, like the Caveat hand. */
+  transform: skewX(-12deg);
+}

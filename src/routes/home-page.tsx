@@ -4,6 +4,7 @@ import { Contact } from '../components/contact/contact';
 import { Education } from '../components/education/education';
 import { Experience } from '../components/experience/experience';
 import { Hero } from '../components/hero/hero';
+import { PullRing } from '../components/pull-ring/pull-ring';
 import { Projects } from '../components/projects/projects';
 import { Skills } from '../components/skills/skills';
 import { useTvStatic } from '../hooks/use-tv-static';
@@ -14,6 +15,7 @@ export const HomePage = () => {
 
   return (
     <>
+      <PullRing />
       <main className="home">
         <Hero />
         <About />

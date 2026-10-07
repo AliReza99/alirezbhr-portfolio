@@ -1,11 +1,12 @@
-import { EMAIL, GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../../data/profile';
+import { BLOG_URL, EMAIL, GITHUB_URL, LINKEDIN_URL, RESUME_URL } from '../../data/profile';
 import { CopyButton } from './copy-button';
 import './contact.css';
 
 const LINKS = [
-  { href: LINKEDIN_URL, label: 'LinkedIn' },
-  { href: GITHUB_URL, label: 'GitHub' },
-  { href: RESUME_URL, label: 'Resume' },
+  { href: BLOG_URL, label: 'Blog', external: false },
+  { href: LINKEDIN_URL, label: 'LinkedIn', external: true },
+  { href: GITHUB_URL, label: 'GitHub', external: true },
+  { href: RESUME_URL, label: 'Resume', external: true },
 ];
 
 export const Contact = () => {
@@ -33,8 +34,8 @@ export const Contact = () => {
         </div>
         <div className="contact__foot">
           <div className="contact__links">
-            {LINKS.map(({ href, label }) => (
-              <a key={label} href={href} target="_blank" rel="noopener" className="contact__link">
+            {LINKS.map(({ href, label, external }) => (
+              <a key={label} href={href} {...(external && { target: '_blank', rel: 'noopener' })} className="contact__link">
                 {label}
               </a>
             ))}
