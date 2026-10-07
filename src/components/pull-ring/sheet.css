@@ -1,0 +1,143 @@
+/* Covers the window so the page under it cannot be clicked or scrolled by touch. */
+.pull-ring__sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  visibility: hidden;
+  touch-action: none;
+  overscroll-behavior: contain;
+  font-family: var(--font-sans);
+  color: var(--ink);
+}
+
+.pull-ring[data-pulled] .pull-ring__sheet {
+  visibility: visible;
+}
+
+/* The page underneath. The cut engine sets the clip-path to the cut; without one nothing shows. */
+.pull-ring__page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-y: auto;
+  /* The sides leave room for the curled-back flaps along the window's edge. */
+  padding: 48px 32px 150px;
+  box-sizing: border-box;
+  /* Only a short window scrolls, and only up and down. */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  clip-path: inset(0 0 100% 0);
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(59, 58, 85, 0.22) 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+
+/* Centred in what is left. Auto margins, not centring on the container, so a short window can still scroll to the top. */
+.pull-ring__content {
+  width: min(720px, 100%);
+  margin: auto;
+}
+
+.pull-ring__title {
+  margin: 0 0 28px;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pull-ring__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 26px;
+}
+
+.pull-ring__card {
+  position: relative;
+  display: block;
+  isolation: isolate;
+  color: var(--ink);
+}
+
+.pull-ring__card:hover {
+  color: var(--ink);
+}
+
+.pull-ring__card:focus-visible {
+  outline: 2px dashed var(--purple);
+  outline-offset: 8px;
+}
+
+.pull-ring__card-shadow {
+  transform: translate(5px, 5px);
+}
+
+.pull-ring__card-face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px 12px;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  transition: transform 0.15s var(--ease-press);
+}
+
+.pull-ring__card:hover .pull-ring__card-face,
+.pull-ring__card:focus-visible .pull-ring__card-face {
+  transform: translate(3px, 3px);
+}
+
+.pull-ring__card-name {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pull-ring__card-note {
+  font-size: 22px;
+}
+
+/* Once the cut is all the way open the cards settle into place one after another. */
+.pull-ring__card {
+  translate: 0 10px;
+  transition: translate 0.45s var(--ease-press);
+}
+
+.pull-ring__sheet[data-open] .pull-ring__card {
+  translate: 0 0;
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+@media (max-width: 719px) {
+  .pull-ring__cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 419px) {
+  .pull-ring__page {
+    padding: 36px 30px 150px;
+  }
+
+  .pull-ring__title {
+    margin-bottom: 22px;
+    font-size: 28px;
+  }
+
+  .pull-ring__cards {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .pull-ring__card-face {
+    padding: 10px 14px 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pull-ring__card,
+  .pull-ring__card-face {
+    translate: none;
+    transition: none !important;
+  }
+}

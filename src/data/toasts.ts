@@ -1,6 +1,6 @@
-export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'deeper' | 'touch' | 'snag' | 'zips';
+export type ToastKind = 'exp' | 'copy' | 'bullet' | 'drag' | 'fal' | 'box' | 'deeper' | 'touch';
 
-/** [title, body]. Bodies may contain {s} / {c} / {v} / {n} placeholders. */
+/** [title, body]. Bodies may contain {s} / {c} / {v} placeholders. */
 export type ToastMessage = readonly [title: string, body: string];
 
 export const TOASTS: Record<ToastKind, readonly ToastMessage[]> = {
@@ -53,15 +53,5 @@ export const TOASTS: Record<ToastKind, readonly ToastMessage[]> = {
     ['Okay, you found it.', 'There are more easter eggs further down the page.'],
     ['Click it.', 'It won’t bite. The button, I mean. Can’t speak for the cat.'],
     ['Five hovers.', 'That’s a lot of attention for one button. Please just click it.'],
-  ],
-  snag: [
-    ['Stuck.', 'It caught the lining. Give it another tug.'],
-    ['It does this.', 'Every zipper I own jams halfway. Pull it again.'],
-    ['Snagged.', 'There’s a thread in the teeth. One more tug should do it.'],
-    ['Not broken.', 'Just stuck. Tug it again. Gently, or not.'],
-  ],
-  zips: [
-    ['{n} pulls.', 'You’re not here for the links, are you?'],
-    ['Still zipping?', 'That’s {n} times. The teeth would like a break.'],
   ],
 };

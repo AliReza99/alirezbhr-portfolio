@@ -1,30 +1,23 @@
-/* How far a label's corner is lifted. Registered so it can be animated. */
-@property --zip-lift {
-  syntax: '<length>';
-  inherits: true;
-  initial-value: 0px;
-}
-
-/* The page cannot scroll behind the opening. Keeping the gutter of a classic scrollbar means nothing shifts when it goes. */
-html[data-unzipped] {
+/* The page cannot scroll behind the cut. Keeping the gutter of a classic scrollbar means nothing shifts when it goes. */
+html[data-cut] {
   overflow: hidden;
 }
 
-html[data-unzipped='gutter'] {
+html[data-cut='gutter'] {
   scrollbar-gutter: stable;
 }
 
 /* With the scrollbar gone, fixed elements measure from the full window. The toast is centred, so it gets half the difference back. */
-html[data-unzipped='gutter'] .toast {
-  margin-left: calc(var(--zip-gutter) / -2);
+html[data-cut='gutter'] .toast {
+  margin-left: calc(var(--cut-gutter) / -2);
 }
 
 .pull-ring__handle {
   position: fixed;
-  /* The slider hangs a little above the edge, which leaves it slack to drop on hover. */
+  /* The loops hang a little above the edge, which leaves slack to drop on hover. */
   top: -12px;
   /* Beside the 960px column where the window is wide enough, else near the edge. The gutter keeps it there while scrolling is locked. */
-  right: calc(max(12px, 50vw - 496px) + var(--zip-gutter, 0px));
+  right: calc(max(12px, 50vw - 496px) + var(--cut-gutter, 0px));
   z-index: 47;
   display: block;
   padding: 0;
@@ -46,11 +39,7 @@ html[data-unzipped='gutter'] .toast {
   outline-offset: 2px;
 }
 
-.pull-ring[data-pulled] .pull-ring__handle:focus-visible {
-  outline-color: var(--lilac);
-}
-
-/* The zipper engine writes the transform while the pull is down, so it only eases when it is up. */
+/* The cut engine writes the transform while the scissors are down, so it only eases when they are up. */
 .pull-ring:not([data-pulled]) .pull-ring__handle {
   transition:
     transform 0.3s var(--ease-press),
@@ -69,7 +58,7 @@ html[data-unzipped='gutter'] .toast {
   position: relative;
   display: block;
   width: 44px;
-  height: 98px;
+  height: 104px;
   transition: transform 0.3s var(--ease-press);
 }
 
@@ -78,17 +67,35 @@ html[data-unzipped='gutter'] .toast {
   overflow: visible;
 }
 
-/* Tab and ring swing from where the tab passes through the slider. */
-.pull-ring__dangle {
+/* Two halves in the same box, turning on the pivot. --snip is 0 with the blades shut and 1 at their widest. */
+.pull-ring__half {
   position: absolute;
   inset: 0;
-  transform-origin: 22px 25px;
-  rotate: var(--zip-lean, 0deg);
+  transform-origin: 22px 54px;
 }
 
-.pull-ring__slider {
+.pull-ring__half--a {
+  rotate: calc(var(--snip, 0) * -13deg);
+}
+
+.pull-ring__half--b {
+  rotate: calc(var(--snip, 0) * 13deg);
+}
+
+/* A short stretch of the dashed line under the tips, so there is something to follow before the first pull. */
+.pull-ring__stub {
   position: absolute;
-  inset: 0;
+  left: 21px;
+  top: 108px;
+  width: 2px;
+  height: 22px;
+  background: repeating-linear-gradient(to bottom, var(--ink) 0 6px, transparent 6px 10px);
+  opacity: 0.55;
+  transition: opacity 0.15s linear;
+}
+
+.pull-ring[data-pulled] .pull-ring__stub {
+  opacity: 0;
 }
 
 @media (hover: hover) {
@@ -98,8 +105,8 @@ html[data-unzipped='gutter'] .toast {
   }
 }
 
-/* Tape, teeth and shadows along the opening, painted by zipper-seam.ts. */
-.pull-ring__seam {
+/* Flaps, dashes and shadows along the cut, painted by cut-seam.ts. */
+.pull-ring__cut {
   position: fixed;
   inset: 0;
   z-index: 46;
@@ -109,7 +116,7 @@ html[data-unzipped='gutter'] .toast {
   visibility: hidden;
 }
 
-.pull-ring[data-pulled] .pull-ring__seam {
+.pull-ring[data-pulled] .pull-ring__cut {
   visibility: visible;
 }
 
