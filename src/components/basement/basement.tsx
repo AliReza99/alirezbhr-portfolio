@@ -34,7 +34,6 @@ export const Basement = () => {
   const [escape, setEscape] = useState<{ from: number } | null>(null);
   const [says, setSays] = useState<{ key: number; line: string; cat: boolean; faint: boolean } | null>(null);
 
-  const wrapRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const tipsRef = useRef<HTMLDivElement>(null);
   const tipsSketchRef = useRef<HTMLSpanElement>(null);
@@ -254,7 +253,6 @@ export const Basement = () => {
   };
 
   const knockLadder = useBasementTease({
-    wrapRef,
     ladderRef: tipsRef,
     glowRef,
     hintRef,
@@ -440,7 +438,7 @@ export const Basement = () => {
         </span>
         {catUp && <SleepingCat basementOpen={open} rest={catX} onRest={setCatX} onPoke={pokeCat} />}
       </div>
-      <div ref={wrapRef} aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
+      <div aria-hidden={!open} inert={!open} className="basement-wrap" style={{ height: open ? 'auto' : undefined }}>
         <section ref={sectionRef} data-screen-label="Basement" aria-label="The basement" className="basement">
           <div ref={wallRef} aria-hidden="true" className="fill" />
           <Spider open={open} dark={dark} holdStill={() => !!talkRef.current?.childElementCount} />

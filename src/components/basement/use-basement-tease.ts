@@ -1,9 +1,6 @@
 import { useEffect, useRef, type RefObject } from 'react';
-import { prefersReducedMotion } from '../../lib/motion';
 
 type UseBasementTeaseOptions = {
-  /** The clipped basement wrapper; its top is where the page "ends". */
-  wrapRef: RefObject<HTMLElement | null>;
   /** Ladder tips poking up from the floor strip. */
   ladderRef: RefObject<HTMLElement | null>;
   /** Warm light leaking around the ladder. */
@@ -36,17 +33,16 @@ const PULL_OPEN = 80;
 /** Touch: a shorter pull still counts as a try; two of them open it. */
 const PULL_TRY = 24;
 const PULLS_TO_OPEN = 2;
-/** Painted behind the page near its end, so the gap Safari's bounce reveals is more basement. */
 /** The voice forbids it, which is the invitation. One line per stage of the pull. */
 const HINTS = ['nothing down here.', 'stop pulling.', 'don’t you dare let go.'];
-const BELOW_CLOSED = '#181818';
+/** Painted behind the open basement, so the gap Safari's bounce reveals is more basement. */
 const BELOW_OPEN = '#242424';
 
 export const modalOpen = () => !!document.querySelector('[aria-modal="true"][aria-hidden="false"]');
 
 /**
- * The page ends a little early. Reaching the bottom lifts the ladder, holds,
- * then slowly pushes the visitor back up, every time: scrolling never opens it.
+ * Nothing of the basement shows until it opens. Reaching the bottom lifts the
+ * ladder, holds, then lowers it again, every time: scrolling never opens it.
  * The way in is the ladder: clicking its tips enough times drops the visitor in,
  * and the returned function reports one click. Clicks do not expire, so a click
  * after a long pause gets the voice's next line.
@@ -70,12 +66,10 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
     let deep = 0;
     /** Clicks on the ladder; a pause does not clear them. */
     let knocks = 0;
-    let pushingBack = false;
     let goal = 0;
     let wasAtBottom = false;
     let lastY = scrollY;
-    let backTimer: number | undefined;
-    let backRaf = 0;
+    let lowerTimer: number | undefined;
     /** The last input was a finger. */
     let touch = false;
     let anchorY: number | null = null;
@@ -126,40 +120,11 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       if (!raf) raf = requestAnimationFrame(tick);
     };
 
-    const pushBack = () => {
-      const wrap = o().wrapRef.current;
-      if (!wrap || o().isOpen() || o().isBusy()) return;
-      const y0 = scrollY;
-      const y1 = wrap.getBoundingClientRect().top + scrollY - innerHeight;
-      if (prefersReducedMotion()) {
-        lower();
-        return scrollTo({ top: y1, behavior: 'instant' });
-      }
-      pushingBack = true;
-      const t0 = performance.now();
-      const D = 1200;
-      cancelAnimationFrame(backRaf);
-      const step = (now: number) => {
-        const k = Math.min(1, (now - t0) / D);
-        const q = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-        scrollTo({ top: y0 + (y1 - y0) * q, behavior: 'instant' });
-        if (k < 1) backRaf = requestAnimationFrame(step);
-        else {
-          pushingBack = false;
-          lower();
-        }
-      };
-      backRaf = requestAnimationFrame(step);
-    };
-
     const open = (knocked = false) => {
       knocks = 0;
       goal = 0;
       progress = 0;
-      // A pending or running push-back would fight the scroll into the basement.
-      clearTimeout(backTimer);
-      cancelAnimationFrame(backRaf);
-      pushingBack = false;
+      clearTimeout(lowerTimer);
       unlocked = true;
       o().onOpen(knocked);
     };
@@ -169,11 +134,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const now = performance.now();
       if (o().isBusy() || modalOpen()) return;
       const isNew = fresh || now - last > SAME_PUSH_MS;
-      // Pushing again while being shoved back stops the shove; the hold starts over.
-      if (pushingBack && isNew) {
-        cancelAnimationFrame(backRaf);
-        pushingBack = false;
-      } else if (!atBottom()) return;
+      if (!atBottom()) return;
       last = now;
       if (o().isOpen()) {
         deep += d;
@@ -189,9 +150,9 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       o().onStir();
       goal = NUDGE;
       if (!raf) raf = requestAnimationFrame(tick);
-      // Hold at the bottom for a beat, then push them back up to the cream floor.
-      clearTimeout(backTimer);
-      backTimer = window.setTimeout(pushBack, 900);
+      // Hold for a beat, then the ladder sinks back.
+      clearTimeout(lowerTimer);
+      lowerTimer = window.setTimeout(lower, 900);
     };
 
     knockRef.current = () => {
@@ -219,12 +180,11 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       const over = overscroll();
       if (over > 1) nativeOver = true;
       if (touch && nativeOver) setPull(over);
-      // On phones the locked basement stays hidden, so the bounce must not reveal dark either.
-      const closedColor = matchMedia('(max-width: 600px)').matches ? '' : BELOW_CLOSED;
-      const color = over > -200 ? (o().isOpen() ? BELOW_OPEN : closedColor) : '';
+      // The locked basement stays hidden, so the bounce must not reveal dark either.
+      const color = over > -200 && o().isOpen() ? BELOW_OPEN : '';
       if (color !== below) root.style.backgroundColor = below = color;
       if (b && !wasAtBottom) arrivedAt = performance.now();
-      // Touch visitors are not pushed back; the browser's own bounce does that.
+      // Touch visitors lift the ladder by pulling instead.
       if (b && !wasAtBottom && scrollY > lastY && !o().isOpen() && !touch && !unlocked) push(60, true);
       if (!b) deep = 0;
       wasAtBottom = b;
@@ -244,7 +204,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
       fingerDown = true;
       peak = 0;
       anchorY = null;
-      clearTimeout(backTimer);
+      clearTimeout(lowerTimer);
     };
     const onTouchMove = (e: TouchEvent) => {
       if (nativeOver) return;
@@ -293,8 +253,7 @@ export const useBasementTease = (opts: UseBasementTeaseOptions) => {
 
     return () => {
       cancelAnimationFrame(raf);
-      cancelAnimationFrame(backRaf);
-      clearTimeout(backTimer);
+      clearTimeout(lowerTimer);
       root.style.backgroundColor = '';
       removeEventListener('wheel', onWheel);
       removeEventListener('keydown', onKey);
