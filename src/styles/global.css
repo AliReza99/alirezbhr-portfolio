@@ -22,7 +22,6 @@
   --font-kalam: 'Kalam', cursive;
 
   --hatch-ink: repeating-linear-gradient(135deg, var(--ink) 0 1px, transparent 1px 3px), var(--hatch-bg);
-  --hatch-purple: repeating-linear-gradient(135deg, var(--purple) 0 1px, transparent 1px 3px), var(--hatch-bg);
   --ease-snap: cubic-bezier(0.65, 0, 0.15, 1);
   --ease-press: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
