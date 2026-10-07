@@ -179,17 +179,18 @@ export const SKETCHES: Record<SketchType, SketchFn> = {
 
   box: (rc, w, h, o) => [
     rc.rectangle(1, 1, w - 2, h - 2, o({ fill: '#B48D63', fillStyle: 'solid', stroke: INK_DEEP, strokeWidth: 2, roughness: 1.1 })),
+    // The two lid flaps, meeting at a seam in the middle.
     rc.line(2, h * 0.3, w - 2, h * 0.3, o({ stroke: INK_DEEP, strokeWidth: 1.5 })),
-    rc.rectangle(w * 0.38, 1, w * 0.24, h * 0.3, o({ stroke: 'rgba(26,25,42,.55)', strokeWidth: 1, fill: 'rgba(240,222,186,.85)', fillStyle: 'solid', roughness: 0.8 })),
+    rc.line(w * 0.5, 3, w * 0.5, h * 0.3, o({ stroke: INK_DEEP, strokeWidth: 1.2, bowing: 0.6 })),
   ],
 
   paper: (rc, w, h, o) => [rc.rectangle(1, 1, w - 2, h - 2, o({ fill: '#FFFCF7', fillStyle: 'solid', stroke: INK, strokeWidth: 1.3, roughness: 1.2 }))],
 
+  /** A dark screwed-on plate with a cream rim, so it does not read as one of the cream speech bubbles. */
   sign: (rc, w, h, o) => [
-    rc.rectangle(8, 10, w - 4, h - 4, o({ stroke: 'none', fill: 'rgba(0,0,0,.5)', fillStyle: 'hachure', hachureGap: 3, hachureAngle: -45, fillWeight: 1.2 })),
-    rc.rectangle(1, 1, w - 2, h - 2, o({ fill: CREAM, fillStyle: 'solid', stroke: INK_DEEP, strokeWidth: 2.6, roughness: 1.3 })),
-    rc.circle(10, 10, 6, o({ stroke: INK_DEEP, fill: INK_DEEP, fillStyle: 'solid' })),
-    rc.circle(w - 10, 10, 6, o({ stroke: INK_DEEP, fill: INK_DEEP, fillStyle: 'solid' })),
+    rc.rectangle(1, 1, w - 2, h - 2, o({ fill: '#2C2B40', fillStyle: 'solid', stroke: CREAM, strokeWidth: 2, roughness: 1 })),
+    rc.circle(8, 8, 3.5, o({ stroke: CREAM, fill: CREAM, fillStyle: 'solid', roughness: 0.6 })),
+    rc.circle(w - 8, 8, 3.5, o({ stroke: CREAM, fill: CREAM, fillStyle: 'solid', roughness: 0.6 })),
   ],
 
   cat: (rc, w, _h, o, { open }) => curledCat(rc, w, o, open, 'asleep'),

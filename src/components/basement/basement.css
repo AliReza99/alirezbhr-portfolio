@@ -322,9 +322,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 16px 26px 13px;
-  color: var(--ink);
+  gap: 4px;
+  padding: 12px 18px 9px;
+  color: var(--paper);
   transform: rotate(2deg);
 }
 
@@ -332,16 +332,17 @@
   font-family: var(--font-sans);
   font-weight: 900;
   font-stretch: 125%;
-  font-size: clamp(24px, 3vw, 34px);
+  font-size: clamp(14px, 1.5vw, 17px);
   line-height: 1;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
 }
 
 .basement__sign-sub {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 9px;
   line-height: 1.2;
   letter-spacing: 0.06em;
+  opacity: 0.7;
 }
 
 /* Holds the cat's eyes beside the pile, outside its stacking context, so they sit above the dark. */
