@@ -17,18 +17,18 @@ const COMMIT = 80;
 /** Across the box, the middle of the tab. */
 const MID = PULL.width / 2;
 /** Half the tab's width. */
-const HALF = 15;
+const HALF = 22;
 /** Top of the tab, past the top of the box so it comes out of the page edge. */
 const TOP = -6;
 /** Bottom of the tab, round. */
-const BOTTOM = 80;
+const BOTTOM = 120;
 
 /** The tongue of the tab as a path, `dx` and `dy` to the side. The hard shadow is the same shape. */
 const tongue = (dx = 0, dy = 0) => {
   const l = MID - HALF + dx;
   const r = MID + HALF + dx;
   const b = BOTTOM + dy;
-  return `M${l} ${TOP + dy} L${l} ${b - 18} Q${l} ${b} ${MID + dx} ${b} Q${r} ${b} ${r} ${b - 18} L${r} ${TOP + dy} Z`;
+  return `M${l} ${TOP + dy} L${l} ${b - 26} Q${l} ${b} ${MID + dx} ${b} Q${r} ${b} ${r} ${b - 26} L${r} ${TOP + dy} Z`;
 };
 
 /** The pull tab, like the one on a parcel's tear strip: a tongue of paper with a finger hole, on a hard hatched shadow. */
@@ -37,9 +37,9 @@ const drawTab = (svg: SVGSVGElement) => {
   const line = { stroke: INK, strokeWidth: 2, roughness: 0.7, bowing: 0.6, disableMultiStroke: true };
   const rc = roughSvg(svg);
   const g = createGroup();
-  g.appendChild(rc.path(tongue(3, 3), { ...line, strokeWidth: 1, fill: INK, fillStyle: 'hachure', hachureGap: 3, hachureAngle: -45, fillWeight: 1, seed }));
+  g.appendChild(rc.path(tongue(4, 4), { ...line, strokeWidth: 1, fill: INK, fillStyle: 'hachure', hachureGap: 3, hachureAngle: -45, fillWeight: 1, seed }));
   g.appendChild(rc.path(tongue(), { ...line, fill: TAB, fillStyle: 'solid', seed: seed + 1 }));
-  g.appendChild(rc.circle(MID, BOTTOM - 17, 13, { ...line, strokeWidth: 1.8, fill: HOLE, fillStyle: 'solid', seed: seed + 2 }));
+  g.appendChild(rc.circle(MID, BOTTOM - 25, 21, { ...line, strokeWidth: 2.2, fill: HOLE, fillStyle: 'solid', seed: seed + 2 }));
   svg.appendChild(roundCaps(g));
 };
 

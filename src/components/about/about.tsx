@@ -33,7 +33,7 @@ export const About = () => {
         I've spent 6 years building enterprise apps and automating myself out of <DoodleWord doodle={boring} />. Scaled small
         applications to super-application, achieved 12x performance improvements, built refactoring tools that save weeks.
         Outside code, I'm either reading <DoodleWord doodle={literature} />, <DoodleWord doodle={running} />, or{' '}
-        <DoodleWord doodle={mountains} /> (usually on purpose).
+        <DoodleWord doodle={mountains} />.
       </p>
     </section>
   );

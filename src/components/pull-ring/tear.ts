@@ -1,7 +1,7 @@
 import { computeSeam, paintTear, type Seam, type SeamLayout } from './tear-seam';
 
 /** The pull tab's box, and where in it the tear starts: the top of the visible tab, where it meets the window. */
-export const PULL = { width: 44, height: 86, top: -12, apex: 14 };
+export const PULL = { width: 66, height: 128, top: -12, apex: 14 };
 
 /** Gap left under the tab when it is all the way down. */
 const REST_GAP = 44;

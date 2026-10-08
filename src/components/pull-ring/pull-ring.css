@@ -57,8 +57,8 @@ html[data-torn='gutter'] .toast {
 .pull-ring__hang {
   position: relative;
   display: block;
-  width: 44px;
-  height: 86px;
+  width: 66px;
+  height: 128px;
   transition: transform 0.3s var(--ease-press);
 }
 
@@ -70,9 +70,9 @@ html[data-torn='gutter'] .toast {
 /* Handwritten on the tab, reading from the bottom up. Centred on the tongue above the finger hole. */
 .pull-ring__tab-label {
   position: absolute;
-  left: 22px;
-  top: 33px;
-  font-size: 17px;
+  left: 33px;
+  top: 50px;
+  font-size: 25px;
   white-space: nowrap;
   pointer-events: none;
   transform: translate(-50%, -50%) rotate(-90deg);
