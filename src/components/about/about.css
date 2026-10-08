@@ -6,10 +6,12 @@
 
 .about__text {
   margin: 0;
-  max-width: none;
+  /* About 60 characters a line: the copy is short, and at full column width each paragraph ran on one thin line. */
+  max-width: 36em;
   font-size: clamp(16px, 1.4vw, 19px);
   line-height: 2;
   color: var(--ink);
   letter-spacing: -0.015em;
-  text-wrap: pretty;
+  /* Short paragraphs: even lines instead of a long line and a stub. */
+  text-wrap: balance;
 }
